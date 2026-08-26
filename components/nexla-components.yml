@@ -1,0 +1,60 @@
+generated: '2026-08-26'
+method: searched
+source: https://docs.nexla.com/reference/react-sdk/api-reference
+summary: >-
+  Nexla ships an embeddable client-side component library — the Nexla Connect SDK for React — used to put
+  Nexla's credential and connector experience directly inside a host product. Distinct from the Python/JS
+  server SDKs in packages/.
+loader:
+  package: '@nexla/react-sdk'
+  registry: npm
+  install: npm install @nexla/react-sdk
+  version: 1.0.0-rc.4
+  published: '2026-08-26'
+docs:
+  overview: https://docs.nexla.com/reference/react-sdk/
+  api_reference: https://docs.nexla.com/reference/react-sdk/api-reference
+  quick_start: https://docs.nexla.com/reference/react-sdk/get-started/quick-start
+  integration_patterns: https://docs.nexla.com/reference/react-sdk/integration-patterns
+  embedding_guide: https://docs.nexla.com/dev-guides/embedding-nexla
+families:
+- family: Providers
+  components:
+  - name: NexlaConnectProvider
+    description: Root provider handling authentication and credential management.
+  - name: NexlaThemeProvider
+    description: Injects CSS variables for the styled components.
+- family: Styled components
+  components:
+  - name: NexlaConnectButton
+    description: Opens the credential modal with connector branding.
+  - name: NexlaConnectModal
+    description: Dialog for creating and editing credentials.
+  - name: NexlaConnectorCard
+    description: Displays a connector in grid or list layout.
+  - name: NexlaSnackbar
+    description: Toast notification UI.
+- family: Headless hooks
+  components:
+  - name: useNexlaConnect()
+    description: Full context state and actions.
+  - name: useCredentials(connectorKey?)
+    description: Read credentials with optional connector filtering.
+  - name: useConnectorForm(connectorKey)
+    description: Headless form management for building a custom credential interface.
+  - name: useNexlaSnackbar()
+    description: Toast notification state and handlers.
+- family: Theme utilities
+  components:
+  - name: getNexlaTheme(mode)
+    description: Returns typed theme values.
+  - name: nexlaTheme / nexlaDarkTheme
+    description: CSS variable maps for light and dark modes.
+integration_patterns:
+- name: styled
+  description: Pre-built UI (NexlaConnectButton, NexlaConnectModal, NexlaConnectorCard).
+- name: headless
+  description: Form management via useConnectorForm() behind a custom UI.
+- name: hybrid
+  description: Documented mix of styled surfaces and headless hooks.
+examples_repository: https://github.com/nexla/react-sdk-examples

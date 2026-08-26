@@ -1,0 +1,208 @@
+generated: '2026-08-26'
+method: derived
+source: openapi/nexla-rest-api-openapi.yml
+summary: >-
+  Entity graph derived from the 312 component schemas and the id-reference fields in the Nexla REST
+  OpenAPI. Nexla's core object is the FLOW, a directed graph of nodes: a data_source ingests, one or more
+  data_sets (Nexsets) shape, and one or more data_sinks deliver. Every resource is owned by a user and
+  scoped to an org, and every resource carries an accessors collection that is the access-control join.
+identifiers:
+  scheme: integer surrogate keys
+  note: >-
+    Nexla uses plain integer ids (source_id, set_id, sink_id, flow_id, org_id, …), NOT prefixed opaque
+    ids. There is no type prefix in an id, so an id alone does not tell an agent which resource it names —
+    the path segment does.
+entities:
+- name: org
+  description: Tenant. Owns every other resource and carries auth settings, tiers and billing owner.
+  paths:
+  - "/orgs"
+  - "/orgs/{org_id}"
+  - "/orgs/{org_id}/members"
+  - "/orgs/{org_id}/auth_settings"
+  relationships:
+  - {type: has_many, target: user, via: members}
+  - {type: has_many, target: team, via: org_id}
+  - {type: has_one, target: user, via: billing_owner_id, role: billing owner}
+- name: user
+  description: Account principal. Owns resources, belongs to orgs and teams.
+  paths:
+  - "/users"
+  - "/users/{user_id}"
+  - "/users/{user_id}/quarantine_settings"
+  relationships:
+  - {type: belongs_to, target: org, via: default_org_id}
+  - {type: has_many, target: team, via: membership}
+- name: team
+  description: Grouping of users used as an access-control subject.
+  paths:
+  - "/teams"
+  - "/teams/{team_id}"
+  - "/teams/{team_id}/members"
+  relationships:
+  - {type: belongs_to, target: org, via: org_id}
+  - {type: has_many, target: user, via: members}
+- name: data_credential
+  description: >-
+    Connection secret for an external system. Polymorphic — 55+ concrete credential schemas in the spec
+    (postgres, snowflake, s3, kafka, bigquery, pinecone, rest, soap, netsuite_jdbc, …) discriminated by
+    connector type.
+  paths:
+  - "/data_credentials"
+  - "/data_credentials/{credential_id}"
+  - "/data_credentials/{credential_id}/probe/tree"
+  - "/data_credentials/{credential_id}/probe/sample"
+  relationships:
+  - {type: belongs_to, target: user, via: owner_id}
+  - {type: belongs_to, target: org, via: org_id}
+  - {type: has_many, target: data_source, via: data_credentials_id}
+  - {type: has_many, target: data_sink, via: data_credentials_id}
+- name: data_source
+  description: Ingestion node — where a flow reads from. The origin node of a flow.
+  paths:
+  - "/data_sources"
+  - "/data_sources/{source_id}"
+  - "/data_sources/{source_id}/activate"
+  - "/data_sources/{source_id}/pause"
+  relationships:
+  - {type: belongs_to, target: data_credential, via: data_credentials_id}
+  - {type: has_many, target: data_set, via: data_source_id}
+  - {type: belongs_to, target: user, via: owner_id}
+  - {type: belongs_to, target: org, via: org_id}
+- name: data_set
+  description: >-
+    The Nexset — a schema-aware logical data product. Chains: a Nexset can be derived from another Nexset
+    via parent_data_set_id, which is how transformation lineage is represented.
+  paths:
+  - "/data_sets"
+  - "/data_sets/{set_id}"
+  - "/data_sets/{set_id}/activate"
+  - "/data_sets/{set_id}/pause"
+  - "/data_sets/{nexset_id}/semantic_schema"
+  relationships:
+  - {type: belongs_to, target: data_source, via: data_source_id}
+  - {type: belongs_to, target: data_set, via: parent_data_set_id, role: derived-from}
+  - {type: has_many, target: data_sink, via: data_set_id}
+- name: data_sink
+  description: Delivery node — where a flow writes to.
+  paths:
+  - "/data_sinks"
+  - "/data_sinks/{sink_id}"
+  - "/data_sinks/{sink_id}/activate"
+  - "/data_sinks/{sink_id}/pause"
+  relationships:
+  - {type: belongs_to, target: data_set, via: data_set_id}
+  - {type: belongs_to, target: data_credential, via: data_credentials_id}
+- name: flow
+  description: >-
+    The graph itself. FlowNodes / FlowOriginNode / FlowChildNode model the tree with origin_node_id and
+    parent_node_id; shared_origin_node_id links flows that share an ingestion point.
+  paths:
+  - "/flows"
+  - "/flows/{flow_id}"
+  - "/flows/{flow_id}/activate"
+  - "/flows/{flow_id}/pause"
+  - "/{resource_type}/{resource_id}/flow"
+  relationships:
+  - {type: has_many, target: flow_node, via: origin_node_id}
+  - {type: belongs_to, target: project, via: project_id}
+- name: data_map
+  description: Lookup table used to enrich records mid-flow; entries are addressable by key.
+  paths:
+  - "/data_maps"
+  - "/data_maps/{data_map_id}"
+  - "/data_maps/{data_map_id}/entries/{entry_keys}"
+- name: transform
+  description: >-
+    Reusable record transform. attribute_transform is the field-level sibling. Both can be backed by a
+    code_container for custom logic.
+  paths:
+  - "/transforms"
+  - "/transforms/{transform_id}"
+  - "/attribute_transforms"
+  - "/attribute_transforms/{attribute_transform_id}"
+  relationships:
+  - {type: belongs_to, target: code_container, via: code_container_id}
+- name: code_container
+  description: User-supplied code executed inside a flow, optionally on a custom runtime.
+  paths:
+  - "/code_containers"
+  - "/code_containers/{code_container_id}"
+  relationships:
+  - {type: belongs_to, target: runtime, via: runtime_id}
+- name: runtime
+  description: Custom execution runtime for code containers.
+  paths:
+  - "/runtimes"
+  - "/runtimes/{runtime_id}"
+  - "/runtimes/{runtime_id}/activate"
+  - "/runtimes/{runtime_id}/pause"
+- name: project
+  description: Container that groups flows for organisation and access control.
+  paths:
+  - "/projects"
+  - "/projects/{project_id}"
+  - "/projects/{project_id}/flows"
+  relationships:
+  - {type: has_many, target: flow, via: project_id}
+- name: accessor
+  description: >-
+    The access-control join. Every major resource exposes an /accessors sub-collection binding a subject
+    (user, team, org) to an AccessRole. This is why Access Control is the single largest tag in the
+    contract at 48 operations.
+  paths:
+  - "/data_sources/{data_source_id}/accessors"
+  - "/data_sets/{data_set_id}/accessors"
+  - "/data_sinks/{data_sink_id}/accessors"
+  - "/data_maps/{data_map_id}/accessors"
+  - "/data_credentials/{data_credential_id}/accessors"
+  - "/projects/{project_id}/accessors"
+  - "/flows/{flow_id}/accessors"
+  relationships:
+  - {type: belongs_to, target: 'user|team|org', via: subject}
+  - {type: has_one, target: AccessRoles, via: access_role}
+- name: notification
+  description: Alerting record raised against a resource; 21 operations plus settings and channel settings.
+  paths:
+  - "/notifications"
+  - "/notifications/{notification_id}"
+  - "/notification_settings"
+  - "/notification_channel_settings"
+  relationships:
+  - {type: belongs_to, target: 'data_source|data_set|data_sink', via: 'resource_type + resource_id'}
+- name: approval_request
+  description: Governance workflow object — a requestor asks, an assignee approves or rejects.
+  paths:
+  - "/approval_requests/pending"
+  - "/approval_requests/requested"
+  - "/approval_requests/{request_id}/approve"
+  - "/approval_requests/{request_id}/reject"
+  relationships:
+  - {type: belongs_to, target: user, via: requestor_id}
+  - {type: belongs_to, target: user, via: assignee_id}
+- name: async_task
+  description: >-
+    Long-running operation handle. Several probe and flow operations return AsyncResponse / *_with_async
+    variants that must be polled — an agent calling those cannot assume a synchronous result.
+  paths:
+  - "/async_tasks"
+polymorphism:
+  discriminated_unions:
+  - base: data_credential
+    variants: 55
+    note: >-
+      Concrete schemas per connector family — database (postgres, mysql, oracle, db2, sybase, teradata,
+      sqlserver, hana_jdbc, netsuite_jdbc), warehouse/lake (snowflake, bigquery, redshift, databricks,
+      firebolt, athena, synapse, delta_lake_*, s3_iceberg), file/object (s3, gcs, azure_blb,
+      azure_data_lake, box, dropbox, gdrive, sharepoint, ftp, webdav, min_io_s3), stream
+      (kafka, confluent_kafka, google_pubsub, jms, tibco), nosql (mongo, dynamodb, firebase),
+      vector (vector_db, pinecone) and protocol (rest, soap).
+  - base: probe_tree
+    variants: [file_probe_tree, database_probe_tree, nosql_probe_tree]
+    note: 'Credential probing returns a connector-shaped tree; the shape depends on the connector class.'
+copy_semantics:
+  field: copied_from_id
+  note: >-
+    Six schemas carry copied_from_id, which is how Nexla records that a resource was cloned — the basis
+    of the documented dev-to-production flow migration path.
+render: null

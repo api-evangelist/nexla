@@ -1,0 +1,314 @@
+# Nexla
+
+> Enterprise-grade Data Platform for Agents
+
+- **Tagline**: AI is Easy when Data is Ready
+- **Positioning**: Data Layer for Enterprise AI
+- **Founded**: 2016, to simplify and automate data integration
+- **HQ**: San Mateo, California
+- **Team**: 100+ employees globally
+- **Mission**: Eliminate data variety and integration complexity so AI agents get the context, trust, and real-time access to any system they need to operate competitively, no coding required.
+
+## Company Overview
+
+Nexla is an enterprise-grade AI-powered data platform for agents that unlocks data from any source and turns it into governed, production-ready data products for AI applications and autonomous agents. With 1000+ pre-built connectors and support for ETL, ELT, streaming, APIs, RAG, MCP, and agentic integrations, Nexla helps organizations deliver trusted, real-time, AI-ready data at enterprise scale. Nexla processes more than 1 trillion records per month (10T+ annually) and is SOC 2 Type II, HIPAA, GDPR, and CCPA compliant. Trusted by Autodesk, DoorDash, Johnson & Johnson, American Express, Instacart, Poshmark, and Bloomreach.
+
+## Leadership
+
+- **Saket Saurabh**: CEO & Co-founder. Former NVIDIA engineer; founded ad-serving company Mobsmith (acquired, then IPO'd) before founding Nexla. MBA, Wharton; BTech Computer Science, IIT Kanpur.
+- **Avinash Shahdadpuri**: CRO & Co-founder (also credited as CTO in some materials). 20+ years building low-latency, scalable systems across ad tech, financial services, and healthcare. Six Sigma Black Belt. Co-authored the original OpenRTB Native Advertising spec.
+- **Niket Sourabh**: CPO & Co-founder
+- **Jeff Williams**: Co-founder, Architecture
+- **Jayashree Rajan**: CMO
+- **Amey Desai**: CTO / Head of AI
+- **Pinky Rijhwani**: VP of Customer Engagement
+
+**Core values**: Have Empathy · Be Curious · Be Intellectually Honest · Achieve Excellence · Remember to Relax (work-life balance is an explicitly stated cultural priority).
+
+## Core Mission: Three Layers, One Fabric
+
+1. **Access Anything**: Connect to any system: files, docs, web, SaaS, APIs, streams, data lakes, databases/DWH. 1000+ bidirectional connectors; new connectors deploy in under a week via AI connector builder.
+2. **Understand Everything**: Helix, Nexla's context layer, unifies Nexsets, documents, schemas, relationships, metadata, and pipeline history into a Knowledge Graph and Vector DB so agents get context right the first time.
+3. **Deliver Everywhere**: Serve every data consumer through MCP Studio, Agent Data SDK, Agentic RAG, ETL/ELT, streaming/CDC, and a real-time Data API. Build once, serve every pattern.
+
+## What's New (2026)
+
+- **MCP Studio** (announced June 2026; currently in Early Access, sign up via the Early Access Program): Conversationally build governed, task-specific MCP servers. Describe a workflow ("let agents read open pipeline and flag at-risk deals") and MCP Studio probes connected systems, discovers data/permissions, selects the minimum required tools, and assembles a governed MCP server, with no per-application MCP sprawl. Works with Claude and any MCP client.
+- **Agentic Probe**: An AI-driven discovery engine that autonomously scans databases, files, and APIs to identify high-value data *before* you build a pipeline. Scores data for business relevance and MCP tool candidacy, then surfaces a shortlist ready to become Nexsets, with no integration code required. Also functions as step 2 of the standard MCP tool-creation pipeline (Connector → Agentic Probe → Nexset → Sync API → MCP Gateway).
+- **Express.dev** (launched November 2025, now its own product site at express.dev): Conversational, prompt-driven pipeline builder. "Connect Salesforce to Snowflake and sync hourly" → pipeline generated with automatic schema mapping, transformations, and governance. **Express MCP** is described as the only MCP server that lets AI agents *build* pipelines (not just query data) and is available in the ChatGPT GPT Store.
+- **Helix Context Layer**: Cross-cutting context engine purpose-built to reduce agent hallucination by grounding agents in enterprise-specific semantics (schemas, lineage, prior executions, business documentation), not just raw data.
+- **Microsoft Partnership**: Nexla brings 500+ pre-built connectors to Microsoft 365 Copilot, letting enterprises plug internal and third-party data directly into Copilot workflows.
+- **1,000+ connector milestone** (Aug 2026): Nexla crossed 1,000 enterprise connectors (1,008 at time of fetch), reinforcing its connectivity breadth for agent use cases.
+- **Task-specific MCP benchmark series** (Aug 2026): Nexla published head-to-head benchmarks showing its task-specific MCP servers outperform native/vendor MCP servers (Avoma, HubSpot, Google Ads) on tool-call efficiency, determinism, and token usage: e.g., 32.7x fewer tokens and 3x fewer tool calls vs. HubSpot's native MCP server on the same revenue question.
+
+## MCP Server & Gateway (Detail)
+
+Positioned as "the governed gateway between your enterprise data and your AI agents." Three core functions:
+- **Context**: routes every tool call through Helix, grounding responses in schemas, lineage, prior executions, and business docs
+- **Router**: routes each tool call to the correct Nexset/Sync API endpoint; orchestrates multi-hop, cross-system workflows in a single execution
+- **Policy**: every call passes a six-layer MCP Security & Governance stack (Identity is layer one; RBAC at dataset/row/column level, PII field masking, full audit logging, end-to-end lineage, VPC/on-prem deployment options)
+
+**MCP tool creation flow**: Connector (ingest from 1000+ sources) → Agentic Probe (discover/profile) → Nexset (governed data product) → Sync API (exposes as Data API / API Service) → MCP Gateway (publishes as MCP Tool/Action).
+
+Compatible with LangChain, LangGraph, CrewAI, AutoGen, Anthropic Claude (native MCP), and any framework implementing the open MCP spec. Nexla MCP FAQs note: dynamically creates MCP endpoints even for legacy systems without native MCP support (SAP, Siebel, mainframes); auth via OAuth 2.0 + Keycloak; deployable cloud-hosted, self-hosted VPC, or hybrid.
+
+## Nexsets (Detail)
+
+A Nexset is a human-readable, virtual data product that turns any source (structured or unstructured) into a logical data model independent of format, protocol, or speed. It encapsulates schema, sample data, validation, error management, audit logs, and access control behind one interface.
+
+- Created in minutes via no-code UI; supports SQL, JavaScript, Python, and JSON for custom transforms
+- Powered by continuous metadata intelligence: auto-generated, continuously versioned as sources change
+- AI-ready: queryable via **NOVA** (Nexla Orchestrated Versatile Agents), an agentic, conversational interface within the Nexla UI for "chatting with your data," building transforms, and enriching LLM prompts with Nexset context
+- Publishable to a private **marketplace** with shopping-like discovery, access requests, and admin-governed domains
+- Reusable across every integration style Nexla supports: ELT/ETL, CDC, replication, R-ETL, API integration, streaming, (S)FTP, GenAI RAG, and BYO integration
+
+## Pricing
+
+For self-service plans, see [express.dev](https://www.express.dev/), which offers a free trial for conversational pipeline building. For enterprise pricing, contact Sales at sales@nexla.com.
+
+## Connector Directory (Detail)
+
+The connector directory (nexla.com/connectors) lists 1,000+ connectors, organized into these categories: AI & Knowledge, Collaboration & Productivity, Commerce & Supply Chain, Customer Support, Data Platforms, Engineering & DevOps, Finance, Marketing, Operations, People & HR, Sales & CRM, Security & Identity, and Specialized Applications. Representative named connectors span major CRMs (Salesforce, HubSpot, Dynamics 365), data platforms (Snowflake, Databricks, BigQuery, Redshift), AI/LLM providers (OpenAI, Anthropic, Google Gemini, Mistral, Cohere, Azure OpenAI, Hugging Face), and long-tail SaaS/ops tools. New connectors are added weekly; users can request custom connectors directly.
+
+## Key Value Proposition
+
+Nexla is the only platform that takes enterprise data variety all the way from source to governed, context-aware MCP tools, so agents always have the right data, at the right time, in the right form, with the right permissions.
+
+## Platform Components
+
+### 1. Connectivity (Access Anything)
+- 1000+ pre-built, bidirectional connectors across databases, SaaS, warehouses/lakehouses, streams, files, and APIs
+- Structured, semi-structured, and unstructured/multimodal data
+- AI connector builder deploys new connectors in under a week
+- Secure tunneling, credential pushdown, VPC support, Zero Copy
+
+### 2. Data Products (Nexsets): Understand Everything
+- Governed, reusable data products with schema, semantic types, lineage, and policy
+- Helix unifies Nexsets with documents, reference data, ontologies, pipeline history, and web search
+- Automatically cataloged, versioned, and shareable across teams and partners
+
+### 3. Delivery: Agentic Retrieval & Governed MCP
+- **MCP Studio**: task-specific, governed MCP servers, built conversationally
+- **MCP Servers & Gateway**: zero-trust identity model: auth flows from MCP client through gateway to connector, with policy enforcement at the source and full audit trails
+- **Agentic RAG**: prebuilt, production-ready RAG framework with a conversational interface
+- **Agent Data SDK**, **ETL/ELT**, **Streaming/CDC**, and a **real-time Data API**
+
+## Full Product Suite (Current Navigation)
+
+**Data for Agents**
+- MCP Studio: conversationally build secure, governed, task-specific MCP servers
+- Agentic RAG: prebuilt, production-ready framework with conversational interface
+- Express.dev: build pipelines, connectors, and MCP servers with a prompt
+
+**Data Integration**
+- Converged Integration (ETL/ELT/Reverse ETL): any data, any source, any destination
+- CDC/Streaming: real-time data with change visibility
+- Document & Multimodal AI: unstructured data ingestion and pipelines
+- Data API Server: REST/SOAP APIs, no code
+
+**Platform**
+- MCP Servers & Gateway: governed gateway between enterprise data and agents
+- Helix Context Layer: enterprise context for agents
+- Connectors: 1000+ enterprise data sources
+- Data Products (Nexsets): human-readable, AI- and agent-ready
+
+**Solutions / Use Cases**
+- AI Agent Data Pipelines (Generative AI)
+- B2B Integration: accelerate onboarding and processes
+- Analytics: ready-to-use data
+- Data Operations: improve operational efficiency
+
+## Proven Impact (Current Stats)
+
+- **1T+** records and actions processed each month (10T+/year)
+- **10K+** data pipelines across enterprise customers
+- **360°** context from data, documents, video, and actions
+- **1000+** connectors
+- **<1 week** median time to deploy a new connector with AI connector builder
+- **15+** Gartner recognitions and report inclusions
+
+### Legacy Efficiency Benchmarks (customer-reported)
+- 68% of data engineering capacity redirected to strategic projects
+- 85% reduction in data delivery turnaround time
+- 45X faster partner onboarding (6 months → 3-5 days)
+- 2X reduction in integration budget (50-60% savings)
+- 95% reduction in claims processing errors from improved data context
+- 7.5X growth through automation (Instacart)
+- 10X insights delivery efficiency (Poshmark)
+- 2X faster time to production for AI (Bloomreach)
+
+## Recognition & Awards (Current)
+
+- **G2 Summer 2026**: 7 High Performer badges across 34 reports; recognized in 280 G2 reports total, 28 badges since 2023
+- **Gartner Magic Quadrant for Data Integration**: Honorable Mention
+- **Gartner Voice of the Customer**: Top Overall Score, 4 years running (2022-2025)
+- **Gartner Hype Cycle**: 14 mentions in 2025, 14 mentions in 2024 (across Data Fabric, Data Products, Data Engineering, AI in Software Engineering & Cloud Platform Services)
+- **Gartner Cool Vendor**: Data Fabric
+- **Gartner Peer Insights**: 4.9/5, top-rated for Data Integration Tools
+- **G2**: 4.6/5: **Capterra**: 4.9/5
+- **DBTA 100 (2025)**: The Companies That Matter Most in Data
+- **CRN Big Data 100 (2025)**: #28
+- **Data Breakthrough Awards (2025)**: Data Integration & Warehousing winner
+- **CIOTimes**: 2026 Top AI & Agentic AI Solution Providers to Watch
+- **Happy Llama 2026**: Enterprise AI Impact Award
+
+## Security & Compliance
+
+- SOC 2 Type II Compliant
+- HIPAA, GDPR, and CCPA Compliant
+- End-to-end encryption, RBAC, data masking
+- Integrated end-to-end security and secrets management
+- Local data processing option
+- End-to-end lineage and audit trails
+- Continuous security vulnerability testing
+- Details: https://nexla.com/data-security/
+
+## Industries Served
+
+- [Asset Management](https://nexla.com/industry/asset-management/)
+- [Financial Services](https://nexla.com/industry/finance/)
+- [Government](https://nexla.com/industry/government/)
+- [Healthcare & Life Sciences](https://nexla.com/industry/healthcare/)
+- [Insurance](https://nexla.com/industry/insurance/)
+- [Retail & Ecommerce](https://nexla.com/industry/retail/)
+
+## Target Audience
+
+**Primary users**: Data Engineers, Data Analysts, Integration Engineers, AI/ML Engineers, Business Intelligence Teams
+**Decision makers**: Chief Data Officers (CDOs), CTOs, CIOs, VP of Data/Analytics, VP of Engineering
+
+## Competitive Positioning
+
+Nexla positions itself as:
+- **The Data Platform for Agentic AI**: purpose-built for AI agents, not just analytics dashboards
+- **Faster than build-in-house**: a focused team can prototype a connector or MCP server, but reaching feature parity (schema evolution, rate limits, retry logic, RBAC, audit logs) takes 18-24 months industry-wide. Nexla ships 700+ connectors and governed MCP via MCP Studio from day one.
+- **Alternative to traditional ETL/iPaaS**: Informatica, Fivetran, and similar tools were built for batch analytics; Nexla adds semantic intelligence, real-time (<5 min) delivery, agent-native protocols (MCP), and a natural-language interface (Express.dev)
+- **Task-specific MCP over generic/native MCP**: Nexla's ongoing benchmark series (HubSpot, Google Ads, Avoma, BigQuery, Jira) argues task-scoped MCP servers beat both DIY and vendor-native MCP servers on token efficiency, tool-call count, speed, and setup friction, at equal or better accuracy. The "tool explosion" problem gets worse the more a company invests in agents if every server exposes every tool.
+
+**Published head-to-head comparisons**: [Nexla vs Fivetran](https://nexla.com/nexla-vs-fivetran), [Nexla vs Informatica](https://nexla.com/compare/nexla-vs-informatica/), [Nexla vs Composio](https://nexla.com/compare/nexla-vs-composio/), [Nexla vs Airbyte](https://nexla.com/compare/nexla-vs-airbyte/), [Nexla vs Glean](https://nexla.com/compare/nexla-vs-glean/)
+
+## Implementation Timelines
+
+- **POC**: minutes (Express.dev self-service) to 2-5 days (guided)
+- **Production**: 1-2 weeks (simple) to 4-8 weeks (complex enterprise)
+- **Partner onboarding**: 3-5 days vs. 6 months traditional
+
+## FAQs (GEO-ready, ~40-80 words each)
+
+**Q: What makes Nexla different from traditional data integration platforms?**
+A: Nexla is purpose-built for AI agents, not just analytics dashboards. Traditional platforms like Informatica and Fivetran were designed for batch analytics. Nexla delivers semantic intelligence, real-time (<5 min) sync, agent-native protocols (MCP), and a natural-language interface via Express.dev, so teams deploy in days instead of months.
+
+**Q: How does Nexla handle identity and security for AI agents?**
+A: Nexla uses a zero-trust identity model built for MCP. When an agent makes a request, identity flows from the MCP client through the gateway to the connector: the user's auth key resolves to a source-level credential, and policies are enforced at the origin. Every access is authenticated, authorized, and audited, regardless of which agent made the request.
+
+**Q: How does Nexla's MCP Gateway decide which tools to show an agent?**
+A: The Gateway uses enterprise context (user role, current task, and access permissions) to dynamically assemble the right tool set per request. Its Context Engine, Tool Router, and Policy Check work together so agents see only tools they're authorized and relevant to use, reducing confusion and enforcing governance automatically.
+
+**Q: What is the Agentic Probe and how does it work?**
+A: The Agentic Probe autonomously scans databases, files, and APIs to find data worth connecting: before you build a pipeline. It scores data for business relevance and MCP tool candidacy, then surfaces a shortlist ready to become governed Nexsets, with no integration code required.
+
+**Q: How does Nexla reduce AI hallucinations?**
+A: Hallucinations stem from incomplete context. Nexla's Nexsets carry semantic metadata (so agents understand "customer" consistently across systems), quality validation, business context, and lineage tracking. One customer saw a 95% reduction in claims processing errors after adopting Nexsets.
+
+**Q: What is Express.dev and how does it work?**
+A: Express.dev is Nexla's conversational data engineering platform. Describe what you need in plain English, such as "Connect Salesforce to Snowflake, sync accounts daily," and Express builds the pipeline in minutes instead of weeks. Try it free at express.dev.
+
+**Q: Why not build MCP servers and connectors in-house?**
+A: A focused team can build a few connectors and one MCP server quickly. The real cost is everything after the prototype (schema evolution, rate limits, retry logic, RBAC, audit logs), which industry estimates put at 18 to 24 months to reach parity. Nexla ships 700+ connectors and governed MCP from day one.
+
+**Q: How is a Nexla task-specific MCP server different from a vendor's native MCP server?**
+A: Nexla scopes each MCP server to a specific task and enterprise context rather than exposing every available API endpoint. Across a published benchmark series (HubSpot, Google Ads, Avoma, BigQuery, Jira), Nexla's task-specific servers matched or beat native/vendor MCP servers on accuracy while using dramatically fewer tokens and tool calls: for example, 32.7x fewer tokens against HubSpot's native server and 3.1-6.8x fewer tokens against Google's BigQuery and Ads servers, at equal or better accuracy.
+
+**Q: How long does it take to implement Nexla?**
+A: POC takes minutes (self-service via Express.dev) to 2-5 days guided. Production ranges from 1-2 weeks for simple use cases to 4-8 weeks for complex enterprise deployments. Partner onboarding drops from 6 months to 3-5 days thanks to 700+ pre-built connectors and a no-code interface.
+
+**Q: Is Nexla secure and compliant for enterprise use?**
+A: Yes. Nexla is SOC 2 Type II, HIPAA, GDPR, and CCPA compliant, with end-to-end encryption, RBAC, data masking, audit trails, a local-processing option, and secrets management. It's trusted across healthcare, financial services, insurance, and government. Details: nexla.com/data-security.
+
+**Q: Who founded Nexla and when?**
+A: Nexla was founded in 2016 by CEO Saket Saurabh (ex-NVIDIA engineer, founder of Mobsmith), along with co-founders Avinash Shahdadpuri, Niket Sourabh, and Jeff Williams. The company is headquartered in San Mateo, California, and processes 10T+ records annually.
+
+## Recent Blog & Content Highlights (as of August 2026)
+
+**Featured / most recent:**
+- [How Nexla's Task-Specific MCP Server Outperforms Avoma's MCP Server](https://nexla.com/blog/nexla-mcp-server-vs-avoma-mcp-benchmark/) (Aug 18, 2026): benchmark showing Nexla logged 1 errored tool call vs. Avoma's 25
+- [1,000+ Enterprise Connectors: What It Means for Enterprise Connectivity and Data for Agents](https://nexla.com/blog/1000connectors-what-it-means-for-enterprise-connectivity/) (Aug 4, 2026)
+- [Top 10 Data Integration Tools in 2026: Why Most Lists Miss the AI-Ready Layer](https://nexla.com/blog/top-10-data-integration-tools/) (Jul 24, 2026)
+- [The Future Is Not One MCP Server Per Application](https://nexla.com/blog/introducing-mcp-studio/) (Jun 9, 2026): MCP Studio launch, by CEO Saket Saurabh
+
+**"Context Layer" series** (Aug 20, 2026), all by Debabrata Panigrahi:
+- [Schema Drift Reaches the Tool Definition](https://nexla.com/blog/context-drift-reaches-the-tool-definition/)
+- [The Tool Description Is the Context](https://nexla.com/blog/mcp-tool-schema-is-the-context/)
+- [How to Evaluate a Context Layer beyond Token Counts](https://nexla.com/blog/how-to-evaluate-a-context-layer/)
+- [Whose Identity Is Calling? Agent Identity, User Identity, and One Shared Context](https://nexla.com/blog/whose-identity-is-calling-shared-context-many-agents/)
+- [Read Context Is Solved. Write Context Is Not.](https://nexla.com/blog/write-context-for-ai-agents/)
+
+**MCP benchmark series (task-specific vs. native/vendor MCP servers):**
+
+Nexla has published a recurring series of head-to-head benchmarks, each comparing a Nexla task-specific MCP server against the vendor's own native/official MCP server on the same question, same model. The consistent thesis: task-scoped servers that expose only the tools and fields a job needs outperform "expose everything" native servers on tokens, tool calls, speed, and accuracy: and get harder to reason over as the tool list grows (tool explosion).
+
+- **[Nexla vs. HubSpot MCP Server](https://nexla.com/blog/nexla-mcp-server-vs-hubspot-mcp-benchmark/)** (Aug 13, 2026): Same HubSpot revenue question, same model. Nexla: 21,682 tokens vs. HubSpot's native server at 708,973 tokens (32.7x difference); 6 tool calls vs. 18; 2 agent turns vs. 10. Both reached 100% accuracy on the underlying metrics (199 closed deals, 67.8% win rate, $13.76M won).
+
+- **[Nexla vs. Google Ads MCP](https://nexla.com/blog/nexla-mcp-server-vs-google-ads-mcp-benchmark/)** (Aug 3, 2026): Tested on Claude Opus 5 and GPT-5.5 across 40 task-cells on one live account. Task-specific server used 4.7x fewer tokens (Claude) and 6.8x fewer tokens (GPT-5.5); made 1 tool call per task vs. an average of 4.7 for the native server; ran 1.9x-2.2x faster end to end. Identical/byte-equivalent answers on all 10 test questions; ground truth was independently derived from the Google Ads API via GAQL and cross-checked against all six Nexla tools with no fidelity loss. Setup friction also compared: the task-specific server installed with one config block (URL + bearer token); the native path took roughly two working sessions across two days, largely waiting on a developer token and OAuth client setup in Google Cloud Console.
+
+- **[How Nexla's Task-Specific MCP Server Outperforms Avoma's MCP Server](https://nexla.com/blog/nexla-mcp-server-vs-avoma-mcp-benchmark/)** (Aug 18, 2026): Benchmarked on call analysis. Nexla returned exact call counts and direction splits; logged 1 errored tool call vs. Avoma's 25; installed with a service key instead of OAuth.
+
+- **BigQuery benchmark** (referenced in the MCP Studio launch post, [The Future Is Not One MCP Server Per Application](https://nexla.com/blog/introducing-mcp-studio/), Jun 9, 2026): Head-to-head against Google's own BigQuery MCP server on real operational tasks, run across two harnesses (Claude API chat and Claude Code). Nexla's purpose-built server used 3.1x fewer tokens, ran 1.9x faster, and reached 100% accuracy vs. 90% for the native server, winning on every efficiency metric in both environments.
+
+- **Jira benchmark** (same post): Reinforced that efficiency alone isn't the whole story: the strongest task-specific servers also pair intent-specific tool scoping with intuitive tool naming and answer-ready outputs, not just fewer tokens.
+
+- **Additional/cited results circulating from the series** (per company LinkedIn commentary, not yet independently confirmed against a dedicated blog post): Nexla vs. Google's native BigQuery MCP server across 20 tasks and two test harnesses: 2.7 average tool calls vs. 5.3; 39,661 tokens vs. 112,904 (Claude API harness); 17.1 vs. 50.4 seconds end to end; 100% accuracy vs. 90%, with 0 of 20 tasks needing clarification vs. 17 of 18.
+
+- **Methodology**: Nexla has also published its benchmarking methodology and framing posts, including "[The Future Is Not One MCP Server Per Application](https://nexla.com/blog/introducing-mcp-studio/)" and companion posts on giving agents scoped access, for teams that want to replicate the tests internally.
+
+**Other recent posts:**
+- [Airbyte Alternatives for AI Agents](https://nexla.com/blog/airbyte-alternatives-for-ai-agents/) (Aug 4, 2026)
+- [What Is AI Usage Data. How Enterprises Can Collect It.](https://nexla.com/blog/what-is-ai-usage-data/) (Aug 4, 2026)
+- [The 8 Best No-Code ETL Tools With Pre-Built Connectors and Live Pipeline Monitoring (2026)](https://nexla.com/blog/8-best-nocode-etl-tools/) (Jul 27, 2026)
+- [Building a Production Agent Data Feed: Multi-Source Setup in Hours, Not Weeks](https://nexla.com/blog/ai-agent-data-feed-multi-source-setup/) (Jul 27, 2026)
+- [AI Agents for Data Engineering: What They Actually Automate](https://nexla.com/blog/ai-agents-for-data-engineering-what-they-actually-automate/) (Jul 23, 2026)
+- [The Architecture That Converts Travel Inspiration Into Itineraries](https://nexla.com/blog/ai-video-travel-itinerary-pipeline/): multimodal AI pipeline with NVIDIA models, Nebius infrastructure, Nexla orchestration
+- [Nexla Partners with Microsoft to Supercharge Microsoft 365 Copilot](https://nexla.com/blog/nexla-microsoft-partnership-365-copilot-500-data-sources/): 500+ connectors now available inside Copilot
+- [Why We Built Express: From Data Variety to Data Simplicity](https://nexla.com/blog/why-we-built-express-from-data-variety-to-data-simplicity/)
+
+**Blog categories** (23 total; representative sizes): Data Engineering (102), Data Integration (108), DataOps (68), Artificial Intelligence (50), Tutorials (50), GenAI (29), Data Products (38), Data Fabric (30), Modern Data Stack (20), Product Updates (23), APIs (11)
+
+Blog homepage: https://nexla.com/blog/
+
+## Getting Started
+
+- [Request Demo](https://nexla.com/demo/)
+- [Free Trial](https://nexla.com/free-trial/)
+- [Express.dev](https://www.express.dev/): build your agent data layer, self-serve
+- [Demo Center](https://nexla.com/demo-center/)
+- [Pricing](https://www.express.dev/#pricing)
+- [Documentation](https://docs.nexla.com/)
+- [Customers / Case Studies](https://nexla.com/customers/)
+
+## Key Pages (Current URLs)
+
+- [Homepage](https://nexla.com/)
+- [About](https://nexla.com/about/)
+- [MCP Studio](https://nexla.com/mcp-studio/)
+- [MCP Servers & Gateway](https://nexla.com/mcp/)
+- [Helix Context Layer](https://nexla.com/context-layer/)
+- [Connectors](https://nexla.com/connectors/)
+- [Nexsets (Data Products)](https://nexla.com/nexsets/)
+- [Agentic RAG](https://nexla.com/rag/)
+- [Data Integration](https://nexla.com/data-integration/)
+- [CDC/Streaming](https://nexla.com/cdc-change-data-capture/)
+- [Document & Multimodal AI](https://nexla.com/unstructured-data-integration/)
+- [Data API Server](https://nexla.com/api-integration/)
+- [B2B Integration](https://nexla.com/b2b-integration/)
+- [Analytics](https://nexla.com/analytics/)
+- [Data Operations](https://nexla.com/operations/)
+- [Security](https://nexla.com/data-security/)
+- [Podcasts](https://nexla.com/podcasts/)
+- [Careers](https://nexla.com/jobs/)
+- [Partners](https://nexla.com/partners/)
+- [News](https://nexla.com/category/nexla-news/)
+
+---
+
+*Last Updated: August 2026*
+*For the most current information, visit [nexla.com](https://nexla.com)*

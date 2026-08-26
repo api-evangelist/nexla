@@ -1,0 +1,42 @@
+generated: '2026-08-26'
+method: searched
+source: https://docs.nexla.com/dev-guides/nexla-cli
+name: Nexla CLI
+binary: nexla
+docs: https://docs.nexla.com/dev-guides/nexla-cli
+repository: https://github.com/nexla-opensource/nexla-agent-cli
+requirements: Python 3 development environment (the PyPI distribution); the published binary requires no Python runtime
+install:
+- method: pip
+  command: pip3 install nexla-cli
+  registry: https://pypi.org/project/nexla-cli/
+  version: 0.3.1
+- method: npm
+  command: npm install -g @nexla/nexla-cli
+  registry: https://www.npmjs.com/package/@nexla/nexla-cli
+  version: 0.3.1
+verify: nexla --version
+uninstall: pip3 uninstall nexla
+authentication:
+  model: >-
+    The CLI authenticates with the same Bearer session access token as the REST API. The docs direct
+    users to obtain the root path (the Nexla UI instance URL) and an access token from the
+    Authentication section, then run environment configuration.
+  docs: https://docs.nexla.com/dev-guides/authentication/overview
+commands:
+- group: env
+  description: Environment (Nexla instance) management
+  subcommands:
+  - name: env configure
+    description: >-
+      Configure a new environment. "Enter the new environment Name. This is simply the URL to your Nexla
+      UI instance without the domain protocol."
+  - name: env switch
+    description: List available configured environments and switch the active one.
+notes: >-
+  The published CLI guide documents the install/verify/uninstall path and the `env` command group only.
+  Resource-level commands (flows, sources, nexsets, credentials) are exercised in the tutorials — for
+  example the flow-migration tutorial clones a development flow into production — but the docs do not
+  publish a complete command reference, so no further commands are recorded here rather than guessed.
+related_docs:
+- https://docs.nexla.com/tutorials/flow-migration

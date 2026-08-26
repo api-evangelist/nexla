@@ -1,0 +1,1 @@
+{"resource":"https://api-genai.nexla.io/mcp/oauth/google","authorization_servers":["https://api-genai.nexla.io/mcp/oauth/google"],"scopes_supported":["openid","email","profile"],"bearer_methods_supported":["header"]}

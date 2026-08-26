@@ -1,0 +1,66 @@
+generated: '2026-08-26'
+method: searched
+source: https://nexla.com/pricing/
+plan_count: 3
+currency: null
+billing_period: null
+pricing_published: false
+note: >-
+  Nexla publishes three named capability tiers but NO prices, quotas or overage rates. The page reads
+  "Simple pay as you go, or a custom enterprise plan? Talk to Nexla Sales and find out what will work
+  best for you." Every tier routes to a sales conversation, so plan price, currency, billing period,
+  included quota and overage are all recorded as null rather than guessed. The one numeric entitlement
+  Nexla does publish is the Pro user cap.
+plans:
+- name: Pro
+  price: null
+  currency: null
+  period: null
+  quota: 'up to 5 users'
+  overage: null
+  limits:
+  - '100+ API connectors, data sources and destinations'
+  features:
+  - Core data integration features
+  - Web and email support
+- name: Team
+  price: null
+  currency: null
+  period: null
+  quota: null
+  overage: null
+  limits: []
+  features:
+  - Everything in Pro
+  - Advanced REST API with custom authentication
+  - Team management and advanced permissions
+  - Audit logs
+  - Error quarantine
+  - Optional Slack support
+- name: Enterprise
+  price: null
+  currency: null
+  period: null
+  quota: null
+  overage: null
+  limits: []
+  features:
+  - Everything in Team
+  - SOAP API support
+  - Real-time data processing
+  - Private VPC deployment (AWS, GCP, Azure, on-premise)
+  - SSO with OIDC and SAML 2.0
+  - Dedicated customer success manager
+  - Phone, video and onsite training support
+alternate_entry:
+  name: Express.dev
+  url: https://www.express.dev/
+  note: >-
+    nexla.com/free-trial/ 302s to express.dev — Nexla's self-serve, prompt-driven product is the free-trial
+    path rather than a self-serve tier on the main pricing page.
+evidence:
+- url: https://nexla.com/pricing/
+  status: 200
+- url: https://nexla.com/free-trial/
+  status: 200
+  note: redirects to https://www.express.dev/

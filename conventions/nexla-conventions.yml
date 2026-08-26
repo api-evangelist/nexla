@@ -1,0 +1,151 @@
+generated: '2026-08-26'
+method: searched
+source: >-
+  https://docs.nexla.com/dev-guides/authentication/overview, /dev-guides/pagination,
+  /dev-guides/authentication/error-handling, /dev-guides/authentication/rate-limiting and
+  /reference/python-sdk/rate-limits-idempotency, cross-derived from openapi/nexla-rest-api-openapi.yml
+authentication:
+  style: Bearer session token (JWT), with per-resource API keys as an alternative
+  primary_header: 'Authorization: Bearer <access-token>'
+  accept_header: 'Accept: application/vnd.nexla.api.v1+json'
+  session_token_lifetime: '~1 hour (configurable)'
+  service_key_lifetime: 'permanent (until rotated or deactivated)'
+  alternatives:
+  - 'Basic <api-key> in the Authorization header (per-resource key)'
+  - '?api_key=<api-key> query parameter (per-resource key)'
+  detail: authentication/nexla-authentication.yml
+  docs: https://docs.nexla.com/dev-guides/authentication/overview
+idempotency:
+  supported: false
+  header: null
+  scope: null
+  retention: null
+  evidence: >-
+    The string "idempoten" appears ZERO times in either published OpenAPI (274-op REST, 131-op GenAI).
+    The Python SDK reference addresses idempotency only as HTTP method semantics — "GET, PUT, DELETE:
+    idempotent; repeating the same call produces the same state (standard REST semantics)" — and directs
+    callers to "use natural identifiers to avoid duplicate POSTs" by looking up before creating, with
+    duplicates surfacing as 409 Conflict. There is no idempotency-key mechanism.
+  docs: https://docs.nexla.com/reference/python-sdk/rate-limits-idempotency
+  agent_impact: >-
+    An agent retrying a failed POST against Nexla has no server-side de-duplication. It must read before
+    it writes. This is why no `Idempotency` pointer is emitted in apis.yml — the artifact records the
+    absence honestly rather than claiming a capability Nexla does not ship.
+pagination:
+  style: page-number
+  params:
+  - name: page
+    description: Page number to return.
+    example: 'page=2'
+  - name: per_page
+    description: Number of objects per page.
+    example: 'per_page=10'
+  defaults: null
+  maximum: null
+  response_headers:
+  - name: Link
+    description: 'RFC 5988 links with rel="Previous" and rel="Next". Absence of Previous means first page; absence of Next means last page.'
+  - name: X-Total-Count
+    description: Total number of matching objects.
+  - name: X-Current-Page
+    description: Current page number.
+  - name: X-Page-Count
+    description: Total number of pages.
+  applies_to: 'All Nexla API listing endpoints'
+  docs: https://docs.nexla.com/dev-guides/pagination
+field_expansion:
+  supported: partial
+  note: >-
+    Several list endpoints accept an `expand` query parameter to return nested resource objects rather
+    than ids. Not documented as a cross-cutting convention page, so recorded as partial.
+request_tracing:
+  header: x-request-id
+  observed: 'returned on a live unauthenticated 401 from https://dataops.nexla.io/nexla-api/teams'
+  envelope_field: request_id
+  note: Present in responses and mirrored into the error envelope, but not documented as a contract.
+versioning:
+  scheme: media-type versioning
+  current: v1
+  mechanism: 'Accept: application/vnd.nexla.api.v1+json'
+  spec_version: 'info.version = v1 in openapi/nexla-rest-api-openapi.yml'
+  path_versioning: >-
+    The GenAI/MCPaaS API uses path versioning instead — /v1/tools, /v1/toolsets, /v2/agentic-rag,
+    /v2/nexsets/{nexset_id}/filters — and is currently at service version v0.2.3.3-combined.
+error_envelope:
+  format: custom JSON (not RFC 9457)
+  fields: [error, error_description, error_code, timestamp, request_id, details]
+  detail: errors/nexla-problem-types.yml
+rate_limit_signaling:
+  headers: []
+  status: 429
+  note: >-
+    No rate-limit response headers are documented. See rate-limits/nexla-rate-limits.yml — this is a real
+    gap in the runtime signal an agent can read.
+retries:
+  server_guidance: 'Retry with exponential backoff and circuit breaker patterns for 5xx'
+  sdk_behaviour: 'urllib3.Retry, backoff_factor=0.5, retry on 429/502/503/504 across all methods'
+reversibility:
+  grade: documented
+  credit_basis: >-
+    Reversal operations exist and are named in the contract, but Nexla publishes NO window for any of
+    them — no restore-after-delete period, no undo horizon. Per the 0.12.0 rule that is `documented`
+    (0.4), not `verified` (1.0). No window is asserted here because the docs state none.
+  write_surface: true
+  surfaces:
+  - action: Activate / pause a flow
+    reversal: full
+    forward_operations: [flow_activate_with_flow_id, flow_activate_with_resource_id]
+    reversal_operations: [flow_pause_with_flow_id, flow_pause_with_resource_id]
+    window: null
+    note: Activation and pause are a symmetric pair; either direction can be taken back at any time.
+  - action: Activate / pause a data source
+    reversal: full
+    forward_operations: [activate_source]
+    reversal_operations: [pause_source]
+    window: null
+  - action: Activate / pause a Nexset
+    reversal: full
+    forward_operations: [activate_nexset]
+    reversal_operations: [pause_nexset]
+    window: null
+  - action: Activate / pause a data sink
+    reversal: full
+    forward_operations: [activate_data_sink]
+    reversal_operations: [pause_data_sink]
+    window: null
+  - action: Activate / pause a custom runtime
+    reversal: full
+    forward_operations: [activate_runtime]
+    reversal_operations: [pause_runtime]
+    window: null
+  - action: Approval request
+    reversal: partial
+    forward_operations: [approve_approval_request]
+    reversal_operations: [reject_approval_request]
+    window: null
+    note: Approve and reject are alternative terminal decisions, not an undo of one another.
+  - action: Delete a resource (flow, source, Nexset, sink, credential, data map, transform, project, team)
+    reversal: none
+    forward_operations: [delete_flow, delete_data_source, delete_nexset, delete_data_sink, delete_data_credential, delete_data_map, delete_reusable_record_transform, delete_project, delete_team]
+    reversal_operations: []
+    window: null
+    note: >-
+      44 DELETE operations in the REST contract and NOT ONE restore, undelete or trash endpoint. An agent
+      deleting a Nexla resource cannot take it back through the API. Treat every DELETE as terminal.
+  - action: Toolset / export lifecycle (GenAI API)
+    reversal: partial
+    forward_operations: [activate_toolset_v1_toolsets__tool_set_id__activate_post, activate_export_v1_toolsets__tool_set_id__exports__export_id__activate_post]
+    reversal_operations: [pause_toolset_v1_toolsets__tool_set_id__pause_post, pause_export_v1_toolsets__tool_set_id__exports__export_id__pause_post, retire_export_v1_toolsets__tool_set_id__exports__export_id__retire_post]
+    window: null
+    note: Activate/pause is reversible; retire is documented as terminal for an export.
+dry_run_mode:
+  supported: false
+  note: >-
+    No dry-run, preview or validate-only flag is declared on any write operation in either contract.
+    Nexset Designer previews transformations interactively in the UI, which is not an API capability.
+cross_links:
+  errors: errors/nexla-problem-types.yml
+  lifecycle: lifecycle/nexla-lifecycle.yml
+  authentication: authentication/nexla-authentication.yml
+  rate_limits: rate-limits/nexla-rate-limits.yml
+  data_model: data-model/nexla-data-model.yml

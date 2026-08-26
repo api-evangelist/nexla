@@ -1,0 +1,145 @@
+generated: '2026-08-26'
+method: derived
+source: >-
+  openapi/nexla-genai-mcpaas-openapi.json (harvested from https://api-genai.nexla.io/openapi.json) bound
+  against the published MCP tool surface in https://docs.nexla.com/dev-guides/mcp-tools/gateway-meta-tools
+  and https://docs.nexla.com/user-guides/mcp-tools/gateway/meta-tools
+surfaces:
+  openapi:
+  - file: openapi/nexla-rest-api-openapi.yml
+    base_url: https://dataops.nexla.io/nexla-api
+    operations: 274
+    gated: false
+  - file: openapi/nexla-genai-mcpaas-openapi.json
+    base_url: https://api-genai.nexla.io
+    operations: 131
+    gated: false
+  graphql: null
+  mcp:
+    url: https://api-genai.nexla.io/mcp/service_key/{server_key}
+    gated: true
+    note: >-
+      A live tools/list needs an authenticated service key against a deployed server. The FIXED part of
+      the surface — the five gateway meta-tools — is published in the docs and mapped below with high
+      confidence. The VARIABLE part is per-deployment: every Tool an operator mints from a Nexset becomes
+      an MCP tool whose name and inputSchema are generated at Export time, so there is no static tool list
+      to crosswalk and none is invented here.
+crosswalk:
+- tool: search_tools
+  category: gateway-meta
+  rest:
+  - semantic_search_gateway_tools_v1_toolsets__tool_set_id__gateway_tools_search_post
+  binding: direct
+  confidence: high
+  note: >-
+    POST /v1/toolsets/{tool_set_id}/gateway/tools:search — "Semantic Search Gateway Tools". The meta-tool
+    is the agent-facing projection of the same semantic search, with the toolset bound by the server_key.
+- tool: describe_tool
+  category: gateway-meta
+  rest:
+  - get_gateway_tool_v1_toolsets__tool_set_id__gateway_tools__tool_name__get
+  - get_tool_definition_v1_tools__tool_id__definition_get
+  binding: direct
+  confidence: high
+  note: >-
+    GET /v1/toolsets/{tool_set_id}/gateway/tools/{tool_name} keys on the same tool_name the meta-tool
+    takes; /v1/tools/{tool_id}/definition returns the schema for a first-party (non-gateway) tool.
+- tool: call_tool
+  category: gateway-meta
+  rest:
+  - execute_tool_v1_tools__tool_id__execute_post
+  binding: semantic
+  confidence: medium
+  note: >-
+    POST /v1/tools/{tool_id}:execute is the REST execution path. The meta-tool addresses by tool_name
+    within the bound toolset rather than by tool_id, so the binding is by semantics, not identifier.
+- tool: list_nexla_vendors_with_available_credentials
+  category: credentials
+  rest:
+  - list_credential_mappings_v1_toolsets__tool_set_id__credential_mappings_get
+  binding: partial
+  confidence: medium
+  note: >-
+    GET /v1/toolsets/{tool_set_id}/credential-mappings lists which credentials a toolset's tools are
+    mapped to. The meta-tool answers the caller-scoped question ("which vendor credentials can I use"),
+    which is a filtered projection of that mapping plus the caller's identity — not an exact 1:1 operation.
+- tool: create_nexla_credential
+  category: credentials
+  rest: []
+  binding: none
+  confidence: high
+  note: >-
+    Returns a secure hand-off LINK for a human to create a credential. Deliberately has no REST equivalent
+    on this control plane — credential creation is POST /data_credentials on the Nexla REST API
+    (openapi/nexla-rest-api-openapi.yml, operationId create_data_credential), behind an interactive flow.
+mcp_only:
+- tool: create_nexla_credential
+  reason: >-
+    Human-in-the-loop credential creation. The MCP tool returns a link rather than performing the write,
+    so no equivalent GenAI-API operation exists by design.
+- tool: '<per-deployment Nexset tools>'
+  reason: >-
+    Tools minted by POST /v1/tools:from_nexset are named and schema'd at Export time from the source
+    Nexset. They exist only inside a deployed server and cannot be enumerated from a public contract.
+rest_only:
+- area: RAG query
+  operations:
+  - v2_agentic_rag_v2_agentic_rag_post
+  - query_query_post
+  - private_query_query_post
+  - bulk_query_bulk_query_post
+  - search_nexsets_search_nexsets_get
+  - list_models_list_models_get
+  reason: Agentic RAG query surface is called over HTTP by applications, not exposed as gateway meta-tools.
+- area: tool + toolset lifecycle
+  operations:
+  - create_tool_from_nexset_v1_tools_from_nexset_post
+  - list_tools_v1_tools_get
+  - activate_tool_v1_tools__tool_id__activate_post
+  - pause_tool_v1_tools__tool_id__pause_post
+  - reconcile_tools_v1_tools_reconcile_post
+  - create_toolset_v1_toolsets_post
+  - clone_toolset_v1_toolsets__tool_set_id__clone_post
+  - sync_toolset_v1_toolsets__tool_set_id__sync_post
+  - create_export_v1_toolsets__tool_set_id__exports_post
+  - retire_export_v1_toolsets__tool_set_id__exports__export_id__retire_post
+  reason: >-
+    Administrative control plane. Deliberately NOT agent-callable — this is the governance boundary
+    Nexla draws between what an agent may invoke and what an operator must authorise.
+- area: gateway administration
+  operations:
+  - create_ext_mcp_server_v1_toolsets__tool_set_id__gateway_mcp_servers_post
+  - sync_ext_mcp_server_v1_toolsets__tool_set_id__gateway_mcp_servers__server_id__sync_post
+  - update_ext_mcp_server_tool_filter_v1_toolsets__tool_set_id__gateway_mcp_servers__server_id__tool_filter_put
+  - trigger_vendor_sync_v1_gateway_sync_vendor_tools_post
+  reason: Registering and filtering external MCP servers is an operator action.
+- area: audit + sessions
+  operations:
+  - get_receipt_v1_receipts__receipt_id__get
+  - query_receipts_v1_receipts_get
+  - list_sessions_v1_sessions_get
+  - terminate_session_v1_sessions__session_id__terminate_post
+  - get_server_activity_v1_mcpaas_servers__server_key__activity_get
+  reason: >-
+    Every MCP tool call writes a receipt. The receipts and session APIs are the read-side audit trail
+    and are intentionally outside the agent's own tool surface.
+- area: nexset registration for MCP
+  operations:
+  - register-nexset
+  - get-valid-nexsets-for-user
+  - list-registered-nexsets-for-user
+  - delete-registered-nexset
+  - clear-registered-nexsets-for-user
+  reason: >-
+    These five operations carry the tag "MCP Tools" in the GenAI spec and manage which Nexsets a user has
+    registered for MCP access. They are HTTP operations backing the MCP layer, not tools an agent lists.
+coverage:
+  mcp_tools_documented: 5
+  mcp_tools_mapped_to_rest: 4
+  mcp_only: 1
+  rest_operations_total: 405
+  rest_operations_not_exposed_as_tools: 401
+  note: >-
+    405 = 274 (Nexla REST API) + 131 (GenAI/MCPaaS). The very low tool:operation ratio is the product
+    design, not a gap: Nexla exposes five stable meta-tools plus per-deployment Nexset tools, rather
+    than projecting its whole REST surface into MCP.

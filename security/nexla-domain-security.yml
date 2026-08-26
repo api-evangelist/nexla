@@ -1,0 +1,44 @@
+generated: '2026-08-26'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: nexla.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov 20 04:09:39 2026 GMT
+  hsts: false
+- host: docs.nexla.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct 12 16:34:25 2026 GMT
+  hsts: true
+  hsts_max_age: 63072000
+- host: dataops.nexla.io
+  https: true
+  tls_version: TLSv1.2
+  cert_expires: Jan 21 23:59:59 2027 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: api-genai.nexla.io
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Jan 21 23:59:59 2027 GMT
+  hsts: false
+  note: Nexla GenAI / MCPaaS host — serves the public OpenAPI and the remote MCP endpoint. No HSTS.
+domains:
+- domain: nexla.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: quarantine
+- domain: nexla.io
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: false
+notes: 'Probed 2026-08-26 across every apis.yml baseURL host plus the docs host. Findings worth acting
+  on: nexla.com serves NO HSTS header, and api-genai.nexla.io — the host that serves the remote MCP endpoint
+  agents authenticate to with a permanent service key — serves no HSTS either. Neither nexla.com nor nexla.io
+  publishes a CAA record or has DNSSEC enabled. nexla.io has SPF but NO DMARC record at all, while nexla.com
+  has DMARC at p=quarantine.'

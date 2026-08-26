@@ -1,0 +1,60 @@
+generated: '2026-08-26'
+method: searched
+source: https://docs.nexla.com/dev-guides/authentication/rate-limiting
+limit_count: 1
+enforced_by_default: false
+headline: >-
+  "Currently, Nexla does not enforce strict rate limits on API usage." Throttling is applied selectively,
+  per user or per organization, in response to problematic usage patterns rather than as a standing quota.
+limits:
+- scope: per-user or per-organization (applied selectively by an administrator)
+  window: 1 second
+  limit: 1
+  burst: null
+  unit: requests
+  description: >-
+    "1 request per second (strict enforcement)" — the single numeric limit Nexla publishes. Applied when
+    throttling is turned on for a user or an entire organization; duration is set by a `throttle_until`
+    ISO 8601 timestamp.
+  source: https://docs.nexla.com/dev-guides/authentication/rate-limiting
+configuration_categories:
+  note: >-
+    Administrators can configure limits by operation category. The docs give illustrative ranges (for
+    example "Light operations: 50-500 requests per minute") and explicitly present them as typical value
+    ranges, NOT as enforced defaults, so they are not recorded as limits above.
+  categories:
+  - light
+  - medium
+  - high
+  - common
+response_signal:
+  status_on_exhaustion: 429
+  status_source: https://docs.nexla.com/dev-guides/authentication/error-handling
+  error_code: RATE_001
+  error_message: 'Rate limit exceeded — Too many requests in specified time period'
+  retry_after: >-
+    The rate-limiting page documents no response headers. The Python SDK reference states the SDK
+    "raises RateLimitError for HTTP 429 responses" and that "retry_after is populated from the
+    Retry-After header or JSON body when available", which is the only evidence that a Retry-After
+    signal is emitted — Nexla does not document the header contract itself.
+  retry_after_source: https://docs.nexla.com/reference/python-sdk/rate-limits-idempotency
+  headers: []
+  headers_note: >-
+    GAP. No X-RateLimit-* / RateLimit-* header family is documented anywhere in the Nexla docs, and the
+    OpenAPI declares no response headers on any of its 274 operations. An agent cannot read remaining
+    quota from a Nexla response; it can only react to a 429. This is the single most valuable
+    runtime-signal improvement available to Nexla.
+client_side:
+  sdk_retry: >-
+    The Python SDK enables urllib3.Retry with exponential backoff (backoff_factor=0.5) for transient
+    status codes 429, 502, 503 and 504 across GET/POST/PUT/DELETE/PATCH.
+  quota_introspection: client.metrics.get_rate_limits()
+  source: https://docs.nexla.com/reference/python-sdk/rate-limits-retries
+mcp_rate_limits:
+  docs: https://docs.nexla.com/dev-guides/mcp-tools/rate-limiting
+  note: The MCP Tools surface documents its own rate-limiting page separately from the REST API.
+evidence:
+- url: https://docs.nexla.com/dev-guides/authentication/rate-limiting
+  status: 200
+- url: https://docs.nexla.com/dev-guides/authentication/error-handling
+  status: 200

@@ -1,0 +1,121 @@
+generated: '2026-08-26'
+method: searched
+source: >-
+  https://nexla.com/data-security/, https://nexla.com/pricing/,
+  https://docs.nexla.com/dev-guides/authentication/overview and the two published OpenAPI contracts in
+  openapi/
+standards:
+- id: openapi
+  conforms: true
+  version: '3.1.0'
+  evidence: >-
+    Two OpenAPI 3.1.0 documents are published and parse: the 155-path / 274-operation Nexla Rest API at
+    https://docs.nexla.com/redocusaurus/plugin-redoc-0.yaml, and the 110-path / 131-operation
+    Nexla GenAI (RAG + MCPaaS) API at https://api-genai.nexla.io/openapi.json.
+- id: mcp
+  conforms: true
+  evidence: >-
+    Nexla ships a remote MCP server over the Streamable HTTP transport at
+    https://api-genai.nexla.io/mcp/service_key/{server_key}, plus an MCP Gateway that registers external
+    MCP servers. Probed 2026-08-26: the endpoint answers JSON-RPC 2.0. See mcp/nexla-mcp.yml.
+- id: rfc9728
+  name: OAuth 2.0 Protected Resource Metadata
+  conforms: true
+  evidence: >-
+    https://api-genai.nexla.io/.well-known/oauth-protected-resource returns 200 application/json with
+    resource, authorization_servers, scopes_supported [openid, email, profile] and
+    bearer_methods_supported [header]. Saved verbatim at well-known/nexla-oauth-protected-resource.json.
+- id: oauth2
+  conforms: true
+  evidence: >-
+    OAuth is the authentication path for MCP clients that cannot carry a custom header (ChatGPT), with
+    Google and Azure upstream callback bridges declared in the GenAI contract
+    (/mcp/auth/google/callback, /mcp/auth/azure/callback). The REST API itself is not OAuth — it uses
+    Bearer session tokens and per-resource API keys.
+  scope: partial
+- id: oidc
+  conforms: true
+  evidence: >-
+    Enterprise SSO with OIDC and SAML 2.0 is a published Enterprise-tier capability, and the REST
+    contract exposes org authentication configuration with oidc_domain, oidc_keys_url_key,
+    oidc_id_claims, oidc_access_claims and oidc_token_verify_url fields
+    (GET/PUT /orgs/{org_id}/auth_settings, /api_auth_configs).
+- id: saml2
+  conforms: true
+  evidence: 'SSO with SAML 2.0 named as an Enterprise-tier capability on https://nexla.com/pricing/.'
+- id: rfc5988
+  name: Web Linking (Link header pagination)
+  conforms: true
+  evidence: >-
+    All listing endpoints return a Link header carrying rel="Previous" and rel="Next", alongside
+    X-Total-Count, X-Current-Page and X-Page-Count. https://docs.nexla.com/dev-guides/pagination
+- id: rfc9457
+  name: Problem Details for HTTP APIs
+  conforms: false
+  evidence: >-
+    Errors use a custom JSON envelope (error, error_description, error_code, timestamp, request_id,
+    details); no application/problem+json is declared anywhere in either contract.
+- id: idempotency
+  conforms: false
+  evidence: >-
+    No idempotency key mechanism. "idempoten" appears zero times in either OpenAPI; the docs address
+    idempotency only as HTTP method semantics. See conventions/nexla-conventions.yml.
+- id: pagination
+  conforms: true
+  evidence: 'page / per_page with Link + X-Total-Count / X-Current-Page / X-Page-Count response headers.'
+- id: asyncapi
+  conforms: false
+  evidence: >-
+    No AsyncAPI document is published. An event surface DOES exist — two OpenAPI 3.1 `webhooks` entries
+    (send_one_record, send_many_records) plus a notifications/alerting subsystem — but it is described in
+    OpenAPI webhooks and prose, not AsyncAPI. See asyncapi/nexla-webhooks.yml.
+- id: scim
+  conforms: false
+  evidence: >-
+    No SCIM schema URN (urn:ietf:params:scim:schemas:*) and no /scim/v2 surface in either contract, even
+    though Nexla runs org/team/user provisioning with enterprise SSO. Zero matches for "scim" in the
+    274-operation REST spec. Recorded as a genuine miss, not a penalty.
+- id: odata
+  conforms: false
+  evidence: 'No $metadata surface and no OData query options. Single incidental string match only.'
+- id: openlineage
+  conforms: false
+  evidence: >-
+    Nexla exposes lineage and flow-run metadata through its own metrics/audit-log endpoints rather than
+    the OpenLineage event schema. No openlineage reference in either contract.
+domain_standard:
+  market: data integration / data engineering / AI data infrastructure
+  declared: false
+  candidates_probed:
+  - standard: SCIM 2.0 (RFC 7643/7644)
+    rationale: 'Nexla provisions users, teams and orgs and supports enterprise SSO — SCIM is the identity-provisioning standard for that market.'
+    found: false
+  - standard: OpenLineage
+    rationale: 'The de facto lineage event standard for data pipelines; Nexla tracks flow lineage.'
+    found: false
+  - standard: Open Data Contract Standard (Bitol/ODCS)
+    rationale: "Nexla's Nexset is a data-product abstraction; ODCS is the emerging data-product contract standard."
+    found: false
+  - standard: OData
+    rationale: 'Common query standard for data-serving APIs.'
+    found: false
+  - standard: CloudEvents
+    rationale: 'Standard event envelope for the streaming/CDC surface.'
+    found: false
+  verdict: >-
+    No domain standard is declared in either contract. The one standard Nexla's own contract DOES speak
+    natively is the agent-side pair MCP + RFC 9728, which is a cross-cutting agent standard rather than a
+    data-integration domain standard. REWARD-ONLY check: nothing is invented to fill the slot.
+compliance:
+  published: true
+  source: https://nexla.com/data-security/
+  certifications:
+  - SOC 2 Type II
+  - ISO 27001
+  - HIPAA
+  - GDPR
+  - CCPA
+  detail: security/nexla-trust-center.yml
+data_formats_supported:
+  note: 'Declared in the REST contract as ingestion/delivery formats, not as API conformance.'
+  formats: [JSON, CSV, XML, Avro, Parquet, ORC]

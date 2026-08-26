@@ -1,0 +1,102 @@
+generated: '2026-08-26'
+method: searched
+source: >-
+  https://docs.nexla.com/dev-guides/authentication/error-handling enriched with the 4xx response
+  inventory derived from openapi/nexla-rest-api-openapi.yml
+format: custom-json
+rfc9457: false
+format_note: >-
+  Nexla does NOT use RFC 9457 problem+json. Errors are a custom JSON envelope; only one operation in the
+  274-operation REST spec declares an application/json body for a 4xx at all, so the envelope below comes
+  from the documented error-handling reference rather than the contract.
+envelope:
+  media_type: application/json
+  fields:
+  - name: error
+    description: Machine-readable error type.
+  - name: error_description
+    description: Human-readable description.
+  - name: error_code
+    description: Specific code for programmatic handling.
+  - name: timestamp
+    description: When the error occurred.
+  - name: request_id
+    description: Unique identifier for request tracking. Mirrors the x-request-id response header observed on live 401s.
+  - name: details
+    description: Additional context-specific information.
+status_codes:
+- status: 400
+  meaning: Bad Request — invalid request format or parameters
+  remediation: 'Review request format and parameters'
+  spec_occurrences: 26
+- status: 401
+  meaning: Unauthorized — authentication failed or credentials invalid
+  remediation: 'Re-authenticate or refresh tokens'
+  spec_occurrences: 168
+- status: 403
+  meaning: Forbidden — valid credentials but insufficient permissions
+  remediation: 'Verify permissions or contact administrator'
+  spec_occurrences: 248
+- status: 404
+  meaning: Not Found — requested resource does not exist
+  remediation: 'Verify endpoint URL and resource existence'
+  spec_occurrences: 179
+- status: 409
+  meaning: Conflict — duplicate create attempt
+  remediation: 'Look up the resource by its natural identifier before POSTing again'
+  spec_occurrences: 0
+  source: https://docs.nexla.com/reference/python-sdk/rate-limits-idempotency
+  note: Mapped to ResourceConflictError by the Python SDK; not declared in the OpenAPI.
+- status: 429
+  meaning: Too Many Requests — rate limit exceeded
+  remediation: 'Implement rate limiting, wait before retrying'
+  spec_occurrences: 0
+- status: 500
+  meaning: Internal Server Error — server-side error
+  remediation: 'Wait and retry with exponential backoff; contact support if persistent'
+  spec_occurrences: 0
+problem_types:
+- code: AUTH_001
+  title: Unauthorized
+  detail: 'Invalid or expired access token'
+  status: 401
+  remediation: Refresh the token or re-authenticate.
+- code: AUTH_002
+  title: Invalid credentials
+  detail: 'Service key is invalid or has been revoked'
+  status: 401
+  remediation: Verify the service key and re-authenticate; rotate if compromised.
+- code: AUTH_003
+  title: Token expired
+  detail: 'Access token has expired'
+  status: 401
+  remediation: >-
+    Session tokens live ~1 hour. Exchange the service key for a fresh session token, or call
+    NexlaClient.refresh_access_token() in the Python SDK.
+- code: AUTH_004
+  title: Insufficient permissions
+  detail: 'User lacks required permissions'
+  status: 403
+  remediation: Verify organization membership and resource accessor grants, or contact an administrator.
+- code: RATE_001
+  title: Rate limit exceeded
+  detail: 'Too many requests in specified time period'
+  status: 429
+  remediation: Back off; honour Retry-After where present. See rate-limits/nexla-rate-limits.yml.
+- code: VAL_001
+  title: Validation failed
+  detail: 'Request validation issues with specific field details'
+  status: 400
+  remediation: Read `details` for the offending fields and correct the payload.
+gaps:
+- >-
+  403 is declared on 248 of 274 operations and 401 on 168, but only ONE operation declares a response
+  body schema for any 4xx. The error envelope is documented in prose and absent from the contract, so a
+  client generated from the OpenAPI alone cannot type its errors.
+- No 429 or 5xx responses are declared anywhere in the REST OpenAPI.
+evidence:
+- url: https://docs.nexla.com/dev-guides/authentication/error-handling
+  status: 200
+- url: https://dataops.nexla.io/nexla-api/teams
+  status: 401
+  note: 'live unauthenticated probe; returned x-request-id and an empty body'

@@ -1,0 +1,105 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Nexla REST API
+  version: 1.0.0
+extends: ../openapi/nexla-rest-api-openapi.yml
+x-generated: '2026-08-26'
+x-method: generated
+x-source: >-
+  Derived from the harvested Nexla Rest API (https://docs.nexla.com/redocusaurus/plugin-redoc-0.yaml) plus
+  the documented conventions in conventions/nexla-conventions.yml, errors/nexla-problem-types.yml,
+  rate-limits/nexla-rate-limits.yml and lifecycle/nexla-lifecycle.yml. The original spec is never mutated.
+actions:
+- target: $.info
+  description: >-
+    Record the concrete production base URL, the media-type version negotiation, the documented error
+    envelope and the absence of an idempotency mechanism, all of which live in the docs and not the contract.
+  update:
+    x-api-evangelist-notes:
+      production_base_url: https://dataops.nexla.io/nexla-api
+      accept_header: application/vnd.nexla.api.v1+json
+      error_envelope_documented_at: https://docs.nexla.com/dev-guides/authentication/error-handling
+      idempotency: none
+      reversibility: 'pause/activate are reversible; all 44 DELETE operations are terminal — no restore endpoint exists'
+- target: $.servers
+  description: >-
+    The published server is templated on {nexla-api-host} with default dataops.nexla.io/nexla-api, which
+    is correct for self-hosted and VPC deployments. Annotate the multi-tenant SaaS host explicitly so a
+    client that cannot resolve a variable still has a callable URL.
+  update:
+    x-api-evangelist-default-host: dataops.nexla.io/nexla-api
+    x-api-evangelist-host-note: >-
+      Enterprise customers run private-VPC and on-premise deployments on their own host; the variable is
+      correct and deliberately not replaced.
+- target: $.components.responses
+  description: >-
+    Add the documented error envelope as a reusable schema. 248 operations declare a 403 and 168 declare a
+    401, but only one declares a body — a generated client cannot type its errors today.
+  update:
+    ApiEvangelistNexlaError:
+      description: Documented Nexla error envelope (not RFC 9457).
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error: {type: string, description: Machine-readable error type.}
+              error_description: {type: string, description: Human-readable description.}
+              error_code: {type: string, description: 'Specific code, e.g. AUTH_001, RATE_001, VAL_001.'}
+              timestamp: {type: string, format: date-time}
+              request_id: {type: string, description: Mirrors the x-request-id response header.}
+              details: {type: object, additionalProperties: true}
+- target: $.components.parameters
+  description: Add the documented pagination parameters, which appear per-operation rather than as reusable components.
+  update:
+    ApiEvangelistPage:
+      name: page
+      in: query
+      description: Page number to return.
+      schema: {type: integer, minimum: 1}
+    ApiEvangelistPerPage:
+      name: per_page
+      in: query
+      description: Number of objects per page.
+      schema: {type: integer, minimum: 1}
+- target: $.components.headers
+  description: >-
+    Declare the pagination and tracing response headers Nexla actually returns. The contract declares NO
+    response headers on any of its 274 operations, so an agent reading only the spec cannot page or trace.
+  update:
+    ApiEvangelistLink:
+      description: 'RFC 5988 links with rel="Previous" and rel="Next".'
+      schema: {type: string}
+    ApiEvangelistXTotalCount:
+      description: Total number of matching objects.
+      schema: {type: integer}
+    ApiEvangelistXCurrentPage:
+      description: Current page number.
+      schema: {type: integer}
+    ApiEvangelistXPageCount:
+      description: Total number of pages.
+      schema: {type: integer}
+    ApiEvangelistXRequestId:
+      description: Per-request trace identifier; observed on live responses and mirrored into the error envelope.
+      schema: {type: string}
+- target: $.paths['/data_sources/{source_id}'].delete
+  description: Flag the irreversibility of resource deletion for agent consumers.
+  update:
+    x-agentic-consequence: destructive
+    x-agentic-reversible: false
+    x-agentic-note: 'No restore or undelete endpoint exists anywhere in the contract. Treat as terminal.'
+- target: $.paths['/data_sets/{set_id}'].delete
+  description: Flag the irreversibility of resource deletion for agent consumers.
+  update:
+    x-agentic-consequence: destructive
+    x-agentic-reversible: false
+- target: $.paths['/flows/{flow_id}'].delete
+  description: Flag the irreversibility of resource deletion for agent consumers.
+  update:
+    x-agentic-consequence: destructive
+    x-agentic-reversible: false
+- target: $.paths['/flows/{flow_id}/pause'].put
+  description: Flag the reversible pair so an agent knows this action can be taken back.
+  update:
+    x-agentic-consequence: reversible
+    x-agentic-reversal-operation: flow_activate_with_flow_id

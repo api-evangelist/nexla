@@ -1,0 +1,115 @@
+generated: '2026-08-26'
+method: searched
+source: >-
+  https://docs.nexla.com/dev-guides/authentication/overview and
+  https://docs.nexla.com/dev-guides/authentication (docs) enriched over the securitySchemes derived from
+  openapi/nexla-rest-api-openapi.yml
+docs: https://docs.nexla.com/dev-guides/authentication
+summary:
+  types:
+  - http
+  - apiKey
+  oauth2: false
+  openid_connect: partial
+  mutual_tls: false
+  api_key_in:
+  - query
+  - header
+  transport: 'HTTPS only — "Calls made without authentication or over plain HTTP will fail with HTTP status 401 (Unauthorized)"'
+  accept_header: 'Accept: application/vnd.nexla.api.v1+json'
+credential_models:
+- name: Session access token
+  kind: bearer-jwt
+  lifetime: '~1 hour (configurable)'
+  obtained_from:
+  - 'Nexla UI /token route — e.g. https://dataops.nexla.io/token — which routes through the org preferred Identity Provider'
+  - Nexla CLI
+  - exchange from a service key
+  usage: 'Authorization: Bearer <access-token>'
+  purpose: 'Interactive API usage and CLI operations; development, testing and manual API exploration.'
+  refresh: 'NexlaClient.refresh_access_token() in the Python SDK; re-exchange the service key otherwise.'
+- name: Service key
+  kind: long-lived-secret
+  lifetime: 'permanent (until rotated or deactivated)'
+  obtained_from:
+  - Nexla UI
+  - Nexla API
+  usage: 'Exchanged for a session token, or sent as Bearer to the GenAI/MCP surface.'
+  purpose: 'Server-to-server communication, automated workflows, integration scenarios, and MCP server authentication.'
+- name: Per-resource API key
+  kind: resource-scoped-key
+  lifetime: 'until rotated via the API key management endpoints'
+  usage:
+  - 'Authorization: Basic <api-key>'
+  - '?api_key=<api-key>'
+  purpose: 'Authenticating a specific resource — notably the webhook ingestion endpoints.'
+  warning: 'Docs: "Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints."'
+schemes:
+- name: NexlaSessionToken
+  type: http
+  scheme: Bearer
+  bearerFormat: JWT
+  default: true
+  applies_to: 'Top-level security on the Nexla REST API — every operation unless overridden.'
+  sources: [openapi/nexla-rest-api-openapi.yml]
+- name: NexlaApiKeyQuery
+  type: apiKey
+  in: query
+  parameter: api_key
+  applies_to: 'Webhook ingestion operations (send_one_record, send_many_records).'
+  sources: [openapi/nexla-rest-api-openapi.yml]
+- name: NexlaApiKeyHeader
+  type: http
+  scheme: Basic
+  applies_to: 'Webhook ingestion operations, as the header alternative to the query key.'
+  sources: [openapi/nexla-rest-api-openapi.yml]
+- name: basicAuth
+  type: http
+  scheme: basic
+  sources: [openapi/nexla-rest-api-openapi.yml]
+- name: GoogleSSOToken
+  type: http
+  scheme: Bearer
+  bearerFormat: JWT
+  description: 'The token that is used when logging into Nexla via Google SSO.'
+  sources: [openapi/nexla-rest-api-openapi.yml]
+- name: NexlaServiceKey
+  type: http
+  scheme: bearer
+  applies_to: 'Nexla GenAI (RAG + MCPaaS) API and the remote MCP endpoint.'
+  sources: [docs, overlays/nexla-genai-mcpaas-overlay.yaml]
+  note: >-
+    The published GenAI OpenAPI declares an EMPTY securitySchemes map even though every operation requires
+    authentication. This scheme comes from the docs and is added by our overlay, not invented.
+oauth:
+  rest_api: false
+  mcp: true
+  detail: >-
+    The REST API does not use OAuth. The MCP surface does, for clients that cannot send a custom header.
+    RFC 9728 Protected Resource Metadata is served at
+    https://api-genai.nexla.io/.well-known/oauth-protected-resource with scopes_supported
+    [openid, email, profile] and bearer_methods_supported [header]. Upstream identity bridges are
+    declared in the GenAI contract at /mcp/auth/google/callback and /mcp/auth/azure/callback.
+  scopes_artifact: null
+  scopes_note: >-
+    No `scopes/` artifact is emitted. derive-oauth-scopes.py found zero oauth2 securitySchemes in either
+    contract, and the only scopes Nexla publishes are the three standard OIDC scopes above — an identity
+    surface, not an API permission model. Nexla's authorization model is role-based accessors
+    (AccessRoles bound per resource), not OAuth scopes.
+enterprise_sso:
+  supported: true
+  protocols: [OIDC, 'SAML 2.0']
+  tier: Enterprise
+  api_surface:
+  - 'GET /orgs/{org_id}/auth_settings (get_api_auth_settings)'
+  - 'PUT /orgs/{org_id}/auth_settings/{auth_setting_id} (update_api_auth_config)'
+  - 'GET|POST /api_auth_configs (get_api_auth_configs, create_api_auth_config)'
+  fields_declared: [oidc_domain, oidc_keys_url_key, oidc_id_claims, oidc_access_claims, oidc_token_verify_url, idp_entity_id, service_entity_id]
+  source: https://nexla.com/pricing/
+security_best_practices_docs: https://docs.nexla.com/dev-guides/authentication/security-best-practices
+evidence:
+- url: https://docs.nexla.com/dev-guides/authentication/overview
+  status: 200
+- url: https://dataops.nexla.io/nexla-api/teams
+  status: 401
+  note: 'live unauthenticated probe confirms auth is enforced'

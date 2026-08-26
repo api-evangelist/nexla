@@ -1,0 +1,56 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Nexla GenAI (RAG + MCPaaS) API
+  version: 1.0.0
+extends: ../openapi/nexla-genai-mcpaas-openapi.json
+x-generated: '2026-08-26'
+x-method: generated
+x-source: >-
+  Derived from the harvested spec at https://api-genai.nexla.io/openapi.json plus mcp/nexla-mcp.yml and
+  mcp/nexla-tool-crosswalk.yml. The original spec is never mutated.
+actions:
+- target: $.info
+  description: >-
+    The harvested spec declares no servers[] block and no securitySchemes, so a generated client has
+    neither a host nor an auth model. Record both from the documented deployment.
+  update:
+    x-api-evangelist-notes:
+      base_url: https://api-genai.nexla.io
+      mcp_endpoint: https://api-genai.nexla.io/mcp/service_key/{server_key}
+      mcp_transport: streamable-http
+      auth: 'Authorization: Bearer <NEXLA_SERVICE_KEY>, or OAuth 2.0 for clients that cannot set headers'
+      oauth_protected_resource: https://api-genai.nexla.io/.well-known/oauth-protected-resource
+      docs: https://docs.nexla.com/dev-guides/mcp-tools
+- target: $.servers
+  description: Add the production host, which the published document omits entirely.
+  update:
+  - url: https://api-genai.nexla.io
+    description: Nexla GenAI / MCPaaS production host (probed 2026-08-26).
+- target: $.components.securitySchemes
+  description: >-
+    Declare the documented bearer service-key scheme. The published contract has an empty securitySchemes
+    map even though every operation requires authentication.
+  update:
+    NexlaServiceKey:
+      type: http
+      scheme: bearer
+      description: >-
+        Permanent Nexla service key presented as `Authorization: Bearer <NEXLA_SERVICE_KEY>`. Documented
+        at https://docs.nexla.com/dev-guides/authentication/overview and
+        https://docs.nexla.com/dev-guides/mcp-tools/authentication.
+- target: $.paths['/v1/toolsets/{tool_set_id}/exports/{export_id}:retire'].post
+  description: Flag export retirement as terminal for agent consumers.
+  update:
+    x-agentic-consequence: destructive
+    x-agentic-reversible: false
+    x-agentic-note: 'Retiring an export takes an MCP server offline; pause is the reversible alternative.'
+- target: $.paths['/v1/tools/{tool_id}:execute'].post
+  description: >-
+    Mark the tool-execution operation as the consequence boundary — the effect depends entirely on the
+    Nexset the tool was minted from, so it cannot be classified statically.
+  update:
+    x-agentic-consequence: variable
+    x-agentic-note: >-
+      Consequence is determined by the backing tool definition. Read
+      GET /v1/tools/{tool_id}/definition before executing. Every call writes an audit receipt retrievable
+      via GET /v1/receipts/{receipt_id}.

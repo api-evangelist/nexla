@@ -1,0 +1,81 @@
+generated: '2026-08-26'
+method: probed
+source: https://docs.nexla.com/user-guides/mcp-tools/mcp-servers/connect-mcp-clients
+name: Nexla MCP Server (MCP Tools / MCPaaS)
+status: published
+vendor: Nexla
+deployment:
+  mode: remote
+  endpoint: https://api-genai.nexla.io/mcp/service_key/{server_key}
+  install: null
+  package: null
+  auth: api-key
+  verified: probed
+transport: streamable-http
+auth_detail: >-
+  Per-server authentication. Each deployed MCP server carries its own {server_key} in the path and is
+  called with `Authorization: Bearer <NEXLA_SERVICE_KEY>`. ChatGPT connects over OAuth instead of a
+  service key; the OAuth flow is advertised at https://api-genai.nexla.io/.well-known/oauth-protected-resource
+  (RFC 9728 Protected Resource Metadata, scopes openid/email/profile, bearer method header).
+x-evidence:
+  fetched: '2026-08-26'
+  probe: POST https://api-genai.nexla.io/mcp/service_key/test with {"jsonrpc":"2.0","id":1,"method":"tools/list"}
+  http_status: 200
+  response: '{"jsonrpc":"2.0","id":1,"error":{"code":0,"message":"Request context not available — authentication or export lookup failed"}}'
+  interpretation: >-
+    The endpoint answers JSON-RPC and rejects on authentication/export lookup rather than routing — this
+    is a live MCP server, and the tool list is per-server-key and therefore auth-gated. Tool schemas
+    require an authenticated tools/list against a real deployed server key. No tool list is invented here.
+  also_probed:
+  - url: https://api-genai.nexla.io/mcp
+    status: 404
+    note: bare /mcp is not a server; the service_key path segment is required
+  - url: https://api-genai.nexla.io/.well-known/oauth-protected-resource
+    status: 200
+model: >-
+  Nexla's MCP is not one fixed catalog of tools. Tools are minted from governed data products — an
+  operator creates a Tool from a Nexset, groups Tools into a Toolset, and activates an Export, which
+  materialises an MCP server at a service_key URL. MCP Studio drives that whole assembly conversationally,
+  and the MCP Gateway can additionally register EXTERNAL MCP servers and filter their tools into the same
+  governed surface. This means the tool list is per-deployment by design, not undocumented.
+control_plane:
+  openapi: openapi/nexla-genai-mcpaas-openapi.json
+  base_url: https://api-genai.nexla.io
+  meta_tools_docs: https://docs.nexla.com/dev-guides/mcp-tools/gateway-meta-tools
+  protocol_docs: https://docs.nexla.com/dev-guides/mcp-tools/mcp-protocol
+  config_lookup_operations:
+  - get_mcp_config_by_server_key_v1_mcp__server_key__config_get
+  - get_mcp_config_by_toolset_v1_toolsets__tool_set_id__mcp_config_get
+  - get_mcp_config_by_export_id_v1_toolsets__tool_set_id__exports__export_id__mcp_config_get
+client_config_example:
+  source: https://docs.nexla.com/user-guides/mcp-tools/mcp-servers/connect-mcp-clients
+  json: |
+    {
+      "url": "https://api-genai.nexla.io/mcp/service_key/{server_key}",
+      "transport": "streamable-http",
+      "headers": { "Authorization": "Bearer YOUR_NEXLA_SERVICE_KEY" }
+    }
+supported_clients:
+- Claude Desktop
+- Cursor
+- VS Code with Copilot
+- ChatGPT (OAuth rather than service key)
+- any client supporting the MCP Streamable HTTP transport
+docs:
+- https://docs.nexla.com/user-guides/mcp-tools
+- https://docs.nexla.com/user-guides/mcp-tools/getting-started
+- https://docs.nexla.com/user-guides/mcp-tools/mcp-servers/deploy-mcp-server
+- https://docs.nexla.com/dev-guides/mcp-tools/tools-api
+- https://docs.nexla.com/dev-guides/mcp-tools/toolsets-api
+- https://docs.nexla.com/dev-guides/mcp-tools/gateway-api
+- https://docs.nexla.com/dev-guides/mcp-tools/receipts-api
+- https://docs.nexla.com/dev-guides/mcp-tools/rate-limiting
+- https://nexla.com/mcp/
+- https://nexla.com/mcp-studio/
+related_products:
+- name: Express MCP
+  url: https://www.express.dev/
+  note: >-
+    Separate Nexla product (express.dev, launched November 2025) whose MCP server lets agents BUILD
+    pipelines rather than only query data; distributed through the ChatGPT GPT Store. No public MCP
+    endpoint URL is published for it, so none is recorded.

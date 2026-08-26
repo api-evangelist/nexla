@@ -1,0 +1,89 @@
+generated: '2026-08-26'
+method: searched
+source: >-
+  registry.npmjs.org and pypi.org metadata endpoints, plus api.github.com releases for
+  github.com/nexla-opensource, cross-checked against docs.nexla.com SDK reference pages
+official_sdk_count: 4
+packages:
+- name: nexla-sdk
+  language: Python
+  registry: pypi
+  url: https://pypi.org/project/nexla-sdk/
+  official: true
+  version: 1.0.8
+  published: '2026-05-27'
+  repository: https://github.com/nexla-opensource/nexla-sdk-python
+  docs: https://docs.nexla.com/reference/python-sdk/
+  install: pip install nexla-sdk
+  note: >-
+    First-party Python SDK for the Nexla REST API. Resource modules for credentials, destinations,
+    flows, lookups, metrics, nexsets, notifications, organizations, projects, sources, teams and users.
+    GitHub releases are dated and current — v1.0.8 on 2026-05-27, ten tagged releases since 2025-06-19.
+- name: nexla-cli
+  language: Python
+  registry: pypi
+  url: https://pypi.org/project/nexla-cli/
+  official: true
+  version: 0.3.1
+  published: '2026-07-16'
+  repository: https://github.com/nexla-opensource/nexla-agent-cli
+  install: pip install nexla-cli
+  note: Command-line client for the Nexla agent API. Ships a native binary, no Python runtime required.
+- name: '@nexla/react-sdk'
+  language: TypeScript/React
+  registry: npm
+  url: https://www.npmjs.com/package/@nexla/react-sdk
+  official: true
+  version: 1.0.0-rc.4
+  published: '2026-08-26'
+  repository: https://github.com/nexla/react-sdk
+  docs: https://docs.nexla.com/reference/react-sdk/
+  install: npm install @nexla/react-sdk
+  note: >-
+    Nexla Connect SDK for React — provider, hooks, API client and styled components for embedding Nexla
+    credential/connector UI in a host product. Latest published build is a release candidate
+    (1.0.0-rc.4), not a GA 1.0.0; the underlying repository publishes no tagged GitHub releases.
+- name: '@nexla/nexla-cli'
+  language: JavaScript
+  registry: npm
+  url: https://www.npmjs.com/package/@nexla/nexla-cli
+  official: true
+  version: 0.3.1
+  published: '2026-07-16'
+  repository: https://github.com/nexla-opensource/nexla-agent-cli
+  install: npm install -g @nexla/nexla-cli
+  note: npm distribution of the same native Nexla agent CLI binary published to PyPI as nexla-cli.
+- name: '@nexla/sdk'
+  language: TypeScript
+  registry: npm
+  url: https://www.npmjs.com/package/@nexla/sdk
+  official: true
+  version: 0.1.0
+  published: '2026-02-17'
+  repository: https://github.com/nexla-opensource/nexla-sdk-js
+  install: npm install @nexla/sdk
+  note: >-
+    TypeScript SDK for Nexla. DECAY SIGNAL — the only published version is 0.1.0 from 2026-02-17 and the
+    backing repository nexla-opensource/nexla-sdk-js carries no releases and no tags, while the Python
+    SDK it parallels has shipped five releases since. Treat the JS SDK as materially behind the API.
+absent:
+- registry: maven-central
+  searched: 'nexla'
+  version: null
+  note: no first-party Nexla artifact found
+- registry: nuget
+  searched: 'nexla'
+  version: null
+  note: no first-party Nexla package found
+- registry: rubygems
+  searched: 'nexla'
+  version: null
+  note: no first-party Nexla gem found
+- registry: crates.io
+  searched: 'nexla'
+  version: null
+  note: no first-party Nexla crate found
+- registry: pkg.go.dev
+  searched: 'nexla'
+  version: null
+  note: no first-party Nexla Go module found

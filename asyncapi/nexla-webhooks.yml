@@ -1,0 +1,114 @@
+generated: '2026-08-26'
+method: derived
+source: >-
+  openapi/nexla-rest-api-openapi.yml (webhooks block), https://docs.nexla.com/user-guides/connectors/webhook
+  and https://docs.nexla.com/user-guides/notifications/notification-types
+asyncapi_published: false
+asyncapi_note: >-
+  Nexla publishes NO AsyncAPI document. Searched the docs host, the sitemap (1,220 URLs), both GitHub
+  orgs and /asyncapi.yaml on every host — nothing. Nothing is fabricated here. What Nexla DOES publish is
+  an event surface described two ways: OpenAPI 3.1 `webhooks` for inbound record ingestion, and a
+  notification/alerting catalog for outbound platform events.
+surfaces:
+- kind: inbound-webhook
+  direction: 'external system -> Nexla'
+  description: >-
+    Nexla's webhook CONNECTOR gives a data source an HTTPS ingestion URL. Callers POST records to it and
+    Nexla treats each object as a record, auto-detecting schema. This is declared natively as an OpenAPI
+    3.1 webhooks block, which is why the surface is machine-readable even without AsyncAPI.
+  docs: https://docs.nexla.com/user-guides/connectors/webhook
+  auth:
+  - 'api_key query parameter (NexlaApiKeyQuery)'
+  - 'Basic <api-key> Authorization header (NexlaApiKeyHeader)'
+  operations:
+  - operationId: send_one_record
+    method: POST
+    summary: Send one record to Webhook
+    content_types: [application/json, application/xml]
+    responses: [200, 403, 500]
+    options:
+    - name: include_headers
+      default: false
+      description: >-
+        'Set this to `true` if you wish to send any custom headers to be included in the ingested records
+        as part of the request. The platform will ignore standard headers like Authorization and
+        Content-Type. Any custom headers will be added as a header_<header_name> attribute in the record.'
+    - name: include_url_params
+      default: false
+      description: >-
+        'Set this to `true` if you wish to send any custom query parameters to be included in the ingested
+        records. The platform will ignore standard query parameters like api_key. Any custom query
+        parameters will be added as a url_param_<param_name> attribute in the record.'
+    - name: force_schema_detection
+      description: Force Nexla to re-detect the record schema on this request.
+  - operationId: send_many_records
+    method: POST
+    summary: Send many records to Webhook
+    content_types: [application/json]
+    responses: [200, 403, 500]
+    description: 'Send an array of JSON objects. Nexla will treat each object as a unique record for the webhook.'
+- kind: outbound-notification
+  direction: 'Nexla -> subscriber'
+  description: >-
+    Nexla raises typed notifications against flow resources. They are read and managed over REST
+    (21 operations under the Notifications tag) and routed by notification_settings and
+    notification_channel_settings. The docs publish the event catalog but not per-event payload schemas
+    or delivery-channel guarantees, so no schema is asserted here.
+  docs:
+  - https://docs.nexla.com/user-guides/notifications/notification-types
+  - https://docs.nexla.com/user-guides/notifications/notification-settings
+  - https://docs.nexla.com/user-guides/notifications/source-data-alerts
+  rest_operations:
+  - get_notifications
+  - get_notification
+  - get_notification_count
+  - notifications_mark_read
+  - notifications_mark_unread
+  - get_notification_types
+  - list_notification_settings
+  - list_resource_notification_settings
+  - delete_notifications
+  - delete_all_notifications
+  - create_notification_setting
+  - delete_notification_setting
+  - create_notification_channel_setting
+  - delete_notification_channel_setting
+  event_catalog:
+  - group: Platform activity
+    events:
+    - Dataset Shared
+    - Shared Dataset Activated
+    - Shared Dataset Paused
+    - New Derived Dataset
+    - Invitee Accepted
+  - group: System alerts
+    events:
+    - New Dataset Detected
+    - New Dataset Write
+    - Schema Change
+  - group: Data alerts
+    events:
+    - Source Data Volume Change
+    - Source Data Delayed
+    - Source Data Read Error
+    - Destination Data Write Error
+    - Dataset Transform Error
+    - Destination Transform Error
+    - Source Empty File
+    - Source Read Started / Done
+    - Destination Write Started / Done
+    - Custom Flow Data Volume Change
+    - Custom Flow Data Delayed
+    - Custom Flow Data Read/Write Errors
+    - Custom Flow Empty File
+    - Custom Flow Read/Write Started / Done
+  gaps:
+  - 'No severity level is published per event type.'
+  - 'No delivery-channel list (email / Slack / outbound HTTP) is published on the notification-types page.'
+  - 'No payload schema is published for any notification event.'
+streaming:
+  note: >-
+    Nexla also runs CDC and streaming ingestion (Kafka, Confluent Kafka, Google Pub/Sub, JMS, Tibco
+    credential types are all declared in the REST contract). Those are DATA-PLANE connectors Nexla
+    consumes, not an event API Nexla publishes to its own consumers, so they are not modelled as an
+    AsyncAPI channel here.

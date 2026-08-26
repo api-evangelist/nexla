@@ -1,0 +1,62 @@
+# Nexla Docs
+
+> LLM-friendly entrypoints for Nexla documentation: user guides, developer guides, tutorials, and references.
+
+This file is a curated map of the most important Nexla docs pages. Use it to quickly find canonical URLs and high-signal entrypoints.
+For breadth beyond this curated set, see the Sitemap link in Optional.
+
+## Start_here
+- [Quick Start Guide](https://docs.nexla.com/user-guides/get-started/quick-start-guide): This article is a guide to help new users get started in Nexla.
+- [Introduction](https://docs.nexla.com/dev-guides/): Nexla is a collaborative, self-service data integration and operations platform. Our no-code tools enable digital teams to quickly and easily leverage their data alongside diverse 
+- [REST API Reference](https://docs.nexla.com/reference/nexla-api): OpenAPI-powered REST API documentation.
+- [Python SDK Reference](https://docs.nexla.com/reference/python-sdk): Python SDK guides and API reference.
+- [React SDK Reference](https://docs.nexla.com/reference/react-sdk): React SDK guides for embedding Nexla UI components.
+
+## User_Guides
+- [Quick Start Guide](https://docs.nexla.com/user-guides/get-started/quick-start-guide): This article is a guide to help new users get started in Nexla.
+- [Data Flow Information & Insights](https://docs.nexla.com/user-guides/get-started/data-flow-information): Nexla provides complete information about each data flow available to a user's account in an easily accessible information drawer.
+- [Data Flow Types](https://docs.nexla.com/user-guides/data-flows/data-flow-types): Nexla offers multiple data flow types with tailored & streamlined flow creation processes for scenarios spanning from complex real-time streaming to simple replication and many mor
+- [How to Send a Nexset (Dataset)](https://docs.nexla.com/user-guides/data-flows/how-to-send-a-nexset): Nexla's bi-directional connectors make sending data to any destination easy.
+- [Nexset Designer Overview](https://docs.nexla.com/user-guides/transformations/designer-overview): This article describes the functions and features of the Nexset Designer. The Nexset Designer is the screen used to design transformations of incoming data to create new Nexsets. I
+- [Credentials in Nexla](https://docs.nexla.com/user-guides/credentials/credentials): Credentials are resources that allow users to connect to and exchange data with external data systems through Nexla.
+- [Connectors](https://docs.nexla.com/user-guides/connectors): Connect to hundreds of data systems using Nexla's comprehensive connector library. From databases and APIs to file systems, cloud services and more, Nexla makes it easy to access y
+- [Integrate Nexla with ChatGPT](https://docs.nexla.com/user-guides/app-integrations/integrate-with-chatgpt): Connect ChatGPT to Nexla to chat with your Nexla resources in natural language. Once connected, you can ask questions about your data flows and Nexsets , explore credential metadat
+- [Integrate Nexla with OpenAI](https://docs.nexla.com/user-guides/app-integrations/integrate-with-open-ai): Enrich resource documentation catalog by integrating OpenAI with Nexla.
+- [Integrate Nexla with Google AI](https://docs.nexla.com/user-guides/app-integrations/integrate-with-google-ai): Enrich resource documentation catalog by integrating Google AI with Nexla.
+
+## Developer_Guides
+- [Introduction](https://docs.nexla.com/dev-guides/): Nexla is a collaborative, self-service data integration and operations platform. Our no-code tools enable digital teams to quickly and easily leverage their data alongside diverse 
+- [Overview](https://docs.nexla.com/dev-guides/authentication/overview): All Nexla API and Nexla CLI requests require authentication and must be made over HTTPS. Calls made without authentication or over plain HTTP will fail with HTTP status 401 (Unauth
+- [Authentication](https://docs.nexla.com/dev-guides/authentication): The authentication documentation has been reorganized into focused, manageable pages for better user experience.
+- [Pagination](https://docs.nexla.com/dev-guides/pagination): All Nexla API listing endpoints support paginated queries to limit the number of response objects and set the start position of the returned array of objects. This is specially use
+- [Nexla API](https://docs.nexla.com/dev-guides/nexla-api): The Nexla API is a REST-ful interface for creating and managing resources in Nexla.
+- [Nexla CLI](https://docs.nexla.com/dev-guides/nexla-cli): The Nexla CLI is a Python library that includes convenient methods for accessing Nexla resources and data from your Python development environment. Check out our Guide pages for so
+- [Embedding Nexla in Your Product](https://docs.nexla.com/dev-guides/embedding-nexla): Accelerate data integration-based offerings for your end-users by embedding Nexla into your own product, putting the power of Nexla into the hands of your users. An embedded Nexla 
+
+## Tutorials
+- [Accessing Data in Jupyter Notebook](https://docs.nexla.com/tutorials/data-in-jupyter): In this tutorial we will create a Jupyter notebook that fetches data from a Nexla dataset and prints it as rows of data. Once setup, this notebook will always have access to the mo
+- [Embedding Nexla in Your Product](https://docs.nexla.com/tutorials/embedding-nexla): Accelerate data integration based offerings for your end users by embedding Nexla into your own product and putting the power of Nexla in the hands of your users. Your product expe
+- [Migrating Flows from Dev To Production](https://docs.nexla.com/tutorials/flow-migration): In this tutorial we will use Nexla CLI to clone a development/QA Data Flow into a production Data Flow. We will also look at modifying flow specification (ex: exact path to product
+- [Querying Data Using GenAI](https://docs.nexla.com/tutorials/genai-querying): Expedite data analysis by directly querying your data with the RAG-based Nexla GenAI chatbot, leveraging the power of GenAI and LLMs to gain insights based on both the data itself 
+- [Sending Text Data to Vector Databases](https://docs.nexla.com/tutorials/write-to-vector-db/): Enable efficient data processing with GenAI-based applications by using Nexla to create data flows that automatically write data to vector databases.
+
+## GenAI_RAG
+- [GenAI RAG](https://docs.nexla.com/genai-rag/): GenAI RAG is Nexla's conversational AI for querying your data. It uses an AI agent to search across one or more nexsets, reason over the retrieved data, and generate natural langua
+- [Getting Started](https://docs.nexla.com/genai-rag/quick-start): GenAI RAG is a conversational AI that searches across your Nexla nexsets, reasons over the results, and generates answers with inline citations. You can use it through the web UI a
+- [Chat & Querying](https://docs.nexla.com/genai-rag/chat-and-querying): The chat interface is where you interact with GenAI RAG. Type natural language questions, watch the agent reason and search in real time, and receive answers with inline citations 
+- [Canvas Panel](https://docs.nexla.com/genai-rag/canvas-panel): The canvas panel is a side panel that opens when you click a citation badge or the sources pill in the chat. It provides detailed views of citations, sources, tool calls, and the a
+- [Settings](https://docs.nexla.com/genai-rag/settings): The Settings panel lets you configure authentication, tune response behavior, and manage per-nexset filter schemas. Open it by clicking the gear icon in the top bar or pressing Ctr
+- [Keyboard Shortcuts](https://docs.nexla.com/genai-rag/keyboard-shortcuts): Use these keyboard shortcuts to navigate GenAI RAG more quickly. Shortcuts apply globally except when focus is in an input, textarea, or select element.
+- [Agentic RAG Query](https://docs.nexla.com/genai-rag/agentic-rag): The Agentic RAG endpoint uses an AI agent to search across one or more nexsets, reason over the retrieved data, and generate a natural language answer with inline citations. The ag
+- [Filter Registration API](https://docs.nexla.com/genai-rag/filters-api): The Filter Registration endpoints allow you to define how user context (access rules, ownership scope, and session filters) maps to metadata filters on each nexset. Once registered
+- [Available Models](https://docs.nexla.com/genai-rag/models): The Available Models endpoint lists the LLM and embedding models available for use with the .
+
+## Reference
+- [REST API Reference](https://docs.nexla.com/reference/nexla-api): OpenAPI-powered REST API documentation.
+- [Python SDK Reference](https://docs.nexla.com/reference/python-sdk): Python SDK guides and API reference.
+- [React SDK Reference](https://docs.nexla.com/reference/react-sdk): React SDK guides for embedding Nexla UI components.
+
+## Optional
+- [Sitemap](https://docs.nexla.com/sitemap.xml): Full site URL inventory (useful for breadth; less curated).
+
+_Last updated: 2026-08-05_

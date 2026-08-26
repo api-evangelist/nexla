@@ -1,0 +1,75 @@
+generated: '2026-08-26'
+method: searched
+source: >-
+  https://docs.nexla.com/dev-guides/authentication/overview, the Nexla REST OpenAPI
+  (openapi/nexla-rest-api-openapi.yml) and GitHub release history for nexla-opensource
+versioning:
+  scheme: media-type versioning on the REST API; path versioning on the GenAI/MCPaaS API
+  current_version: v1
+  mechanism: 'Accept: application/vnd.nexla.api.v1+json'
+  genai_versions: [v1, v2]
+  genai_service_version: v0.2.3.3-combined
+  policy_published: false
+  note: >-
+    Nexla names a version and a negotiation mechanism but publishes no version-support policy — no
+    statement of how long v1 is supported, how a v2 would be introduced, or how clients are migrated.
+deprecation:
+  policy_published: false
+  policy_url: null
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations_in_spec: 0
+  note: >-
+    ZERO of the 274 REST operations carry `deprecated: true`, and no RFC 8594 Sunset or Deprecation
+    header is documented or declared. One operation carries deprecation only in its NAME —
+    `remove_project_flows_(deprecated)` on DELETE /projects/{project_id}/data_flows, superseded by
+    DELETE /projects/{project_id}/flows — which is a naming convention, not a machine-readable signal.
+    Because no deprecation policy is published, no `Deprecation` pointer is emitted in apis.yml.
+  observed_in_name:
+  - operationId: 'remove_project_flows_(deprecated)'
+    path: /projects/{project_id}/data_flows
+    successor: /projects/{project_id}/flows
+status_page:
+  published: false
+  url: null
+  note: >-
+    No Nexla status page was found. status.nexla.com and nexlastatus.com do not resolve (DNS NXDOMAIN),
+    nexla.statuspage.io does not respond, and nexla.com/status/ redirects to
+    https://nexla.com/connector/statuspage/ — the documentation page for Nexla's Statuspage CONNECTOR,
+    not a Nexla status page. No `StatusPage` pointer is emitted in apis.yml.
+  probes:
+  - url: https://status.nexla.com/
+    status: 0
+    note: DNS NXDOMAIN
+  - url: https://nexlastatus.com/
+    status: 0
+    note: DNS NXDOMAIN
+  - url: https://nexla.com/status/
+    status: 200
+    note: redirects to /connector/statuspage/ — a connector doc, not a status page
+sla:
+  published: false
+  note: >-
+    No public SLA document. Support tiers differ by plan (web/email on Pro, optional Slack on Team,
+    phone/video/onsite on Enterprise) but no availability or response-time commitment is published.
+roadmap:
+  published: false
+  url: null
+  probes:
+  - url: https://nexla.com/roadmap/
+    status: 404
+support:
+  url: https://nexla.com/contact-us/
+  channels: [web, email, 'Slack (Team, optional)', 'phone/video/onsite (Enterprise)']
+release_cadence:
+  observed: >-
+    No product changelog is published for the API itself. The dated evidence of release cadence is the
+    SDK release history: nexla-sdk-python shipped ten tagged releases between 2025-06-19 and 2026-05-27,
+    nexla-agent-cli two in July 2026, and @nexla/react-sdk is at 1.0.0-rc.4 published 2026-08-26.
+  source: https://api.github.com/repos/nexla-opensource/nexla-sdk-python/releases
+gaps:
+- 'No API changelog or release notes — the only changelog is SDK-scoped and undated.'
+- 'No deprecation policy and no Sunset/Deprecation headers.'
+- 'No status page or public incident history.'
+- 'No published SLA.'

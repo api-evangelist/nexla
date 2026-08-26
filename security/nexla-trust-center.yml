@@ -1,0 +1,38 @@
+generated: '2026-08-26'
+method: searched
+source: https://nexla.com/data-security/
+trust_center: false
+note: >-
+  Nexla does not operate a dedicated trust center portal — trust.nexla.com does not resolve (DNS NXDOMAIN)
+  and no Vanta/Drata/SafeBase/Conveyor portal was found. Certifications are published as prose plus footer
+  badges on the Data Security page. A prior automated probe matched https://nexla.com/connector/trustpilot/
+  — that is a Trustpilot CONNECTOR documentation page, not a Nexla trust center, and has been corrected here.
+  Because there is no trust portal, no `TrustCenter` pointer is emitted in apis.yml; the certifications are
+  wired through the `Compliance` pointer instead.
+url: https://nexla.com/data-security/
+certifications:
+- name: SOC 2 Type II
+  evidence: 'Nexla continues to meet the most stringent standards of security with SOC 2 Type II compliance'
+  source: https://nexla.com/data-security/
+- name: ISO 27001
+  evidence: 'ISO badge published in the docs.nexla.com and nexla.com footer (/img/badges/ISO.svg)'
+  source: https://docs.nexla.com/
+- name: HIPAA
+  evidence: 'HIPAA compliant badge published in the docs.nexla.com footer (/img/badges/hipaa-compliant.svg)'
+  source: https://docs.nexla.com/
+- name: GDPR
+  evidence: "Nexla is fully compliant with the European Unions' Global Data Protection Regulation"
+  source: https://nexla.com/data-security/
+- name: CCPA
+  evidence: 'California Consumer Privacy Act (CCPA) compliance stated'
+  source: https://nexla.com/data-security/
+claims:
+- 'Encrypt data at rest and in motion for complete end-to-end security'
+- 'Nexla makes no copies of your data as it ingests, processes, and delivers the data'
+- 'data never leaves your environment (private/hybrid cloud and on-premise deployment)'
+evidence:
+- url: https://nexla.com/data-security/
+  status: 200
+- url: https://trust.nexla.com/
+  status: 0
+  note: DNS NXDOMAIN — host does not resolve

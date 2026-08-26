@@ -64,5 +64,15 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Nexla is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://www.nasdaqprivatemarket.com/
+Nexla is an enterprise data integration and AI-data platform, founded in 2016 and headquartered in San Mateo, California. Its core abstraction is the Nexset — a logical, schema-aware data product Nexla generates automatically from any connected system. The platform spans ETL/ELT, streaming and CDC, API ingestion and delivery, RAG pipelines, and an MCP Tools layer (MCP Studio, MCP Gateway, Agentic Probe) that turns governed Nexsets into task-scoped MCP servers for AI agents.
+
+Nexla publishes two machine-readable contracts:
+
+- **Nexla REST API** — OpenAPI 3.1, 155 paths / 274 operations across 31 tags. Base `https://dataops.nexla.io/nexla-api`, reference at https://docs.nexla.com/reference/nexla-api
+- **Nexla GenAI API (RAG + MCPaaS)** — OpenAPI 3.1, 110 paths / 131 operations. Base `https://api-genai.nexla.io`, docs at https://docs.nexla.com/dev-guides/mcp-tools
+
+It also runs a remote MCP server over Streamable HTTP at `https://api-genai.nexla.io/mcp/service_key/{server_key}`, and serves RFC 9728 OAuth Protected Resource Metadata at `https://api-genai.nexla.io/.well-known/oauth-protected-resource`.
+
+- https://nexla.com/
+- https://docs.nexla.com/
+- https://github.com/nexla-opensource

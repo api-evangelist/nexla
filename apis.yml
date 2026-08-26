@@ -1,23 +1,184 @@
 aid: nexla
 name: Nexla
-description: 'Nexla is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Nexla is an enterprise data integration and AI-data platform, founded in 2016 and headquartered in
+  San Mateo, California. Its core abstraction is the Nexset — a logical, schema-aware, bi-directionally
+  usable data product that Nexla generates automatically from any connected system. The platform spans
+  ETL/ELT, streaming and CDC, API ingestion and delivery, RAG pipelines and, since 2026, an MCP Tools
+  layer (MCP Studio, MCP Gateway, Agentic Probe) that turns governed Nexsets into task-scoped MCP
+  servers for AI agents. Nexla exposes two public machine-readable contracts: a 274-operation OpenAPI
+  3.1 REST API covering flows, sources, Nexsets, sinks, credentials, transforms, projects, teams,
+  organizations, access control, notifications, audit logs and metrics; and a 131-operation OpenAPI 3.1
+  GenAI (RAG + MCPaaS) API covering agentic RAG, nexset filters, skills, tools, toolsets, MCP gateway
+  and audit receipts. First-party clients ship as a Python SDK, a TypeScript/JS SDK, a React embedding
+  SDK and a Python CLI. Nexla is SOC 2 Type II, HIPAA, GDPR and CCPA compliant.
+image: https://cdn.nexla.io/ui/assets/brand/v2/nexla-logo-color-portrait.svg
 url: https://raw.githubusercontent.com/api-evangelist/nexla/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-26'
 modified: '2026-08-26'
 tags:
 - Company
-apis: []
+- Data Integration
+- Data Engineering
+- ETL
+- ELT
+- Data Products
+- Streaming
+- Change Data Capture
+- Data Governance
+- Artificial Intelligence
+- Retrieval Augmented Generation
+- MCP
+- Agent Tools
+- Data Pipelines
+- Connectors
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- name: Nexla REST API
+  description: >-
+    RESTful control-plane API for the Nexla platform. 155 paths / 274 operations across 31 tags covering
+    data flows, sources, Nexsets (data sets), sinks, credentials, data maps, transforms, code containers,
+    custom runtimes, projects, users, teams, organizations, access control, approval requests,
+    notifications, audit logs, async tasks, marketplace, metrics, quarantine settings and GenAI
+    configurations. Also declares two OpenAPI 3.1 webhooks for record ingestion. Authenticated with a
+    Bearer session token (JWT, ~1 hour) obtained from the Nexla UI /token route or exchanged from a
+    permanent service key; per-resource API keys are also supported via Basic header or api_key query.
+  humanURL: https://docs.nexla.com/reference/nexla-api
+  baseURL: https://dataops.nexla.io/nexla-api
+  tags:
+  - Data Integration
+  - Data Pipelines
+  - ETL
+  - Data Products
+  - Access Control
+  - Notifications
+  - Metrics
+  properties:
+  - type: OpenAPI
+    url: openapi/nexla-rest-api-openapi.yml
+  - type: Documentation
+    url: https://docs.nexla.com/dev-guides/nexla-api
+  - type: APIReference
+    url: https://docs.nexla.com/reference/nexla-api
+  - type: Authentication
+    url: authentication/nexla-authentication.yml
+  - type: Conventions
+    url: conventions/nexla-conventions.yml
+  - type: ErrorCatalog
+    url: errors/nexla-problem-types.yml
+  - type: DataModel
+    url: data-model/nexla-data-model.yml
+  - type: Overlay
+    url: overlays/nexla-rest-api-overlay.yaml
+  - type: Webhooks
+    url: asyncapi/nexla-webhooks.yml
+- name: Nexla GenAI API (RAG + MCPaaS)
+  description: >-
+    OpenAPI 3.1 contract for Nexla's GenAI service, combining the Agentic RAG query API with MCPaaS —
+    the MCP Tools control plane. 110 paths / 131 operations covering agentic RAG query and cache,
+    per-nexset filter registration, org-level agent skills, tool and toolset lifecycle (create from
+    Nexset, activate, pause, clone, sync), MCP exports and mcp_config, an MCP Gateway that registers and
+    filters external MCP servers, audit receipts, session management and usage metrics. This is the
+    service that serves Nexla's remote MCP endpoint.
+  humanURL: https://docs.nexla.com/dev-guides/mcp-tools
+  baseURL: https://api-genai.nexla.io
+  tags:
+  - Artificial Intelligence
+  - Retrieval Augmented Generation
+  - MCP
+  - Agent Tools
+  - Data Products
+  properties:
+  - type: OpenAPI
+    url: openapi/nexla-genai-mcpaas-openapi.json
+  - type: Documentation
+    url: https://docs.nexla.com/genai-rag/
+  - type: APIReference
+    url: https://docs.nexla.com/dev-guides/mcp-tools/tools-api
+  - type: MCPServer
+    url: mcp/nexla-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/nexla-tool-crosswalk.yml
+  - type: Overlay
+    url: overlays/nexla-genai-mcpaas-overlay.yaml
 common:
+- type: VulnerabilityDisclosure
+  url: security/nexla-vulnerability-disclosure.yml
+- type: Security
+  url: security/nexla-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/nexla-domain-security.yml
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://nexla.com/
+- type: DeveloperPortal
+  url: https://docs.nexla.com/dev-guides/
+- type: Documentation
+  url: https://docs.nexla.com/
+- type: APIReference
+  url: https://docs.nexla.com/reference/nexla-api
+- type: GettingStarted
+  url: https://docs.nexla.com/user-guides/get-started/quick-start-guide
+- type: Support
+  url: https://nexla.com/contact-us/
+- type: Blog
+  url: https://nexla.com/blog/
+- type: GitHubOrganization
+  url: https://github.com/nexla-opensource
+- type: Pricing
+  url: https://nexla.com/pricing/
+- type: SignUp
+  url: https://dataops.nexla.io/signup
+- type: TermsOfService
+  url: https://nexla.com/terms-of-service/
+- type: PrivacyPolicy
+  url: https://nexla.com/privacy-policy/
+- type: Compliance
+  url: https://nexla.com/data-security/
+- type: LLMsTxt
+  url: llms/nexla-llms.txt
+- type: MCPServer
+  url: mcp/nexla-mcp.yml
+- type: Packages
+  url: packages/nexla-packages.yml
+- type: SDKs
+  url: packages/nexla-packages.yml
+- type: CLI
+  url: cli/nexla-cli.yml
+- type: Components
+  url: components/nexla-components.yml
+- type: Authentication
+  url: authentication/nexla-authentication.yml
+- type: Conventions
+  url: conventions/nexla-conventions.yml
+- type: ErrorCatalog
+  url: errors/nexla-problem-types.yml
+- type: DataModel
+  url: data-model/nexla-data-model.yml
+- type: Lifecycle
+  url: lifecycle/nexla-lifecycle.yml
+- type: Conformance
+  url: conformance/nexla-conformance.yml
+- type: ChangeLog
+  url: changelog/nexla-changelog.yml
+- type: RateLimits
+  url: rate-limits/nexla-rate-limits.yml
+- type: Plans
+  url: plans/nexla-plans-pricing.yml
+- type: WellKnown
+  url: well-known/nexla-well-known.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Webhooks
+  url: asyncapi/nexla-webhooks.yml
+x-enrichment:
+  date: '2026-08-26'
+  status: enriched
+  artifacts_added: 27
+  pass: local-v1

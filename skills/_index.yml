@@ -1,0 +1,26 @@
+generated: '2026-08-26'
+method: generated
+source: >-
+  openapi/nexla-rest-api-openapi.yml and openapi/nexla-genai-mcpaas-openapi.json, grounded in
+  conventions/nexla-conventions.yml, errors/nexla-problem-types.yml and mcp/nexla-tool-crosswalk.yml
+provider_published_skills: false
+provider_published_note: >-
+  No provider-authored AGENTS.md, skills/ directory or Agent Skill package was found on nexla.com,
+  docs.nexla.com (1,220-URL sitemap searched) or either GitHub org. These three are generated from the
+  published contracts. Every operationId referenced was verified present in the specs before writing.
+skills:
+- file: nexla-build-a-data-flow.md
+  name: nexla-build-a-data-flow
+  api: Nexla REST API
+  operations: 11
+  summary: Credential → probe → source → Nexset → sink → activate, with the no-idempotency warning and the terminal-delete warning.
+- file: nexla-monitor-and-triage-a-flow.md
+  name: nexla-monitor-and-triage-a-flow
+  api: Nexla REST API
+  operations: 14
+  summary: Metrics → run summary → logs → notifications → audit log, in the order that actually finds the cause.
+- file: nexla-publish-a-governed-mcp-server.md
+  name: nexla-publish-a-governed-mcp-server
+  api: Nexla GenAI API (RAG + MCPaaS)
+  operations: 14
+  summary: Nexset → Tool → Toolset → credential mapping → Export → MCP client config, plus receipts and rollback.
