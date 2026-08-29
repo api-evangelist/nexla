@@ -12,6 +12,18 @@ description: >-
   GenAI (RAG + MCPaaS) API covering agentic RAG, nexset filters, skills, tools, toolsets, MCP gateway
   and audit receipts. First-party clients ship as a Python SDK, a TypeScript/JS SDK, a React embedding
   SDK and a Python CLI. Nexla is SOC 2 Type II, HIPAA, GDPR and CCPA compliant.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://cdn.nexla.io/ui/assets/brand/v2/nexla-logo-color-portrait.svg
 url: https://raw.githubusercontent.com/api-evangelist/nexla/refs/heads/main/apis.yml
 x-type: company
@@ -2216,6 +2228,9 @@ apis:
   - type: ToolCrosswalk
     url: mcp/nexla-tool-crosswalk.yml
 common:
+- type: CapabilityMap
+  url: capabilities/nexla-capability-edges.yml
+  name: Nexla Business Capability Map
 - type: Overlay
   url: overlays/nexla-rest-api-overlay.yaml
 - type: Overlay
