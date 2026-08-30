@@ -1,0 +1,202 @@
+openapi: 3.2.0
+info:
+  title: Nexla GenAI (RAG + MCPaaS) Genai Transform API
+  description: Combined Nexla GenAI RAG API Service and MCPaaS
+  version: v0.2.3.3-combined
+tags:
+- name: Genai Transform
+paths:
+  /genai_transform:
+    post:
+      summary: Genai Transform
+      operationId: genai_transform_genai_transform_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransformRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Genai Transform
+components:
+  schemas:
+    LLMConfig:
+      properties:
+        model:
+          type: string
+          title: Model
+          description: The identifier of the AI model to use for processing the query
+        provider:
+          type: string
+          title: Provider
+          description: The provider of the AI model (e.g., Azure, OpenAI)
+        credential_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Credential Id
+          description: An optional credential ID for accessing the LLM
+        credential_parameters:
+          anyOf:
+          - $ref: '#/components/schemas/LLMCredentialParameters'
+          - type: 'null'
+          description: Optional credential parameters for accessing the LLM
+        reasoning_effort:
+          anyOf:
+          - type: string
+            enum:
+            - none
+            - minimal
+            - low
+            - medium
+            - high
+            - xhigh
+          - type: 'null'
+          title: Reasoning Effort
+          description: Reasoning effort for OpenAI reasoning models (gpt-5*). Controls how much the model thinks. Defaults to 'low' when unset.
+        reasoning_summary:
+          anyOf:
+          - type: string
+            enum:
+            - concise
+            - detailed
+            - auto
+          - type: 'null'
+          title: Reasoning Summary
+          description: Reasoning summary verbosity for OpenAI reasoning models. Controls how much of the chain-of-thought is streamed back as thinking_delta events. 'detailed' produces visibly streaming multi-paragraph summaries. Defaults to 'concise' when unset.
+      type: object
+      required:
+      - model
+      - provider
+      title: LLMConfig
+    TransformRequest:
+      properties:
+        user_query:
+          type: string
+          title: User Query
+          description: Query text to be processed.
+        token:
+          type: string
+          title: Token
+          description: Authorization token.
+        session_id:
+          type: string
+          title: Session Id
+          description: Session ID associated with the user session.
+        nexset_id:
+          type: string
+          title: Nexset Id
+          description: Nexset ID associated with the conversation.
+        input_context:
+          items:
+            type: string
+          type: array
+          title: Input Context
+          description: A list of existing DSL strings from the UI, representing prior transformation steps.
+        output_language:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Output Language
+          description: 'The programming language for the generated code. Default: Jython'
+          default: Jython
+        llm_config:
+          anyOf:
+          - $ref: '#/components/schemas/LLMConfig'
+          - type: 'null'
+          description: LLM configuration to use for processing the query.
+        streaming:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Streaming
+          description: 'A flag to indicate whether the response should be streamed. Default: true'
+          default: true
+      type: object
+      required:
+      - user_query
+      - token
+      - session_id
+      - nexset_id
+      title: TransformRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    LLMCredentialParameters:
+      properties:
+        model:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Model
+          description: The model to use for the credential
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+          description: The provider to use for the credential
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: The endpoint URL for the AI provider
+        api_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Api Key
+          description: The API key for the AI provider
+        api_version:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Api Version
+          description: The API version to use with the AI provider
+      type: object
+      title: LLMCredentialParameters
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError

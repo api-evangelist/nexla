@@ -1,0 +1,94 @@
+openapi: 3.2.0
+info:
+  title: Nexla GenAI (RAG + MCPaaS) Struct Extraction API
+  description: Combined Nexla GenAI RAG API Service and MCPaaS
+  version: v0.2.3.3-combined
+tags:
+- name: Struct Extraction
+paths:
+  /struct_extraction:
+    post:
+      summary: Structured Extraction
+      operationId: structured_extraction_struct_extraction_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StructuredExtractionRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Struct Extraction
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    StructuredExtractionRequest:
+      properties:
+        mode:
+          type: string
+          title: Mode
+          description: 'Mode of structured extraction: ''image'' or ''text'''
+        input:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Input
+          description: Input JSON object with base64-encoded image (if mode='image') or JSON object containing text (if mode='text'), Endpoint can also allow for a string input
+        output_structure:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Output Structure
+          description: Expected structured output format. If not provided, a best-guess structure will be generated.
+      type: object
+      required:
+      - mode
+      - input
+      title: StructuredExtractionRequest

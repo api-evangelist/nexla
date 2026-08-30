@@ -1,0 +1,187 @@
+openapi: 3.2.0
+info:
+  title: Nexla GenAI (RAG + MCPaaS) Code API
+  description: Combined Nexla GenAI RAG API Service and MCPaaS
+  version: v0.2.3.3-combined
+tags:
+- name: Code
+paths:
+  /code/safety-check:
+    post:
+      summary: Code Safety Check
+      operationId: code_safety_check_code_safety_check_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CodeSafetySerializer'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Code
+  /code/python:
+    post:
+      summary: Rag Flow Code Execution
+      operationId: rag_flow_code_execution_code_python_post
+      parameters:
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          type: string
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RAGFlowCodeExecutionRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Code
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    CodeSafetySerializer:
+      properties:
+        code_snippet:
+          type: string
+          title: Code Snippet
+        genai_integration_config:
+          $ref: '#/components/schemas/GenaiIntegrationConfig'
+      type: object
+      required:
+      - code_snippet
+      - genai_integration_config
+      title: CodeSafetySerializer
+    DataCredentialModel:
+      properties:
+        id:
+          type: integer
+          title: Id
+        connector:
+          $ref: '#/components/schemas/ConnectorModel'
+        credentials_enc_iv:
+          type: string
+          title: Credentials Enc Iv
+        credentials_enc:
+          type: string
+          title: Credentials Enc
+      additionalProperties: true
+      type: object
+      required:
+      - id
+      - connector
+      - credentials_enc_iv
+      - credentials_enc
+      title: DataCredentialModel
+    ConnectorModel:
+      properties:
+        id:
+          type: integer
+          title: Id
+        type:
+          type: string
+          enum:
+          - genai_googleai
+          - genai_openai
+          - genai_azure_openai
+          title: Type
+        connection_type:
+          type: string
+          title: Connection Type
+      additionalProperties: true
+      type: object
+      required:
+      - id
+      - type
+      - connection_type
+      title: ConnectorModel
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    RAGFlowCodeExecutionRequest:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Code to execute
+        parameter_1:
+          title: Parameter 1
+          description: First parameter to pass to the code
+        parameter_2:
+          title: Parameter 2
+          description: Second parameter to pass to the code
+      type: object
+      required:
+      - code
+      - parameter_1
+      - parameter_2
+      title: RAGFlowCodeExecutionRequest
+    GenaiIntegrationConfig:
+      properties:
+        configs:
+          additionalProperties: true
+          type: object
+          title: Configs
+        data_credentials:
+          $ref: '#/components/schemas/DataCredentialModel'
+      additionalProperties: true
+      type: object
+      required:
+      - configs
+      - data_credentials
+      title: GenaiIntegrationConfig

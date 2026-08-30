@@ -1,0 +1,954 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Nexla Rest Organizations API
+  termsOfService: https://nexla.com/terms-of-service/
+  contact:
+    name: Nexla Support
+    url: https://docs.nexla.com
+    email: support@nexla.com
+  license:
+    name: Nexla
+    url: https://nexla.com
+  x-logo:
+    url: https://cdn.nexla.io/ui/assets/brand/v2/nexla-logo-color-portrait.svg
+    backgroundColor: '#ffffff'
+  description: '# Introduction
+
+
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
+
+
+    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
+
+
+    The API references in this document lists all API endpoints and the corresponding payloads.
+
+
+    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
+
+
+    # API Data Format and Versions
+
+
+    The API uses JSON for all data exchanges.
+
+
+    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
+
+    ```
+
+    Accept: application/vnd.nexla.api.v1+json
+
+    ```
+
+
+    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
+
+
+
+    ```
+
+    Accept: application/json
+
+    ```
+
+
+    # Authentication
+
+
+    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
+
+
+    <SecurityDefinitions />'
+servers:
+- url: https://{nexla-api-host}
+  variables:
+    nexla-api-host:
+      default: dataops.nexla.io/nexla-api
+      description: Nexla API URL your Nexla instance
+security:
+- NexlaSessionToken: []
+tags:
+- name: Organizations
+  description: Operations for managing the user's organization.
+paths:
+  /orgs:
+    get:
+      tags:
+      - Organizations
+      operationId: get_orgs
+      summary: Get all Organizations
+      description: 'Returns all organizations accessible to the authenticated user.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/orgs_many'
+        '403':
+          description: Forbidden
+  /orgs/{org_id}:
+    get:
+      tags:
+      - Organizations
+      operationId: get_org
+      summary: Get Organization by ID
+      description: 'Returns an organization if a valid ID is provided.
+
+        '
+      parameters:
+      - name: org_id
+        in: path
+        description: The unique ID of the organization that needs to be fetched.
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/orgs_one'
+        '403':
+          description: Forbidden
+    put:
+      tags:
+      - Organizations
+      operationId: update_org
+      summary: Update an Organization
+      description: 'Updates properties of an organization.
+
+        '
+      parameters:
+      - name: org_id
+        in: path
+        description: The unique ID of the organization that needs to be updated.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrgsUpdate'
+      responses:
+        '200':
+          $ref: '#/components/responses/orgs_one'
+        '403':
+          description: Forbidden
+  /orgs/{org_id}/members:
+    get:
+      tags:
+      - Organizations
+      operationId: get_org_members
+      summary: Get All Members in Organization
+      description: 'Retrieves a list of all users in an organization.
+
+        '
+      parameters:
+      - name: org_id
+        in: path
+        description: The unique ID of the organization.
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/org_members'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Organizations
+      operationId: update_org_members
+      summary: Update Organization Members
+      description: 'Add or update members in an organization. This endpoint can also be used to modify an existing member''s role in the organization.
+
+
+        When adding a new member using their email id, if a user account for that email id does not exist on the platform then a new user account will be created. If the user already exists on the platform as a member of a different organization then their membership will get updated to include this organization also.
+
+        '
+      parameters:
+      - name: org_id
+        in: path
+        description: The unique ID of the organization.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/OrgMemberList'
+      responses:
+        '200':
+          $ref: '#/components/responses/org_members'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+      - Organizations
+      operationId: delete_org_members
+      summary: Remove Members from an Organization.
+      description: 'Removes one or more members from the organization. Note that this will not delete the user account from the platform, but will remove the user''s ability to access this organization''s resources.
+
+        '
+      parameters:
+      - name: org_id
+        in: path
+        description: The unique ID of the organization.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/OrgMemberDelete'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: string
+                    description: Response status code
+                  message:
+                    type: string
+                    description: Response status text
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /orgs/{org_id}/custodians:
+    get:
+      tags:
+      - Organizations
+      operationId: get_org_custodians
+      summary: Get organization custodians.
+      description: 'Use this endpoint to fetch custodians of organization. Org read permission is required to access this endpoint.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: org_id
+        in: path
+        description: The unique ID of the organization.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/custodians_many'
+        '403':
+          description: Forbidden
+    put:
+      tags:
+      - Organizations
+      operationId: update_org_custodians
+      summary: Update organization custodians.
+      description: 'Users listed within the request body will be updated as custodians for the organization. Users can be identified by their email or id.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: org_id
+        in: path
+        description: The unique ID of the organization.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/CustodiansPayload'
+      responses:
+        '200':
+          $ref: '#/components/responses/custodians_many'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+    post:
+      tags:
+      - Organizations
+      operationId: add_org_custodians
+      summary: Add organization custodians.
+      description: 'Users listed within the request body will be added as custodians to the organization. Users can be identified by their email or id.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: org_id
+        in: path
+        description: The unique ID of the organization.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/CustodiansPayload'
+      responses:
+        '200':
+          $ref: '#/components/responses/custodians_many'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+    delete:
+      tags:
+      - Organizations
+      operationId: remove_org_custodians
+      summary: Remove organization custodians.
+      description: 'Users listed within the request body will be deleted as custodians from the organization. Users can be identified by their email or id.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: org_id
+        in: path
+        description: The unique ID of the organization.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/CustodiansPayload'
+      responses:
+        '200':
+          description: Successfully deleted
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+components:
+  schemas:
+    OrgMemberMutable:
+      oneOf:
+      - type: object
+        required:
+        - id
+        properties:
+          id:
+            type: integer
+            description: Nexla User ID of the user to be added or updated.
+          access_role:
+            $ref: '#/components/schemas/AccessRoles'
+      - type: object
+        required:
+        - email
+        properties:
+          email:
+            type: string
+            description: 'Email ID of the user to be added or updated. If a user with this Email ID already exists on the platform then the API will update that account with this membership rule.
+
+              '
+          access_role:
+            $ref: '#/components/schemas/AccessRoles'
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
+    UserStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - DEACTIVATED
+      - SOURCE_COUNT_CAPPED
+      - SOURCE_DATA_CAPPED
+      - TRIAL_EXPIRED
+      description: 'Indicates the user''s account status across all organizations they are members of.
+
+        '
+    OrgMemberList:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrgMemberMutable'
+    OrgsUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        owner_id:
+          type: integer
+        billing_owner_id:
+          type: integer
+        email_domain:
+          type: string
+        client_identifier:
+          type: string
+          description: "Recommended but not required. This is a unique identifier for the organization in the environment. This identifier is especially useful for organizations that are using SSO. \n\nRecommendation: Use the organization's domain name. Apply variants if a company needs more than one organization account in the environment.       \n"
+        enable_nexla_password_login:
+          type: boolean
+          description: 'Set to `false` if an organization requires no user to be allowed username-password-based access. Applicable for organizations who use GSuite email or have SSO enabled.
+
+
+            Default value: `true`
+
+            '
+        custodians:
+          $ref: '#/components/schemas/CustodiansPayload'
+    CustodiansPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          email:
+            type: string
+    OrgMember:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Nexla User ID of this user.
+        full_name:
+          type: string
+        email:
+          type: string
+        is_admin?:
+          type: boolean
+          description: 'Indicates whether this user is an administrator for the organization or not.
+
+            '
+        access_role:
+          $ref: '#/components/schemas/AccessRoles'
+        org_membership_status:
+          $ref: '#/components/schemas/OrgMembershipStatus'
+        user_status:
+          $ref: '#/components/schemas/UserStatus'
+    OrgMemberDelete:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            oneOf:
+            - type: object
+              required:
+              - id
+              properties:
+                id:
+                  type: integer
+                  description: Nexla User ID of the user who should be removed.
+            - type: object
+              required:
+              - email
+              properties:
+                email:
+                  type: string
+                  description: "Email ID of the user who should be removed.      \n"
+    OrgMembershipStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - DEACTIVATED
+      description: 'Indicates whether the user''s membership in this organization is active or not.
+
+
+        If the membership is DEACTIVATED the user can no longer access the account but the resources owned by them will still be accessible by the organization administrators.
+
+        '
+    CustodiansResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          email:
+            type: string
+          full_name:
+            type: string
+  responses:
+    org_members:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/OrgMember'
+    custodians_many:
+      description: List of custodians
+      content:
+        application/vnd.nexla.api.v1+json:
+          schema:
+            $ref: '#/components/schemas/CustodiansResponse'
+    orgs_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              description:
+                type: 'null'
+              cluster_id:
+                type: integer
+              new_cluster_id:
+                type: 'null'
+              cluster_status:
+                type: string
+              email_domain:
+                type: string
+              email:
+                type: 'null'
+              client_identifier:
+                type: string
+              org_webhook_host:
+                type: string
+                format: url
+              access_roles:
+                $ref: '#/components/schemas/AccessRoles'
+              owner:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  email:
+                    type: string
+                    format: email
+                  full_name:
+                    type: string
+                  impersonated:
+                    type: boolean
+                  default_org:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                  user_tier:
+                    type: 'null'
+                  status:
+                    type: string
+                  account_locked:
+                    type: boolean
+                  org_memberships:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        is_admin?:
+                          type: boolean
+                        org_membership_status:
+                          type: string
+                  email_verified_at:
+                    type: string
+                    format: date-time
+                  tos_signed_at:
+                    type: 'null'
+                  updated_at:
+                    type: string
+                    format: date-time
+                  created_at:
+                    type: string
+                    format: date-time
+              billing_owner:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  email:
+                    type: string
+                    format: email
+                  full_name:
+                    type: string
+                  impersonated:
+                    type: boolean
+                  default_org:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                  user_tier:
+                    type: 'null'
+                  status:
+                    type: string
+                  account_locked:
+                    type: boolean
+                  org_memberships:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        is_admin?:
+                          type: boolean
+                        org_membership_status:
+                          type: string
+                  email_verified_at:
+                    type: string
+                    format: date-time
+                  tos_signed_at:
+                    type: 'null'
+                  updated_at:
+                    type: string
+                    format: date-time
+                  created_at:
+                    type: string
+                    format: date-time
+              admins:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    full_name:
+                      type: string
+                    email:
+                      type: string
+                      format: email
+              org_tier:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  display_name:
+                    type: string
+                  record_count_limit:
+                    type: integer
+                  record_count_limit_time:
+                    type: string
+                  data_source_count_limit:
+                    type: integer
+                  trial_period_days:
+                    type: integer
+              members_default_access_role:
+                type: string
+              status:
+                type: string
+              default_reusable_code_container_access_role:
+                type: string
+              require_org_admin_to_publish:
+                type: boolean
+              require_org_admin_to_subscribe:
+                type: boolean
+              email_domain_verified_at:
+                type: 'null'
+              name_verified_at:
+                type: 'null'
+              enable_nexla_password_login:
+                type: boolean
+              updated_at:
+                type: string
+                format: date-time
+              created_at:
+                type: string
+                format: date-time
+    orgs_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                description:
+                  type:
+                  - string
+                  - 'null'
+                email_domain:
+                  type: string
+                email:
+                  type:
+                  - string
+                  - 'null'
+                  format: email
+                client_identifier:
+                  type:
+                  - string
+                  - 'null'
+                org_webhook_host:
+                  type: string
+                  format: url
+                default_cluster_id:
+                  type: integer
+                access_roles:
+                  $ref: '#/components/schemas/AccessRoles'
+                owner:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    email:
+                      type: string
+                      format: email
+                    full_name:
+                      type: string
+                    super_user:
+                      type: boolean
+                    impersonated:
+                      type: boolean
+                    default_org:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                    user_tier:
+                      type:
+                      - 'null'
+                    status:
+                      type: string
+                    account_locked:
+                      type: boolean
+                    org_memberships:
+                      type: array
+                    email_verified_at:
+                      type: string
+                      format: date-time
+                    tos_signed_at:
+                      type:
+                      - string
+                      - 'null'
+                      format: date-time
+                    updated_at:
+                      type: string
+                      format: date-time
+                    created_at:
+                      type: string
+                      format: date-time
+                billing_owner:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    email:
+                      type: string
+                      format: email
+                    full_name:
+                      type: string
+                    super_user:
+                      type: boolean
+                    impersonated:
+                      type: boolean
+                    default_org:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                    user_tier:
+                      type:
+                      - 'null'
+                    status:
+                      type: string
+                    account_locked:
+                      type: boolean
+                    org_memberships:
+                      type: array
+                    email_verified_at:
+                      type: string
+                      format: date-time
+                    tos_signed_at:
+                      type:
+                      - string
+                      - 'null'
+                      format: date-time
+                    updated_at:
+                      type: string
+                      format: date-time
+                    created_at:
+                      type: string
+                      format: date-time
+                admins:
+                  type: array
+                org_tier:
+                  type:
+                  - object
+                  - 'null'
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    display_name:
+                      type: string
+                    record_count_limit:
+                      type: integer
+                    record_count_limit_time:
+                      type: string
+                    data_source_count_limit:
+                      type: integer
+                    trial_period_days:
+                      type: integer
+                members_default_access_role:
+                  type: string
+                status:
+                  type: string
+                default_reusable_code_container_access_role:
+                  type: string
+                require_org_admin_to_publish:
+                  type: boolean
+                require_org_admin_to_subscribe:
+                  type: boolean
+                email_domain_verified_at:
+                  type:
+                  - string
+                  - 'null'
+                  format: date-time
+                name_verified_at:
+                  type:
+                  - string
+                  - 'null'
+                  format: date-time
+                enable_nexla_password_login:
+                  type: boolean
+                updated_at:
+                  type: string
+                  format: date-time
+                created_at:
+                  type: string
+                  format: date-time
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
+  securitySchemes:
+    NexlaSessionToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: "The first step in calling the Nexla API or Nexla CLI is to fetch a Session access token by logging on to your Nexla UI instance. This ensures that your authentication is performed through your organization's preferred Identity Provider.\n\nTo fetch an access token from the Nexla UI, simply go to your Nexla UI instance, and try the route `/token`. For example, if your Nexla UI instance is at `https://dataops.nexla.io`, open `https://dataops.nexla.io/token` in the browser. \n\nThis will automatically route you to a login page, ask you to authenticate using your preferred Identity Provider, and, upon successful authentication, route you to a page where you can copy the Access Token.\n\nUsage format: `Bearer <JWT>`.\n"
+    NexlaApiKeyQuery:
+      type: apiKey
+      name: api_key
+      in: query
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as a query parameter to authenticate this request.
+
+        Usage: `?api_key=<api-key>`
+
+        '
+    NexlaApiKeyHeader:
+      type: http
+      scheme: Basic
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as an authorization header to authenticate this request.
+
+        Usage format: `Basic <api-key>`
+
+        '
+    basicAuth:
+      type: http
+      scheme: basic
+    GoogleSSOToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: 'The token that is used when logging into Nexla via Google SSO.
+
+        '
+x-tagGroups:
+- name: Session
+  tags:
+  - Session Management
+- name: Integrate
+  tags:
+  - Flows
+  - Sources
+  - Destinations (Data Sinks)
+  - Nexsets (Data Sets)
+  - Credentials
+  - Data Maps
+  - Code Containers
+  - Transforms
+  - Projects
+- name: Monitor
+  tags:
+  - Notifications
+  - Metrics
+  - Audit Logs
+  - Quarantine Settings
+- name: Collaborate
+  tags:
+  - Access Control
+- name: Account Management
+  tags:
+  - Organizations
+  - Users
+  - User Settings
+  - Teams
+  - Gen AI Configs
+- name: Real-Time Events
+  tags:
+  - Webhooks
+- name: Rate Limiting
+  tags:
+  - Limits
+- name: Marketplace
+  tags:
+  - Marketplace
+- name: Self Sign-Up
+  tags:
+  - Self Sign-Up
+  - Self Sign-Up Admin
+- name: Async Tasks
+  tags:
+  - Async Tasks

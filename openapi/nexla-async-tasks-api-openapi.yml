@@ -1,0 +1,559 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Nexla Rest Async Tasks API
+  termsOfService: https://nexla.com/terms-of-service/
+  contact:
+    name: Nexla Support
+    url: https://docs.nexla.com
+    email: support@nexla.com
+  license:
+    name: Nexla
+    url: https://nexla.com
+  x-logo:
+    url: https://cdn.nexla.io/ui/assets/brand/v2/nexla-logo-color-portrait.svg
+    backgroundColor: '#ffffff'
+  description: '# Introduction
+
+
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
+
+
+    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
+
+
+    The API references in this document lists all API endpoints and the corresponding payloads.
+
+
+    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
+
+
+    # API Data Format and Versions
+
+
+    The API uses JSON for all data exchanges.
+
+
+    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
+
+    ```
+
+    Accept: application/vnd.nexla.api.v1+json
+
+    ```
+
+
+    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
+
+
+
+    ```
+
+    Accept: application/json
+
+    ```
+
+
+    # Authentication
+
+
+    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
+
+
+    <SecurityDefinitions />'
+servers:
+- url: https://{nexla-api-host}
+  variables:
+    nexla-api-host:
+      default: dataops.nexla.io/nexla-api
+      description: Nexla API URL your Nexla instance
+security:
+- NexlaSessionToken: []
+tags:
+- name: Async Tasks
+  description: Operations for managing asynchronous tasks.
+paths:
+  /async_tasks:
+    get:
+      tags:
+      - Async Tasks
+      operationId: get_async_tasks
+      summary: Get async operations list for current user.
+      description: Get a list of async operations for current user. Returns type, arguments, status, results etc.
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/async_tasks_many'
+        '401':
+          description: Unauthorized
+    post:
+      tags:
+      - Async Tasks
+      operationId: create_async_task
+      summary: Create an async operation.
+      description: Create an async operation. Returns the task id and other related data. Checks if the user has permission to create the task with all entities, and other preconditions.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AsyncTaskPayload'
+      responses:
+        '200':
+          $ref: '#/components/responses/async_task_one'
+        '400':
+          description: Bad Request (e.g. invalid arguments)
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+  /async_tasks/of_type/{task_type}:
+    get:
+      operationId: get_async_tasks_of_type
+      tags:
+      - Async Tasks
+      summary: Get async operations list for current user of a specific type.
+      description: Get a list of async operations for current user of a specific type. Returns type, arguments, status, results etc.
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: task_type
+        in: path
+        description: The type of the task.
+        required: true
+        schema:
+          $ref: '#/components/schemas/async_task_types'
+      responses:
+        '200':
+          $ref: '#/components/responses/async_tasks_many'
+        '401':
+          description: Unauthorized
+  /async_tasks/by_status/{status}:
+    get:
+      operationId: get_async_tasks_by_status
+      tags:
+      - Async Tasks
+      summary: Get async operations list for current user by status
+      description: Get a list of async operations for current user of a specific type. Returns type, arguments, status, results etc.
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: status
+        in: path
+        description: The status of tasks.
+        required: true
+        schema:
+          $ref: '#/components/schemas/async_task_statuses'
+      responses:
+        '200':
+          $ref: '#/components/responses/async_tasks_many'
+        '401':
+          description: Unauthorized
+  /async_tasks/types:
+    get:
+      operationId: get_async_task_types
+      tags:
+      - Async Tasks
+      summary: Get async operation types
+      description: Get a list of async operation types. Returns type, arguments, status, results etc.
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '401':
+          description: Unauthorized
+  /async_tasks/explain_arguments/{task_type}:
+    get:
+      operationId: get_async_tasks_explain_arguments
+      tags:
+      - Async Tasks
+      summary: Get async operation arguments for a specific type with descriptions
+      description: Get a list of async operation arguments for a specific type with descriptions.
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: task_type
+        in: path
+        description: The type of the task.
+        required: true
+        schema:
+          $ref: '#/components/schemas/async_task_types'
+      responses:
+        '200':
+          description: Success. The response is a dictionary with the argument names as keys and the descriptions as values.
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                type: DataCredentials
+                id: 12512
+                action: read_sample
+        '404':
+          description: Not Found
+  /async_tasks/{task_id}:
+    get:
+      operationId: get_async_task
+      tags:
+      - Async Tasks
+      summary: Get async operation by ID
+      description: Get an async operation by ID. Returns type, arguments, status, results and other fields.
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: task_id
+        in: path
+        description: The ID of the task.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/async_task_one'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+    delete:
+      operationId: delete_async_task
+      tags:
+      - Async Tasks
+      summary: Delete async operation by ID
+      description: Delete an async operation by ID. Returns the task id and other related data.
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: task_id
+        in: path
+        description: The ID of the task.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad Request (e.g. task is running)
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /async_tasks/{task_id}/rerun:
+    post:
+      operationId: rerun_async_task
+      tags:
+      - Async Tasks
+      summary: Rerun async operation
+      description: Rerun an async operation. This is used to re-run an async operation. The task will be re-created and executed with the same arguments.
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: task_id
+        in: path
+        description: The task id.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/async_task_one'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+  /async_tasks/{task_id}/result:
+    get:
+      operationId: get_async_task_result
+      tags:
+      - Async Tasks
+      summary: Get async operation result
+      description: Get the result of an async operation.
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: task_id
+        in: path
+        description: The ID of the task.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '102':
+          description: Processing
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                description: The result of the async operation. Format depends on the task type.
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+  /async_tasks/{task_id}/download_link:
+    get:
+      operationId: get_async_task_download_link
+      tags:
+      - Async Tasks
+      summary: Get download link for async operation result
+      description: Get a download link for the result of an async operation.
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: task_id
+        in: path
+        description: The ID of the task.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uri
+        '400':
+          description: Bad Request. Returned when tasks is not completed, or doesn't support downloading the result.
+        '404':
+          description: Not Found
+  /async_tasks/{task_id}/acknowledge:
+    post:
+      operationId: acknowledge_async_task
+      tags:
+      - Async Tasks
+      summary: Acknowledge async operation
+      description: Acknowledge an async operation. This is used to confirm that the user has seen the results of the async operation. After that, if tasks has stored results, they will be deleted.
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: task_id
+        in: path
+        description: The task id.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          $ref: '#/components/responses/async_task_one'
+        '404':
+          description: Not Found
+components:
+  schemas:
+    async_task_statuses:
+      type: string
+      enum:
+      - pending
+      - running
+      - completed
+      - failed
+      - cancelled
+      description: The status of the task.
+    org:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: 'null'
+        client_identifier:
+          type: 'null'
+    AsyncTask:
+      description: Success
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the task.
+        type:
+          $ref: '#/components/schemas/async_task_types'
+        status:
+          $ref: '#/components/schemas/async_task_statuses'
+        progress:
+          type: integer
+          description: The progress of the task.
+        priority:
+          type: integer
+          description: The priority of the task.
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the task was created.
+        stopped_at:
+          type: string
+          format: date-time
+          description: The date and time the task was completed, failed or stopped in another way.
+        result:
+          type: object
+          description: The result of the task.
+        result_url:
+          type: string
+          description: The URL to the result of the task.
+        error:
+          type: object
+          description: The error that occurred during the task.
+        owner:
+          $ref: '#/components/schemas/owner'
+        org:
+          $ref: '#/components/schemas/org'
+    owner:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+          format: email
+    async_task_types:
+      type: string
+      enum:
+      - BulkDeleteNotifications
+      - BulkMarkAsReadNotifications
+      - BulkPauseFlows
+      - CallProbe
+      - ChownUserResources
+      - DeactivateUser
+      - GetAuditLogs
+    AsyncTaskPayload:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          description: The type of the task.
+          enum:
+          - BulkDeleteNotifications
+          - BulkMarkAsReadNotifications
+          - BulkPauseFlows
+          - CallProbe
+          - ChownUserResources
+          - DeactivateUser
+          - GetAuditLogs
+        priority:
+          type: integer
+          description: The priority of the task. At the moment doesn't have any effect.
+        arguments:
+          type: object
+          additionalProperties: true
+          description: The arguments for the task. Use `GET /async_tasks/explain_arguments/{task_type}` to get the list of possible arguments for task.
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
+  responses:
+    async_task_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AsyncTask'
+    async_tasks_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AsyncTask'
+  securitySchemes:
+    NexlaSessionToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: "The first step in calling the Nexla API or Nexla CLI is to fetch a Session access token by logging on to your Nexla UI instance. This ensures that your authentication is performed through your organization's preferred Identity Provider.\n\nTo fetch an access token from the Nexla UI, simply go to your Nexla UI instance, and try the route `/token`. For example, if your Nexla UI instance is at `https://dataops.nexla.io`, open `https://dataops.nexla.io/token` in the browser. \n\nThis will automatically route you to a login page, ask you to authenticate using your preferred Identity Provider, and, upon successful authentication, route you to a page where you can copy the Access Token.\n\nUsage format: `Bearer <JWT>`.\n"
+    NexlaApiKeyQuery:
+      type: apiKey
+      name: api_key
+      in: query
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as a query parameter to authenticate this request.
+
+        Usage: `?api_key=<api-key>`
+
+        '
+    NexlaApiKeyHeader:
+      type: http
+      scheme: Basic
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as an authorization header to authenticate this request.
+
+        Usage format: `Basic <api-key>`
+
+        '
+    basicAuth:
+      type: http
+      scheme: basic
+    GoogleSSOToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: 'The token that is used when logging into Nexla via Google SSO.
+
+        '
+x-tagGroups:
+- name: Session
+  tags:
+  - Session Management
+- name: Integrate
+  tags:
+  - Flows
+  - Sources
+  - Destinations (Data Sinks)
+  - Nexsets (Data Sets)
+  - Credentials
+  - Data Maps
+  - Code Containers
+  - Transforms
+  - Projects
+- name: Monitor
+  tags:
+  - Notifications
+  - Metrics
+  - Audit Logs
+  - Quarantine Settings
+- name: Collaborate
+  tags:
+  - Access Control
+- name: Account Management
+  tags:
+  - Organizations
+  - Users
+  - User Settings
+  - Teams
+  - Gen AI Configs
+- name: Real-Time Events
+  tags:
+  - Webhooks
+- name: Rate Limiting
+  tags:
+  - Limits
+- name: Marketplace
+  tags:
+  - Marketplace
+- name: Self Sign-Up
+  tags:
+  - Self Sign-Up
+  - Self Sign-Up Admin
+- name: Async Tasks
+  tags:
+  - Async Tasks

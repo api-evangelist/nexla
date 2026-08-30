@@ -1,0 +1,146 @@
+openapi: 3.2.0
+info:
+  title: Nexla GenAI (RAG + MCPaaS) Query API
+  description: Combined Nexla GenAI RAG API Service and MCPaaS
+  version: v0.2.3.3-combined
+tags:
+- name: Query
+paths:
+  /query:
+    post:
+      summary: Query
+      description: Handle query requests.
+      operationId: query_query_post
+      parameters:
+      - name: final_prompt
+        in: query
+        required: false
+        schema:
+          title: Final Prompt
+      - name: token_type
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/TokenType'
+          default: service_key
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          type: string
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Query
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    QueryRequest:
+      properties:
+        user_query:
+          type: string
+          title: User Query
+          description: Query text to be processed.
+        datasets:
+          items:
+            $ref: '#/components/schemas/Dataset'
+          type: array
+          title: Datasets
+          description: List of datasets to include in the query.
+        ai_model:
+          type: string
+          title: Ai Model
+          description: Model identifier to use for processing the query.
+        llm_provider:
+          type: string
+          title: Llm Provider
+          description: LLM provider to use for processing the query.
+        streaming:
+          type: boolean
+          title: Streaming
+          description: Flag to indicate if the response should be streamed.
+          default: false
+        debug:
+          type: boolean
+          title: Debug
+          description: Flag to send intermediate logs to the frontend.
+          default: false
+        fast_mode:
+          type: boolean
+          title: Fast Mode
+          description: Flag to enable fast mode which skips timeinfo LLM call, grading, and build_user_context.
+          default: false
+      type: object
+      required:
+      - user_query
+      - datasets
+      - ai_model
+      - llm_provider
+      title: QueryRequest
+    Dataset:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: The unique identifier for the dataset.
+      type: object
+      required:
+      - id
+      title: Dataset
+    TokenType:
+      type: string
+      enum:
+      - bearer
+      - service_key
+      title: TokenType
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError

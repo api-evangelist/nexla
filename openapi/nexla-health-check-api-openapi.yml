@@ -1,0 +1,32 @@
+openapi: 3.2.0
+info:
+  title: Nexla GenAI (RAG + MCPaaS) Health Check API
+  description: Combined Nexla GenAI RAG API Service and MCPaaS
+  version: v0.2.3.3-combined
+tags:
+- name: Health Check
+paths:
+  /health-check/:
+    get:
+      summary: Health Check
+      operationId: health_check_health_check__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      tags:
+      - Health Check
+  /health-check:
+    get:
+      summary: Health Check
+      operationId: health_check_health_check_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      tags:
+      - Health Check

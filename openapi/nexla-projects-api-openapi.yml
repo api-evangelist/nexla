@@ -1,0 +1,1145 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Nexla Rest Projects API
+  termsOfService: https://nexla.com/terms-of-service/
+  contact:
+    name: Nexla Support
+    url: https://docs.nexla.com
+    email: support@nexla.com
+  license:
+    name: Nexla
+    url: https://nexla.com
+  x-logo:
+    url: https://cdn.nexla.io/ui/assets/brand/v2/nexla-logo-color-portrait.svg
+    backgroundColor: '#ffffff'
+  description: '# Introduction
+
+
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
+
+
+    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
+
+
+    The API references in this document lists all API endpoints and the corresponding payloads.
+
+
+    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
+
+
+    # API Data Format and Versions
+
+
+    The API uses JSON for all data exchanges.
+
+
+    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
+
+    ```
+
+    Accept: application/vnd.nexla.api.v1+json
+
+    ```
+
+
+    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
+
+
+
+    ```
+
+    Accept: application/json
+
+    ```
+
+
+    # Authentication
+
+
+    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
+
+
+    <SecurityDefinitions />'
+servers:
+- url: https://{nexla-api-host}
+  variables:
+    nexla-api-host:
+      default: dataops.nexla.io/nexla-api
+      description: Nexla API URL your Nexla instance
+security:
+- NexlaSessionToken: []
+tags:
+- name: Projects
+  description: Operations for managing projects.
+paths:
+  /projects:
+    get:
+      tags:
+      - Projects
+      operationId: get_projects
+      summary: Get all Projects
+      description: 'Retrieves a list of all projects accessible to the authenticated user.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/access_roles'
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/projects_many'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+    post:
+      tags:
+      - Projects
+      operationId: create_project
+      summary: Create a project
+      description: 'Creates a project with the specified configuration. Note that flows can also be attached to the project later by calling endpoints to update the project.
+
+        '
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/ProjectCreate'
+      responses:
+        '200':
+          $ref: '#/components/responses/projects_one'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+  /projects/{project_id}:
+    get:
+      tags:
+      - Projects
+      operationId: get_project
+      summary: Get Project by ID
+      description: 'Returns a project if a valid ID is provided.
+
+        '
+      parameters:
+      - name: project_id
+        in: path
+        description: The unique ID of the project
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/projects_one'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+      - Projects
+      operationId: delete_project
+      summary: Delete Project by ID
+      description: 'Deletes a project if a valid ID is provided. Note that flows belonging to the project will only be removed from the project and will not be deleted.
+
+        '
+      parameters:
+      - name: project_id
+        in: path
+        description: The unique ID of the project.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Projects
+      operationId: update_project
+      summary: Modify a Project
+      description: 'Modifies a project''s information and settings if a valid ID and body are provided.
+
+        '
+      parameters:
+      - name: project_id
+        in: path
+        description: The unique ID of the project.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/ProjectMutable'
+      responses:
+        '200':
+          $ref: '#/components/responses/projects_one'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /projects/{project_id}/flows:
+    get:
+      tags:
+      - Projects
+      operationId: get_project_flows
+      summary: Get Project Flows
+      description: 'Returns a list of flows belonging to a project.
+
+        '
+      parameters:
+      - name: project_id
+        in: path
+        description: The unique ID of the project.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/FlowsMany'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+      - Projects
+      operationId: replace_project_flows
+      summary: Replace Project Flows List
+      description: 'Replaces the list of flows belonging to a project. Existing flows are removed from the project.
+
+        '
+      parameters:
+      - name: project_id
+        in: path
+        description: The unique ID of the project.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/ProjectFlowListFlowNodes'
+      responses:
+        '200':
+          $ref: '#/components/responses/FlowsMany'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Projects
+      operationId: add_project_flows
+      summary: Add Flows to Project
+      description: 'Adds a list of flows to a project. The existing flow list is retained and merged with the new flow list.
+
+        '
+      parameters:
+      - name: project_id
+        in: path
+        description: The unique ID of the project.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/ProjectFlowListFlowNodes'
+      responses:
+        '200':
+          $ref: '#/components/responses/FlowsMany'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+      - Projects
+      operationId: remove_project_flows
+      summary: Remove Flows From A Project
+      description: 'Removes data flows from a project. If no request body is provided, all flows belonging to the project will be removed. The flows themselves will not be deleted, but they will no longer belong to the project.
+
+        '
+      parameters:
+      - name: project_id
+        in: path
+        description: The unique ID of the project.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Optional list of flow identifiers. Data flows must be referenced by the resource associated with them in the GET response.
+        required: false
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/ProjectFlowListFlowNodes'
+      responses:
+        '200':
+          $ref: '#/components/responses/FlowsMany'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /projects/{project_id}/data_flows:
+    get:
+      tags:
+      - Projects
+      operationId: get_project_flows_(deprecated)
+      summary: Get Project Flows (Deprecated)
+      description: "Returns a list of flows belonging to a project.\n\n> **Note**: This version of the endpoint has been deprecated. The returned flow response does not reference the new unique flow ids, instead references composite data flow ids of the type `{resource_type}/{resource_id}`. See get_project_flows for a new version of this endpoint that references unique `flow_id`.   \n"
+      parameters:
+      - name: project_id
+        in: path
+        description: The unique ID of the project.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/ProjectFlowsOld'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+      - Projects
+      operationId: replace_project_flows_(deprecated)
+      summary: Replace Project Flows List (Deprecated)
+      description: "Replaces the list of flows belonging to a project. Existing flows are removed from the project.\n\n> **Note**: This version of the endpoint has been deprecated. The request body and response does not reference flows with new unique flow_ids, instead references composite data flow ids of the type `{resource_type}/{resource_id}`. See replace_project_flows for a new version of this endpoint that references unique `flow_id`.   \n"
+      parameters:
+      - name: project_id
+        in: path
+        description: The unique ID of the project.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/ProjectFlowList'
+      responses:
+        '200':
+          $ref: '#/components/responses/ProjectFlowsOld'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Projects
+      operationId: add_project_flows_(deprecated)
+      summary: Add Flows to Project (Deprecated)
+      description: 'Adds a list of flows to a project. The existing flow list is retained and merged with the new flow list.
+
+
+        > **Note**: This version of the endpoint has been deprecated. The request body and response does not reference flows with new unique flow_ids, instead references composite data flow ids of the type `{resource_type}/{resource_id}`. See add_project_flows for a new version of this endpoint that references unique `flow_id`.
+
+        '
+      parameters:
+      - name: project_id
+        in: path
+        description: The unique ID of the project.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/ProjectFlowList'
+      responses:
+        '200':
+          $ref: '#/components/responses/ProjectFlowsOld'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+      - Projects
+      operationId: remove_project_flows_(deprecated)
+      summary: Remove Flows From A Project (Deprecated)
+      description: 'Removes data flows from a project. If no request body is provided, all flows belonging to the project will be removed. The flows themselves will not be deleted, but they will no longer belong to the project.
+
+
+        > **Note**: This version of the endpoint has been deprecated. The request body and response does not reference flows with new unique flow_ids, instead references composite data flow ids of the type `{resource_type}/{resource_id}`. See remove_project_flows for a new version of this endpoint that references unique `flow_id`.
+
+        '
+      parameters:
+      - name: project_id
+        in: path
+        description: The unique ID of the project.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Optional list of flow identifiers. Data flows must be referenced by the resource associated with them in the GET response.
+        required: false
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/ProjectFlowList'
+      responses:
+        '200':
+          $ref: '#/components/responses/ProjectFlowsOld'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+components:
+  schemas:
+    ProjectFlowListFlowNodes:
+      type: object
+      properties:
+        flows:
+          type: array
+          items:
+            type: integer
+            description: 'Unique ID of the flow node.
+
+              '
+    ProjectFlowList:
+      type: object
+      properties:
+        data_flows:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectFlowIdentifier'
+    ProjectMutable:
+      allOf:
+      - type: object
+        properties:
+          name:
+            type: string
+            example: test project
+          description:
+            type: string
+            example: it's a test project
+      - $ref: '#/components/schemas/ProjectFlowList'
+    org:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: 'null'
+        client_identifier:
+          type: 'null'
+    owner:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+          format: email
+    FlowNodes:
+      type: array
+      items:
+        $ref: '#/components/schemas/FlowOriginNode'
+    ProjectFlowIdentifier:
+      anyOf:
+      - type: object
+        properties:
+          data_source_id:
+            type: integer
+            description: "The ID of the data source which is the root node of this flow chain.\n\nUnless the flow chain has been created from a shared Nexset, flow definitions start from the source as the root node. This property reflects the source that is the root node of this flow.          \n"
+      - type: object
+        properties:
+          data_set_id:
+            type: integer
+            description: "The ID of the Nexset which is the root node of this flow chain.\n\nThis property is not null only if the flow was created from a shared Nexset. In that case, this value reflects the ID of the derived dataset created from the shared Nexset.           \n"
+    FlowChildNode:
+      type: object
+      properties:
+        id:
+          type: integer
+        parent_node_id:
+          type: integer
+          description: 'The flow id of the flow node this node is a direct descendant of.
+
+            '
+        origin_node_id:
+          type: integer
+          description: "The flow id of the flow node at the root of this flow chain.      \n"
+        data_source_id:
+          type: integer
+          format: nullable
+          description: 'The ID of the data source this flow node is linked to if this is a flow node for a data source.
+
+            '
+        data_set_id:
+          type: integer
+          format: nullable
+          description: "The ID of the Nexset this flow node is linked to if this is flow node for a Nexset. \n"
+        data_sink_id:
+          type: integer
+          format: nullable
+          description: "The ID of the data sink this flow node is linked to if this is a flow node for a data sink.         \n"
+        children:
+          type: array
+          description: 'Each element is a flow node that is directly linked to this node.
+
+            '
+    FlowElements:
+      type: object
+      properties:
+        code_containers:
+          type: array
+          description: 'All code containers that are linked to flow nodes in this response.
+
+            '
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              owner_id:
+                type: integer
+              org_id:
+                type: integer
+              name:
+                type: string
+              description:
+                type:
+                - 'null'
+              data_credentials_id:
+                type:
+                - 'null'
+              public:
+                type: boolean
+              managed:
+                type: boolean
+              reusable:
+                type: boolean
+              resource_type:
+                type: string
+              output_type:
+                type: string
+              code_type:
+                type: string
+              code_encoding:
+                type: string
+              access_roles:
+                type: array
+              tags:
+                type: array
+              copied_from_id:
+                type: integer
+              created_at:
+                type: string
+                format: date-time
+              updated_at:
+                type: string
+                format: date-time
+            additionalProperties: false
+        data_sources:
+          type: array
+          description: "All data sources that are linked to flow nodes in this response.      \n"
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              owner_id:
+                type: integer
+              org_id:
+                type: integer
+              flow_node_id:
+                type: integer
+              origin_node_id:
+                type: integer
+              name:
+                type: string
+              description:
+                type:
+                - 'null'
+              status:
+                type: string
+              data_credentials_id:
+                type:
+                - integer
+                - 'null'
+              data_sink_id:
+                type:
+                - integer
+                - 'null'
+              auto_generated:
+                type: boolean
+              managed:
+                type: boolean
+              source_type:
+                type: string
+              connector_type:
+                type: string
+              connection_type:
+                type: string
+              template_config:
+                type: object
+              vendor:
+                type:
+                - 'null'
+              access_roles:
+                type: array
+              tags:
+                type: array
+              copied_from_id:
+                type:
+                - integer
+                - 'null'
+              created_at:
+                type: string
+                format: date-time
+              updated_at:
+                type: string
+                format: date-time
+            additionalProperties: false
+        data_sets:
+          type: array
+          description: "All Nexsets that are linked to flow nodes in this response.            \n"
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              owner_id:
+                type: integer
+              org_id:
+                type: integer
+              flow_node_id:
+                type: integer
+              origin_node_id:
+                type: integer
+              name:
+                type: string
+              description:
+                type: string
+              status:
+                type: string
+              data_source_id:
+                type:
+                - integer
+                - 'null'
+              parent_data_set_id:
+                type:
+                - integer
+                - 'null'
+              code_container_id:
+                type:
+                - integer
+                - 'null'
+              data_sink_ids:
+                type: array
+              public:
+                type: boolean
+              managed:
+                type: boolean
+              access_roles:
+                type: array
+              tags:
+                type: array
+              copied_from_id:
+                type:
+                - integer
+                - 'null'
+              created_at:
+                type: string
+                format: date-time
+              updated_at:
+                type: string
+                format: date-time
+            additionalProperties: false
+        data_sinks:
+          type: array
+          description: "All data sinks that are linked to flow nodes in this response.      \n"
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              owner_id:
+                type: integer
+              org_id:
+                type: integer
+              flow_node_id:
+                type: integer
+              origin_node_id:
+                type: integer
+              name:
+                type: string
+              description:
+                type:
+                - 'null'
+              status:
+                type: string
+              data_credentials_id:
+                type: integer
+              data_set_id:
+                type: integer
+              data_source_id:
+                type:
+                - integer
+                - 'null'
+              managed:
+                type: boolean
+              sink_type:
+                type: string
+              connector_type:
+                type: string
+              connection_type:
+                type: string
+              template_config:
+                type: object
+              vendor:
+                type:
+                - 'null'
+              access_roles:
+                type: array
+              tags:
+                type: array
+              copied_from_id:
+                type:
+                - 'null'
+              created_at:
+                type: string
+                format: date-time
+              updated_at:
+                type: string
+                format: date-time
+            additionalProperties: false
+        data_credentials:
+          type: array
+          description: 'All credentials that are referenced by flow nodes in this response.
+
+            '
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              owner_id:
+                type: integer
+              org_id:
+                type: integer
+              name:
+                type: string
+              description:
+                type:
+                - 'null'
+              credentials_type:
+                type: string
+              verified_status:
+                type: string
+              managed:
+                type: boolean
+              template_config:
+                type: object
+              vendor:
+                type:
+                - 'null'
+              access_roles:
+                type: array
+              tags:
+                type: array
+              copied_from_id:
+                type:
+                - 'null'
+              created_at:
+                type: string
+                format: date-time
+              updated_at:
+                type: string
+                format: date-time
+            additionalProperties: false
+        shared_data_sets:
+          type: array
+          description: 'Metadata about the parent Nexset any relevant origin flow node is a descendant of. This is only relevant for flow nodes that originate in a shared Nexset instead of a data source.
+
+            '
+        orgs:
+          type: array
+          items:
+            $ref: '#/components/schemas/org'
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/owner'
+        projects:
+          type: array
+          description: 'All projects that any of the flows in this flow response are linked to.
+
+            '
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              owner_id:
+                type: integer
+              org_id:
+                type: integer
+              name:
+                type: string
+              description:
+                type: string
+              access_roles:
+                type: array
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
+    ProjectDataFlow:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 'Unique identifier of this flow.
+
+            '
+        project_id:
+          type: integer
+          description: "Unique identifier of the project this flow belongs to.      \n"
+        data_source_id:
+          type: integer
+          format: nullable
+          description: 'The ID of the data source which is the root node of this flow chain.
+
+
+            Unless the flow chain has been created from a shared Nexset, flow definitions start from the source as the root node. This property reflects the source that is the root node of this flow.
+
+            '
+        data_set_id:
+          type: integer
+          format: nullable
+          description: "The ID of the Nexset which is the root node of this flow chain.\n\nThis property is not null only if the flow was created from a shared Nexset. In that case, this value reflects the ID of the derived dataset created from the shared Nexset.  \n"
+        updated_at:
+          type: string
+          example: '2023-01-31T01:39:54.000Z'
+        created_at:
+          type: string
+          example: '2023-01-31T01:39:54.000Z'
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: 'Unique identifier of this project.
+
+            '
+        owner:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int32
+            full_name:
+              type: string
+              example: John Johnson
+            email:
+              type: string
+              example: example@nexla.com
+        org:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int32
+            name:
+              type: string
+              example: Nexla
+            email_domain:
+              type: string
+              example: nexla.com
+            client_identifier:
+              type: string
+              format: nullable
+        name:
+          type: string
+          example: test project
+        description:
+          type: string
+          example: it's a test project
+        data_flows:
+          type: array
+          description: 'List of all flows that are part of this project.
+
+
+            > Note: This is a deprecated format of representing flows. We recommend using the `flows` entry in this object.
+
+            '
+          items:
+            $ref: '#/components/schemas/ProjectDataFlow'
+        flows:
+          type: array
+          description: 'List of all flows that are part of this project.
+
+
+            > Note: This is a new recommended format of representing flows. We recommend using this format which uses unique flow ids instead of the `data_flows` object.
+
+            '
+          items:
+            $ref: '#/components/schemas/ProjectDataFlow'
+        access_roles:
+          $ref: '#/components/schemas/AccessRoles'
+        tags:
+          type: array
+          items:
+            type: string
+        copied_from_id:
+          type: string
+          format: nullable
+        updated_at:
+          type: string
+          format: date-time
+          example: '2023-01-31T01:39:54.000Z'
+        created_at:
+          type: string
+          format: date-time
+          example: '2023-01-31T01:39:54.000Z'
+    FlowOriginNode:
+      type: object
+      properties:
+        id:
+          type: integer
+        parent_node_id:
+          type: integer
+          format: nullable
+          description: "Flow id of the parent flow node if this node is not the root node in the flow chain. This will usually be `null` as most flow definitions will originate in the node for `data_source`. \n"
+        origin_node_id:
+          type: integer
+          description: "Flow id of the root node in the flow chain.           \n"
+        data_source_id:
+          type: integer
+          format: nullable
+          description: 'The ID of the data source this flow node is linked to if this is a flow node for a data source.
+
+            '
+        data_set_id:
+          type: integer
+          format: nullable
+          description: "The ID of the Nexset this flow node is linked to if this is flow node for a Nexset. \n"
+        data_sink_id:
+          type: integer
+          format: nullable
+          description: "The ID of the data sink this flow node is linked to if this is a flow node for a data sink.                             \n"
+        shared_origin_node_id:
+          type: integer
+          format: nullable
+        status:
+          type: string
+        project_id:
+          type: integer
+          format: nullable
+        flow_type:
+          type: string
+        ingestion_mode:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        children:
+          type: array
+          description: 'Each element of this array is a flow node that is directly linked to this flow node.
+
+            '
+          items:
+            $ref: '#/components/schemas/FlowChildNode'
+    ProjectCreate:
+      allOf:
+      - $ref: '#/components/schemas/ProjectMutable'
+      - required:
+        - name
+  parameters:
+    access_roles:
+      name: access_role
+      in: query
+      schema:
+        type: string
+        enum:
+        - collaborator
+        - operator
+        - admin
+        - owner
+        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
+        externalDocs:
+          description: Nexla API access roles
+          url: https://developers.nexla.com/docs/access-modes
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
+  responses:
+    FlowsMany:
+      description: Success
+      content:
+        application/json:
+          schema:
+            allOf:
+            - type: object
+              properties:
+                flows:
+                  $ref: '#/components/schemas/FlowNodes'
+            - $ref: '#/components/schemas/FlowElements'
+    projects_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Project'
+    projects_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Project'
+    ProjectFlowsOld:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ProjectDataFlow'
+  securitySchemes:
+    NexlaSessionToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: "The first step in calling the Nexla API or Nexla CLI is to fetch a Session access token by logging on to your Nexla UI instance. This ensures that your authentication is performed through your organization's preferred Identity Provider.\n\nTo fetch an access token from the Nexla UI, simply go to your Nexla UI instance, and try the route `/token`. For example, if your Nexla UI instance is at `https://dataops.nexla.io`, open `https://dataops.nexla.io/token` in the browser. \n\nThis will automatically route you to a login page, ask you to authenticate using your preferred Identity Provider, and, upon successful authentication, route you to a page where you can copy the Access Token.\n\nUsage format: `Bearer <JWT>`.\n"
+    NexlaApiKeyQuery:
+      type: apiKey
+      name: api_key
+      in: query
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as a query parameter to authenticate this request.
+
+        Usage: `?api_key=<api-key>`
+
+        '
+    NexlaApiKeyHeader:
+      type: http
+      scheme: Basic
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as an authorization header to authenticate this request.
+
+        Usage format: `Basic <api-key>`
+
+        '
+    basicAuth:
+      type: http
+      scheme: basic
+    GoogleSSOToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: 'The token that is used when logging into Nexla via Google SSO.
+
+        '
+x-tagGroups:
+- name: Session
+  tags:
+  - Session Management
+- name: Integrate
+  tags:
+  - Flows
+  - Sources
+  - Destinations (Data Sinks)
+  - Nexsets (Data Sets)
+  - Credentials
+  - Data Maps
+  - Code Containers
+  - Transforms
+  - Projects
+- name: Monitor
+  tags:
+  - Notifications
+  - Metrics
+  - Audit Logs
+  - Quarantine Settings
+- name: Collaborate
+  tags:
+  - Access Control
+- name: Account Management
+  tags:
+  - Organizations
+  - Users
+  - User Settings
+  - Teams
+  - Gen AI Configs
+- name: Real-Time Events
+  tags:
+  - Webhooks
+- name: Rate Limiting
+  tags:
+  - Limits
+- name: Marketplace
+  tags:
+  - Marketplace
+- name: Self Sign-Up
+  tags:
+  - Self Sign-Up
+  - Self Sign-Up Admin
+- name: Async Tasks
+  tags:
+  - Async Tasks

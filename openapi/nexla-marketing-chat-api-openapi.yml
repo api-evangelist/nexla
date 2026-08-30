@@ -1,0 +1,125 @@
+openapi: 3.2.0
+info:
+  title: Nexla GenAI (RAG + MCPaaS) Marketing Chat API
+  description: Combined Nexla GenAI RAG API Service and MCPaaS
+  version: v0.2.3.3-combined
+tags:
+- name: Marketing Chat
+paths:
+  /marketing_chat:
+    post:
+      summary: Marketing Chat
+      description: 'Minimal RAG endpoint: fetch vectors and answer for Marketing Chatbot only.
+
+        - No query rewriting, grading, caching.'
+      operationId: marketing_chat_marketing_chat_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MarketingChatRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Marketing Chat
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    Dataset:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: The unique identifier for the dataset.
+      type: object
+      required:
+      - id
+      title: Dataset
+    MarketingChatRequest:
+      properties:
+        user_query:
+          type: string
+          title: User Query
+          description: Query text to be processed.
+        datasets:
+          items:
+            $ref: '#/components/schemas/Dataset'
+          type: array
+          title: Datasets
+          description: List of datasets to include in the query.
+        ai_model:
+          type: string
+          title: Ai Model
+          description: Model identifier to use for processing the query.
+        llm_provider:
+          type: string
+          title: Llm Provider
+          description: LLM provider to use for processing the query.
+        system_prompt:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: System Prompt
+          description: Optional system prompt for model behavior
+        messages:
+          anyOf:
+          - items:
+              additionalProperties:
+                type: string
+              type: object
+            type: array
+          - type: 'null'
+          title: Messages
+          description: 'Optional prior chat messages in OpenAI format: list of {role, content} entries.'
+      type: object
+      required:
+      - user_query
+      - datasets
+      - ai_model
+      - llm_provider
+      title: MarketingChatRequest

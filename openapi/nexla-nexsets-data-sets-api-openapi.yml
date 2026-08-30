@@ -1,0 +1,930 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Nexla Rest Nexsets (Data Sets) API
+  termsOfService: https://nexla.com/terms-of-service/
+  contact:
+    name: Nexla Support
+    url: https://docs.nexla.com
+    email: support@nexla.com
+  license:
+    name: Nexla
+    url: https://nexla.com
+  x-logo:
+    url: https://cdn.nexla.io/ui/assets/brand/v2/nexla-logo-color-portrait.svg
+    backgroundColor: '#ffffff'
+  description: '# Introduction
+
+
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
+
+
+    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
+
+
+    The API references in this document lists all API endpoints and the corresponding payloads.
+
+
+    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
+
+
+    # API Data Format and Versions
+
+
+    The API uses JSON for all data exchanges.
+
+
+    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
+
+    ```
+
+    Accept: application/vnd.nexla.api.v1+json
+
+    ```
+
+
+    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
+
+
+
+    ```
+
+    Accept: application/json
+
+    ```
+
+
+    # Authentication
+
+
+    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
+
+
+    <SecurityDefinitions />'
+servers:
+- url: https://{nexla-api-host}
+  variables:
+    nexla-api-host:
+      default: dataops.nexla.io/nexla-api
+      description: Nexla API URL your Nexla instance
+security:
+- NexlaSessionToken: []
+tags:
+- name: Nexsets (Data Sets)
+  description: 'Operations for managing Nexsets. Note that Nexsets on the Nexla UI are aliased as `data_sets` in the Nexla API reference model, so all endpoints and responses use the term `data_sets` instead of `nexsets`.
+
+    '
+paths:
+  /data_sets:
+    get:
+      tags:
+      - Nexsets (Data Sets)
+      operationId: get_nexsets
+      summary: Get All Nexsets
+      description: 'Retrieves all Nexsets accessible to the authenticated user.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/access_roles'
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/data_sets_many'
+        '401':
+          description: Unauthorized
+    post:
+      tags:
+      - Nexsets (Data Sets)
+      operationId: create_nexset
+      summary: Create a Nexset
+      description: "Creates a Nexset from another Nexset.\n\nThe endpoint accepts a parent Nexset ID along with all transform and validation rules that should be applied to the parent Nexset. \n\nThe two payload variants reflect the following two ways of specifying transform rules: \n1. Attach the transform code that should be applied: Set `has_custom_transform: false`, and attach a `transform` code snippet. \n2. Use the ID of a reusable record transform: Set `has_custom_transform: false`, and attach the `transform_id` of the record transform to be applied.\n"
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/DataSetCreate'
+      responses:
+        '200':
+          $ref: '#/components/responses/data_sets_one'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+  /data_sets/{set_id}:
+    get:
+      tags:
+      - Nexsets (Data Sets)
+      operationId: get_nexset
+      summary: Get a Nexset
+      description: 'Returns a Nexset object if a valid ID is provided.
+
+        '
+      parameters:
+      - name: set_id
+        in: path
+        description: The unique ID of the Nexset that needs to be fetched.
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/expand'
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/data_sets_one'
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+    put:
+      tags:
+      - Nexsets (Data Sets)
+      operationId: update_nexset
+      summary: Update a Nexset
+      description: 'Updates a Nexset in the authenticated user''s account.
+
+        '
+      parameters:
+      - name: set_id
+        in: path
+        description: The unique ID of the Nexset to be updated.
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/accept'
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/DataSetMutable'
+      responses:
+        '200':
+          $ref: '#/components/responses/data_sets_one'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+      - Nexsets (Data Sets)
+      summary: Delete a Nexset
+      description: Deletes a Nexset from the authenticated user's account.
+      operationId: delete_nexset
+      parameters:
+      - name: set_id
+        in: path
+        description: The unique ID of the Nexset that needs to be deleted.
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /data_sets/{set_id}/activate:
+    put:
+      tags:
+      - Nexsets (Data Sets)
+      operationId: activate_nexset
+      summary: Activate Nexset
+      description: 'Activates a paused Nexset.
+
+        '
+      parameters:
+      - name: set_id
+        in: path
+        description: The unique ID of the Nexset that needs to be activated.
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/data_sets_one'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /data_sets/{set_id}/pause:
+    put:
+      tags:
+      - Nexsets (Data Sets)
+      operationId: pause_nexset
+      summary: Pause Nexset
+      description: 'Pauses an active Nexset.
+
+        '
+      parameters:
+      - name: set_id
+        in: path
+        description: The unique ID of the Nexset that needs to be paused.
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/data_sets_one'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /data_sets/{set_id}/copy:
+    post:
+      tags:
+      - Nexsets (Data Sets)
+      operationId: copy_nexset
+      summary: Copy Nexset
+      description: 'Use this endpoint to create a clone of an existing Nexset.
+
+        '
+      parameters:
+      - name: set_id
+        in: path
+        description: The unique ID of the Nexset that needs to be copied.
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/accept'
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              type: object
+              properties:
+                copy_access_controls:
+                  type: boolean
+                  description: "Set this to `true` if you want the new Nexset to be accessible by all users who have access to the this Nexset.  \n"
+                owner_id:
+                  type: integer
+                  description: 'The default API behavior is to create the new Nexset in the account of the authenticated user making this call. Set this property if you want a different user to be the owner of the new Nexset.
+
+                    '
+                org_id:
+                  type: integer
+                  description: 'The default API behavior is to create the new Nexset in the org that the authenticated user making this call belongs to. Set this property if you want the Nexset to be created in a different org.
+
+                    '
+      responses:
+        '200':
+          $ref: '#/components/responses/data_sets_one'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /data_sets/{set_id}/samples:
+    get:
+      tags:
+      - Nexsets (Data Sets)
+      operationId: get_nexset_samples
+      summary: Get Nexset Samples
+      description: 'Use this endpoint to fetch some sample records from this Nexset. Use the relevant query parameters to control whether the samples returned are from the live Nexset topic or the Nexset sample cache.
+
+        '
+      parameters:
+      - name: set_id
+        in: path
+        description: The unique ID of the Nexset that needs to be fetched.
+        required: true
+        schema:
+          type: integer
+      - name: count
+        in: query
+        description: The maximum number of samples that should be returned in the response.
+        schema:
+          type: integer
+      - name: include_metadata
+        in: query
+        description: Set this to true to fetch Nexla metadata about each sample record along with the record content.
+        schema:
+          type: boolean
+      - name: include_metadata
+        in: query
+        description: Set this to true to fetch Nexla metadata about each sample record along with the record content.
+        schema:
+          type: boolean
+      - name: live
+        in: query
+        description: Set this to true to fetch live sample records from the Nexset topic.
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/data_sets_sample'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /data_sets/{data_set_id}/docs/recommendation:
+    post:
+      tags:
+      - Nexsets (Data Sets)
+      operationId: data_set_docs_recommendation
+      summary: Generate an AI suggestion for Nexset documentation
+      description: 'Request a suggestion for Nexset documentation. GenAI has to be configured properly for this request, or else you get a message with an error.
+
+        '
+      parameters:
+      - name: set_id
+        in: path
+        description: The unique ID of the Nexset that needs to be activated.
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/genai_recommendation_response'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+components:
+  schemas:
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
+    DataSetMutable:
+      allOf:
+      - oneOf:
+        - type: object
+          properties:
+            has_custom_transform:
+              type: boolean
+              enum:
+              - false
+              description: 'Set this to `false` to indicate that the payload contains the `transform` code that should be used for creating the output schema.
+
+                '
+            transform:
+              type: object
+              description: 'Transform code that should be applied on the parent Nexset.
+
+                '
+        - type: object
+          properties:
+            has_custom_transform:
+              type: boolean
+              enum:
+              - true
+              description: 'Set this to `true` to indicate that the payload contains the `transform_id` of a transform that should be applied for creating the output schema.
+
+                '
+            transform_id:
+              type: integer
+              description: 'Id of a reusable record transform that should be applied on the parent Nexset.
+
+                '
+      - type: object
+        properties:
+          name:
+            type: string
+          description:
+            type: string
+          parent_data_set_id:
+            type: integer
+            description: 'Nexset ID of the parent Nexset on which all the rules should be applied for creating this Nexset.
+
+              '
+          output_schema_annotations:
+            type: object
+            description: 'You can document details about important Nexset attributes by annotating them with short descriptions.
+
+
+              Set descriptions for all such attributes by adding them to this object. Attributes should be added in standard JSON schema path format. You can refer to Nexset''s output schema structure for guidance.
+
+              '
+            properties:
+              properties:
+                additionalProperties:
+                  x-additionalPropertiesName: nexset_attribute_name
+                  type: object
+                  properties:
+                    description:
+                      type: string
+                      description: 'Set a short description for this attribute.
+
+                        '
+          output_schema_validation_enabled:
+            type: boolean
+            description: 'Set this to true and attach the relevant `output_validation_schema` if you want all records to be validated against some JSON schema validation rules.
+
+
+              Records that fail validation will be routed to the Nexset error queue instead of the Nexset output.
+
+              '
+          output_validation_schema:
+            type: object
+            description: 'You can set JSON Schema validation rules that should be applied on every record of this Nexset.
+
+
+              See https://json-schema.org/learn/getting-started-step-by-step.html for guidance on writing JSON schema validation rules.
+
+              '
+            additionalProperties:
+              x-additionalPropertiesName: json_schema_validation_rule
+              type:
+              - object
+              - string
+          data_sinks:
+            type: array
+            description: 'You can choose to attach one or more data sinks to this Nexset. Each data sink will receive the output of this Nexset when the Nexset generates output records.
+
+              '
+            items:
+              anyOf:
+              - type: integer
+                description: 'The ID of the data sink.
+
+                  '
+              - type: object
+                description: 'The payload for creating a Nexla data sink with this request. The platform will automatically create a data sink and attach its ID as a reference.
+
+                  '
+          custom_config:
+            type: object
+            description: '`Reserved for Nexla UI`: This field is used by Nexla UI for display instructions when displaying this Nexset on the UI. This entry has no impact on how the Nexla data plane processes data for this Nexset.
+
+              '
+          tags:
+            type: array
+            items:
+              type: string
+    OrgSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: string
+        client_identifier:
+          type: string
+        org_webhook_host:
+          type: string
+    DataSetCreate:
+      allOf:
+      - $ref: '#/components/schemas/DataSetMutable'
+      - required:
+        - name
+        - parent_data_set_id
+        - has_custom_transform
+    DataSet:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        owner:
+          $ref: '#/components/schemas/UserSimplified'
+        org:
+          $ref: '#/components/schemas/OrgSimplified'
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+        data_source_id:
+          type:
+          - integer
+          - 'null'
+          description: 'Id of the data source this Nexset was detected from. This is only relevant for detected Nexsets.
+
+            '
+        data_source:
+          $ref: '#/components/schemas/DataSource'
+          description: 'Details about the data source this Nexset was detected from. This is only relevant for detected Nexsets.
+
+            '
+        parent_data_sets:
+          type: array
+          description: 'Details about the Nexset this Nexset is derived from. This element is empty in case of detected Nexsets and has 1 item in case of derived Nexsets.
+
+            '
+          items:
+            minItems: 0
+            maxItems: 1
+            $ref: '#/components/schemas/DataSetBrief'
+        data_sinks:
+          type: array
+          description: 'Details about every data sink this Nexset is directly connected to.
+
+            '
+          items:
+            $ref: '#/components/schemas/DataSinkSimplified'
+        access_roles:
+          $ref: '#/components/schemas/AccessRoles'
+        transform_id:
+          type:
+          - integer
+          - 'null'
+          description: 'The ID of the Transform entity that has been used to create the output of this Nexset from the parent Nexset.
+
+
+            This element is null for detected Nexsets.
+
+            '
+        output_schema:
+          type: object
+          description: 'JSON schema of this Nexset''s output.
+
+            '
+        copied_from_id:
+          type: integer
+          format: nullable
+          description: 'Reference ID of the Nexset that this Nexset was created as a copy of. This is only valid if the Nexset was created by issuing a request to the `copy` endpoint of another Nexset.
+
+            '
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            type: string
+        flow_type:
+          type: string
+          description: 'The flow type of the origin node.
+
+            '
+    DataSinkSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        owner_id:
+          type: integer
+          format: int32
+        org_id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        status:
+          type: string
+        sink_type:
+          type: string
+    UserSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+        email_verified_at:
+          type: string
+          format: date-time
+    DataSetBrief:
+      type: object
+      properties:
+        id:
+          type: integer
+        owner_id:
+          type: integer
+        org_id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    DataSource:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        owner_id:
+          type: integer
+          format: int32
+        org_id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        description:
+          type: string
+          format: nullable
+        status:
+          type: string
+        source_type:
+          type: string
+        connector:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int32
+            type:
+              type: string
+            connection_type:
+              type: string
+            name:
+              type: string
+            description:
+              type: string
+            nexset_api_compatible:
+              type: boolean
+        vendor_id:
+          type: string
+          format: nullable
+  parameters:
+    access_roles:
+      name: access_role
+      in: query
+      schema:
+        type: string
+        enum:
+        - collaborator
+        - operator
+        - admin
+        - owner
+        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
+        externalDocs:
+          description: Nexla API access roles
+          url: https://developers.nexla.com/docs/access-modes
+    expand:
+      name: expand
+      in: query
+      schema:
+        type: integer
+        enum:
+        - 1
+        description: 'Add this parameter to a resource fetch request to receive details about related resources in the response.
+
+          '
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
+  responses:
+    data_sets_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/DataSet'
+    data_sets_sample:
+      description: Success
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - type: array
+              description: Output samples without metadata
+              items:
+                type: object
+                additionalProperties:
+                  x-additionalPropertiesName: record_attribute
+                  type:
+                  - number
+                  - string
+                  - boolean
+                  - array
+                  - object
+                  description: 'Contents of the record in this sample.
+
+                    '
+            - type: array
+              items:
+                type: object
+                properties:
+                  rawMessage:
+                    type: object
+                    description: 'Contents of the record in this sample.
+
+                      '
+                    additionalProperties:
+                      x-additionalPropertiesName: record_attribute
+                      type:
+                      - number
+                      - string
+                      - boolean
+                      - array
+                      - object
+                  nexlaMetaData:
+                    type: object
+                    description: 'Metadata about this record.
+
+                      '
+                    properties:
+                      sourceType:
+                        type: string
+                        example: GDRIVE
+                      ingestTime:
+                        type: integer
+                        format: int64
+                        example: 1657222945906
+                      sourceOffset:
+                        type: integer
+                        format: int32
+                        example: 0
+                      sourceKey:
+                        type: string
+                        example: aBcDeFg
+                      topic:
+                        type: string
+                        format: nullable
+                      resourceType:
+                        type: string
+                        example: SOURCE
+                      resourceId:
+                        type: integer
+                        format: int32
+                        example: 1
+                      trackerId:
+                        type: object
+                        additionalProperties:
+                          x-additionalPropertiesName: tracker_info
+                          type: string
+                          description: 'Details about the Nexla lineage tracker.
+
+                            '
+                      eof:
+                        type: boolean
+                      lastModified:
+                        type: integer
+                        format: int64
+                        example: 1656524615000
+                      runId:
+                        type: integer
+                        format: int64
+                        example: 1657222941374
+                      tags:
+                        type: object
+                        additionalProperties:
+                          x-additionalPropertiesName: tag_key
+                          type: string
+                      flow_type:
+                        type: string
+                        example: streaming
+    genai_recommendation_response:
+      description: Either success or failure
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            properties:
+              status:
+                type: string
+                description: Should be 200 or "ok" for normal response. If GenAI service is not available, you will get another status code.
+                example: ok
+              output:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    description: The response message from GenAI service. Contains Markdown text.  If there is an error, this field will not be present.
+                  statusCode:
+                    type: integer
+                    description: The status code from external GenAI service.
+                    example: 200
+                  errorMessage:
+                    type: string
+                    description: If there is an error, this field will contain the error message, and 'response' field will not be present.
+                    example: GenAI Integration has not been enabled for your Nexla organization. Please contact your organization admin or Nexla support for enabling the integration.
+    data_sets_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DataSet'
+  securitySchemes:
+    NexlaSessionToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: "The first step in calling the Nexla API or Nexla CLI is to fetch a Session access token by logging on to your Nexla UI instance. This ensures that your authentication is performed through your organization's preferred Identity Provider.\n\nTo fetch an access token from the Nexla UI, simply go to your Nexla UI instance, and try the route `/token`. For example, if your Nexla UI instance is at `https://dataops.nexla.io`, open `https://dataops.nexla.io/token` in the browser. \n\nThis will automatically route you to a login page, ask you to authenticate using your preferred Identity Provider, and, upon successful authentication, route you to a page where you can copy the Access Token.\n\nUsage format: `Bearer <JWT>`.\n"
+    NexlaApiKeyQuery:
+      type: apiKey
+      name: api_key
+      in: query
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as a query parameter to authenticate this request.
+
+        Usage: `?api_key=<api-key>`
+
+        '
+    NexlaApiKeyHeader:
+      type: http
+      scheme: Basic
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as an authorization header to authenticate this request.
+
+        Usage format: `Basic <api-key>`
+
+        '
+    basicAuth:
+      type: http
+      scheme: basic
+    GoogleSSOToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: 'The token that is used when logging into Nexla via Google SSO.
+
+        '
+x-tagGroups:
+- name: Session
+  tags:
+  - Session Management
+- name: Integrate
+  tags:
+  - Flows
+  - Sources
+  - Destinations (Data Sinks)
+  - Nexsets (Data Sets)
+  - Credentials
+  - Data Maps
+  - Code Containers
+  - Transforms
+  - Projects
+- name: Monitor
+  tags:
+  - Notifications
+  - Metrics
+  - Audit Logs
+  - Quarantine Settings
+- name: Collaborate
+  tags:
+  - Access Control
+- name: Account Management
+  tags:
+  - Organizations
+  - Users
+  - User Settings
+  - Teams
+  - Gen AI Configs
+- name: Real-Time Events
+  tags:
+  - Webhooks
+- name: Rate Limiting
+  tags:
+  - Limits
+- name: Marketplace
+  tags:
+  - Marketplace
+- name: Self Sign-Up
+  tags:
+  - Self Sign-Up
+  - Self Sign-Up Admin
+- name: Async Tasks
+  tags:
+  - Async Tasks

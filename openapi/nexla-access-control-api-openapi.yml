@@ -1,0 +1,1655 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Nexla Rest Access Control API
+  termsOfService: https://nexla.com/terms-of-service/
+  contact:
+    name: Nexla Support
+    url: https://docs.nexla.com
+    email: support@nexla.com
+  license:
+    name: Nexla
+    url: https://nexla.com
+  x-logo:
+    url: https://cdn.nexla.io/ui/assets/brand/v2/nexla-logo-color-portrait.svg
+    backgroundColor: '#ffffff'
+  description: '# Introduction
+
+
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
+
+
+    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
+
+
+    The API references in this document lists all API endpoints and the corresponding payloads.
+
+
+    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
+
+
+    # API Data Format and Versions
+
+
+    The API uses JSON for all data exchanges.
+
+
+    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
+
+    ```
+
+    Accept: application/vnd.nexla.api.v1+json
+
+    ```
+
+
+    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
+
+
+
+    ```
+
+    Accept: application/json
+
+    ```
+
+
+    # Authentication
+
+
+    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
+
+
+    <SecurityDefinitions />'
+servers:
+- url: https://{nexla-api-host}
+  variables:
+    nexla-api-host:
+      default: dataops.nexla.io/nexla-api
+      description: Nexla API URL your Nexla instance
+security:
+- NexlaSessionToken: []
+tags:
+- name: Access Control
+  description: Operations for managing access control to resources
+paths:
+  /data_sources/{data_source_id}/accessors:
+    get:
+      tags:
+      - Access Control
+      operationId: get_data_source_accessors
+      summary: Get Access Rules on Data Source
+      description: 'Returns a list of the access-control rules set for this data source.
+
+        '
+      parameters:
+      - name: data_source_id
+        in: path
+        description: The unique ID of the data source.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+      - Access Control
+      operationId: replace_data_source_accessors
+      summary: Replace Access Rules on Data Source
+      description: 'Replaces the list of accessors belonging to a data source. Existing accessors will be removed from the data source.
+
+        '
+      parameters:
+      - name: data_source_id
+        in: path
+        description: The unique ID of the data source.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Access Control
+      operationId: add_data_source_accessors
+      summary: Add Access Rules on Data Source
+      description: 'Adds a list of accessors to a data source. The existing accessors list is retained and merged with the new accessors list.
+
+        '
+      parameters:
+      - name: data_source_id
+        in: path
+        description: The unique ID of the data source.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+      - Access Control
+      operationId: delete_data_source_accessors
+      summary: Delete Access Rules on Data Source
+      description: 'Removes access-control rules from a data source. If no request body is provided, all rules associated with the data source will be removed.
+
+        '
+      parameters:
+      - name: data_source_id
+        in: path
+        description: The unique ID of the data source.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Optional list of accessors.
+        required: false
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /data_sets/{data_set_id}/accessors:
+    get:
+      tags:
+      - Access Control
+      operationId: get_nexset_accessors
+      summary: Get Access Rules on Nexset
+      description: 'Returns a list of the access-control rules set for this Nexset.
+
+        '
+      parameters:
+      - name: data_set_id
+        in: path
+        description: The unique ID of the Nexset.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+      - Access Control
+      operationId: replace_nexset_accessors
+      summary: Replace Access Rules on Nexset
+      description: 'Replaces the list of access-control rules set for this Nexset. Existing rules will be removed from the Nexset, and only these new rules will be applied.
+
+        '
+      parameters:
+      - name: data_set_id
+        in: path
+        description: The unique ID of the Nexset.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Access Control
+      operationId: add_nexset_accessors
+      summary: Add Access Rules on Nexset
+      description: 'Adds new access-control rules to this Nexset.
+
+        '
+      parameters:
+      - name: data_set_id
+        in: path
+        description: The unique ID of the Nexset.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+      - Access Control
+      operationId: delete_nexset_accessors
+      summary: Delete Access Rules on Nexset
+      description: 'Removes access-control rules from a Nexset. If no request body is provided, all rules associated with the Nexset will be removed.
+
+        '
+      parameters:
+      - name: data_set_id
+        in: path
+        description: The unique ID of the Nexset.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Optional list of accessors.
+        required: false
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /data_sinks/{data_sink_id}/accessors:
+    get:
+      tags:
+      - Access Control
+      operationId: get_data_sink_accessors
+      summary: Get Access Rules on Data Sink
+      description: 'Returns a list of the access-control rules set for this data sink.
+
+        '
+      parameters:
+      - name: data_sink_id
+        in: path
+        description: The unique ID of the data sink.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+      - Access Control
+      operationId: replace_data_sink_accessors
+      summary: Replace Access Rules on Data Sink
+      description: 'Replaces the list of access-control rules set for this data sink. Existing rules will be removed from the data sink, and only these new rules will be applied.
+
+        '
+      parameters:
+      - name: data_sink_id
+        in: path
+        description: The unique ID of the data sink.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Access Control
+      operationId: add_data_sink_accessors
+      summary: Add Access Rules on Data Sink
+      description: 'Adds new access-control rules to this data sink.
+
+        '
+      parameters:
+      - name: data_sink_id
+        in: path
+        description: The unique ID of the data sink.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+      - Access Control
+      operationId: delete_data_sink_accessors
+      summary: Delete Access Rules on Data Sink
+      description: 'Removes access-control rules from a data sink. If no request body is provided, all rules associated with the data sink will be removed.
+
+        '
+      parameters:
+      - name: data_sink_id
+        in: path
+        description: The unique ID of the data sink.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Optional list of accessors.
+        required: false
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /data_maps/{data_map_id}/accessors:
+    get:
+      tags:
+      - Access Control
+      operationId: get_data_map_accessors
+      summary: Get Access Rules on Data Map
+      description: 'Returns a list of the access-control rules set for this data map.
+
+        '
+      parameters:
+      - name: data_map_id
+        in: path
+        description: The unique ID of the data map.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+      - Access Control
+      operationId: replace_data_map_accessors
+      summary: Replace Access Rules on Data Map
+      description: 'Replaces the list of access-control rules set for this data map. Existing rules will be removed from the data map, and only these new rules will be applied.
+
+        '
+      parameters:
+      - name: data_map_id
+        in: path
+        description: The unique ID of the data map.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Access Control
+      operationId: add_data_map_accessors
+      summary: Add Access Rules on Data Map
+      description: 'Adds new access-control rules to this data map.
+
+        '
+      parameters:
+      - name: data_map_id
+        in: path
+        description: The unique ID of the data map.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+      - Access Control
+      operationId: delete_data_map_accessors
+      summary: Delete Access Rules on Data Map
+      description: 'Removes access-control rules from a data map. If no request body is provided, all rules associated with the data map will be removed.
+
+        '
+      parameters:
+      - name: data_map_id
+        in: path
+        description: The unique ID of the data map.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Optional list of accessors.
+        required: false
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /data_credentials/{data_credential_id}/accessors:
+    get:
+      tags:
+      - Access Control
+      operationId: get_data_credential_accessors
+      summary: Get Access Rules on Data Credential
+      description: 'Returns a list of the access-control rules set for this data credential.
+
+        '
+      parameters:
+      - name: data_credential_id
+        in: path
+        description: The unique ID of the data credential.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+      - Access Control
+      operationId: replace_data_credential_accessors
+      summary: Replace Access Rules on Data Credential
+      description: 'Replaces the list of access-control rules set for this data credential. Existing rules will be removed from the data credential, and only these new rules will be applied.
+
+        '
+      parameters:
+      - name: data_credential_id
+        in: path
+        description: The unique ID of the data credential.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Access Control
+      operationId: add_data_credential_accessors
+      summary: Add Access Rules on Data Credential
+      description: 'Adds new access-control rules to this data credential.
+
+        '
+      parameters:
+      - name: data_credential_id
+        in: path
+        description: The unique ID of the data credential.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+      - Access Control
+      operationId: delete_data_credential_accessors
+      summary: Delete Access Rules on Data Credential
+      description: 'Removes access-control rules from a data credential. If no request body is provided, all rules associated with the data credential will be removed.
+
+        '
+      parameters:
+      - name: data_credential_id
+        in: path
+        description: The unique ID of the data credential.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Optional list of accessors.
+        required: false
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /projects/{project_id}/accessors:
+    get:
+      tags:
+      - Access Control
+      operationId: get_project_accessors
+      summary: Get Project Accessors
+      description: 'Returns a list of the access-control rules set for this project.
+
+        '
+      parameters:
+      - name: project_id
+        in: path
+        description: The unique ID of the project.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+      - Access Control
+      operationId: replace_project_accessors
+      summary: Replace Access Rules on Project
+      description: 'Replaces the list of access-control rules set for this project. Existing rules will be removed from the project, and only these new rules will be applied.
+
+        '
+      parameters:
+      - name: project_id
+        in: path
+        description: The unique ID of the project.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Access Control
+      operationId: add_project_accessors
+      summary: Add Project Accessors
+      description: 'Adds new access-control rules to this project.
+
+        '
+      parameters:
+      - name: project_id
+        in: path
+        description: The unique ID of the project.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+      - Access Control
+      operationId: delete_project_accessors
+      summary: Delete Project Accessors
+      description: 'Removes access-control rules from a project. If no request body is provided, all rules associated with the project will be removed.
+
+        '
+      parameters:
+      - name: project_id
+        in: path
+        description: The unique ID of the project.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Optional list of accessors.
+        required: false
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /flows/{flow_id}/accessors:
+    get:
+      tags:
+      - Access Control
+      operationId: get_flow_accessors
+      summary: Get Access Rules on Flow
+      description: 'Returns a list of the access-control rules set for this flow.
+
+        '
+      parameters:
+      - name: data_flow_id
+        in: path
+        description: The unique ID of the flow.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+      - Access Control
+      operationId: replace_flow_accessors
+      summary: Replace Access Rules on Flow
+      description: 'Replaces the list of access-control rules set for this flow. Existing rules will be removed from the flow, and only these new rules will be applied.
+
+        '
+      parameters:
+      - name: flow_id
+        in: path
+        description: The unique ID of the data flow.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Access Control
+      operationId: add_flow_accessors
+      summary: Add Access Rules on Flow
+      description: 'Adds new access-control rules to this data flow.
+
+        '
+      parameters:
+      - name: flow_id
+        in: path
+        description: The unique ID of the data flow.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+      - Access Control
+      operationId: delete_flow_accessors
+      summary: Delete Access Rules on Flow
+      description: 'Removes access-control rules from a data flow. If no request body is provided, all rules associated with the data flow will be removed.
+
+        '
+      parameters:
+      - name: data_flow_id
+        in: path
+        description: The unique ID of the data flow.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Optional list of accessors.
+        required: false
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /data_flows/{data_flow_id}/accessors:
+    get:
+      tags:
+      - Access Control
+      operationId: get_flow_accessors_(deprecated)
+      summary: Get Access Rules on Flow (Deprecated)
+      description: "Returns a list of the access-control rules set for this data flow. \n\n> **Note**: This version of the endpoint has been deprecated. It uses a composite data flow id of the type `{resource_type}/{resource_id}`. See get_flow_accessors for a new version of this endpoint that uses unique `flow_id`.\n"
+      parameters:
+      - name: data_flow_id
+        in: path
+        description: The unique ID of the data flow. This ID is of the type `{resource_type}/{resource_id}`, where the resource is the root node of the flow - for example, `data_source/1001`.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+      - Access Control
+      operationId: replace_flow_accessors_(deprecated)
+      summary: Replace Access Rules on Flow (Deprecated)
+      description: "Replace the list of access-control rules set for this data flow. Existing rules will be removed from the data flow, and only these new rules will be applied. This version uses a composite data flow id of the type `{resource_type}/{resource_id}`. \n\n> **Note**: This version of the endpoint has been deprecated. It uses a composite data flow id of the type `{resource_type}/{resource_id}`. See replace_flow_accessors for a new version of this endpoint that uses unique `flow_id`.\n"
+      parameters:
+      - name: data_flow_id
+        in: path
+        description: The unique ID of the data flow. This ID is of the type `{resource_type}/{resource_id}`, where the resource is the root node of the flow - for example, `data_source/1001`.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Access Control
+      operationId: add_flow_accessors_(deprecated)
+      summary: Add Access Rules on Flow (Deprecated)
+      description: "Add new access-control rules to this data flow. This version uses a composite data flow id of the type `{resource_type}/{resource_id}`. \n\n> **Note**: This version of the endpoint has been deprecated. It uses a composite data flow id of the type `{resource_type}/{resource_id}`. See add_flow_accessors for a new version of this endpoint that uses unique `flow_id`.  \n"
+      parameters:
+      - name: data_flow_id
+        in: path
+        description: The unique ID of the data flow. This ID is of the type `{resource_type}/{resource_id}`, where the resource is the root node of the flow - for example, `data_source/1001`.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+      - Access Control
+      operationId: delete_flow_accessors_(deprecated)
+      summary: Delete Access Rules on Flow (Deprecated)
+      description: "Remove access-control rules from a data flow. If no request body is provided, all rules associated with the data flow will be removed. This version uses a composite data flow id of the type `{resource_type}/{resource_id}`. \n\n> **Note**: This version of the endpoint has been deprecated. It uses a composite data flow id of the type `{resource_type}/{resource_id}`. See delete_flow_accessors for a new version of this endpoint that uses unique `flow_id`.    \n"
+      parameters:
+      - name: data_flow_id
+        in: path
+        description: The unique ID of the data flow. This ID is of the type `{resource_type}/{resource_id}`, where the resource is the root node of the flow - for example, `data_source/1001`.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Optional list of accessors.
+        required: false
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /data_schemas/{data_schema_id}/accessors:
+    get:
+      tags:
+      - Access Control
+      operationId: get_data_schema_accessors
+      summary: Get Access Rules on Data Schema
+      description: 'Returns a list of the access-control rules set for this data schema.
+
+        '
+      parameters:
+      - name: data_schema_id
+        in: path
+        description: The unique ID of the data schema.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+      - Access Control
+      operationId: replace_data_schema_accessors
+      summary: Replace Access Rules on Data Schema
+      description: 'Replaces the list of access-control rules set for this data schema. Existing rules will be removed from the data schema, and only these new rules will be applied.
+
+        '
+      parameters:
+      - name: data_schema_id
+        in: path
+        description: The unique ID of the data schema.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Access Control
+      operationId: add_data_schema_accessors
+      summary: Add Access Rules on Data Schema
+      description: 'Adds new access-control rules to this data schema.
+
+        '
+      parameters:
+      - name: data_schema_id
+        in: path
+        description: The unique ID of the data schema.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+      - Access Control
+      operationId: delete_data_schema_accessors
+      summary: Delete Access Rules on Data Schema
+      description: 'Removes access-control rules from a data schema. If no request body is provided, all rules associated with the data schema will be removed.
+
+        '
+      parameters:
+      - name: data_schema_id
+        in: path
+        description: The unique ID of the data schema.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Optional list of accessors.
+        required: false
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /doc_containers/{doc_container_id}/accessors:
+    get:
+      tags:
+      - Access Control
+      operationId: get_doc_container_accessors
+      summary: Get Access Rules on Document
+      description: 'Returns a list of the access-control rules set for this document.
+
+        '
+      parameters:
+      - name: doc_container_id
+        in: path
+        description: The unique ID of the document.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+      - Access Control
+      operationId: replace_doc_container_accessors
+      summary: Replace Access Rules on Document
+      description: 'Replaces the list of access-control rules set for this document. Existing rules will be removed from the document, and only these new rules will be applied.
+
+        '
+      parameters:
+      - name: doc_container_id
+        in: path
+        description: The unique ID of the document.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Access Control
+      operationId: add_doc_container_accessors
+      summary: Add Access Rules on Document
+      description: 'Adds new access-control rules to this document.
+
+        '
+      parameters:
+      - name: doc_container_id
+        in: path
+        description: The unique ID of the document container.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+      - Access Control
+      operationId: delete_doc_container_accessors
+      summary: Delete Access Rules on Document
+      description: 'Removes access-control rules from a document. If no request body is provided, all rules associated with the document will be removed.
+
+        '
+      parameters:
+      - name: doc_container_id
+        in: path
+        description: The unique ID of the document.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Optional list of accessors.
+        required: false
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /code_containers/{code_container_id}/accessors:
+    get:
+      tags:
+      - Access Control
+      operationId: get_code_container_accessors
+      summary: Get Access Rules on Code Container
+      description: 'Returns a list of the access-control rules set for this code container.
+
+        '
+      parameters:
+      - name: code_container_id
+        in: path
+        description: The unique ID of the code container.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+      - Access Control
+      operationId: replace_code_container_accessors
+      summary: Replace Access Rules on Code Container
+      description: 'Replaces the list of access-control rules set for this code container. Existing rules will be removed from the code container, and only these new rules will be applied.
+
+        '
+      parameters:
+      - name: code_container_id
+        in: path
+        description: The unique ID of the code container.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Access Control
+      operationId: add_code_container_accessors
+      summary: Add Access Rules on Code Container
+      description: 'Adds new access-control rules to this code container.
+
+        '
+      parameters:
+      - name: code_container_id
+        in: path
+        description: The unique ID of the code container.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+      - Access Control
+      operationId: delete_code_container_accessors
+      summary: Delete Access Rules on Code Container
+      description: 'Removes access-control rules from a code container. If no request body is provided, all rules associated with the code container will be removed.
+
+        '
+      parameters:
+      - name: code_container_id
+        in: path
+        description: The unique ID of the code container.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Optional list of accessors.
+        required: false
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /teams/{team_id}/accessors:
+    get:
+      tags:
+      - Access Control
+      operationId: get_team_accessors
+      summary: Get Team Accessors
+      description: 'Returns a list of the access-control rules set for this team.
+
+        '
+      parameters:
+      - name: team_id
+        in: path
+        description: The unique ID of the team.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+      - Access Control
+      operationId: replace_team_accessors
+      summary: Replace Team Accessors List
+      description: 'Replaces the list of access-control rules set for this team. Existing rules will be removed from the team, and only these new rules will be applied.
+
+        '
+      parameters:
+      - name: team_id
+        in: path
+        description: The unique ID of the team.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Access Control
+      operationId: add_team_accessors
+      summary: Add Team Accessors
+      description: 'Adds new access-control rules to this team.
+
+        '
+      parameters:
+      - name: team_id
+        in: path
+        description: The unique ID of the team.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+      - Access Control
+      operationId: delete_team_accessors
+      summary: Delete Team Accessors
+      description: 'Removes access-control rules from a team. If no request body is provided, all rules associated with the team will be removed.
+
+        '
+      parameters:
+      - name: team_id
+        in: path
+        description: The unique ID of the team.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Optional list of accessors.
+        required: false
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/AccessorsRequestSchema'
+      responses:
+        '200':
+          $ref: '#/components/responses/accessors_list'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+components:
+  schemas:
+    RequestTeamAccessor:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - TEAM
+          description: "Choose this option if the access permissions should be granted to a team.       \n"
+        id:
+          type: integer
+          description: 'Unique ID of the team that should be granted this permission.
+
+            '
+    AccessorsMutable:
+      allOf:
+      - oneOf:
+        - $ref: '#/components/schemas/RequestUserAccessor'
+        - $ref: '#/components/schemas/RequestTeamAccessor'
+        - $ref: '#/components/schemas/RequestOrgAccessor'
+      - type: object
+        properties:
+          access_roles:
+            $ref: '#/components/schemas/AccessRoles'
+    ResponseTeamAccessor:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - TEAM
+        name:
+          type: string
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
+    AccessorsResponseSchema:
+      allOf:
+      - oneOf:
+        - $ref: '#/components/schemas/ResponseOrgAccessor'
+        - $ref: '#/components/schemas/ResponseTeamAccessor'
+        - $ref: '#/components/schemas/ResponseUserAccessor'
+      - type: object
+        properties:
+          access_roles:
+            $ref: '#/components/schemas/AccessRoles'
+          created_at:
+            type: string
+            format: date-time
+            example: '2021-04-06T21:02:17.000Z'
+          updated_at:
+            type: string
+            format: date-time
+            example: '2021-04-06T21:02:17.000Z'
+    AccessorsRequestSchema:
+      type: object
+      properties:
+        accessors:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessorsMutable'
+    RequestUserAccessor:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - USER
+          description: "Choose this option if the access permissions should be granted to a user. \n\n>  Note: Users can belong to multiple organizations. The platform allows granting access permission across organization boundaries only for Nexset `sharer` access role. \n"
+        id:
+          type: integer
+          description: "Unique ID of the user that should be granted this permission. \n"
+        email:
+          type: string
+          example: example@nexla.com
+          description: "`Optional`: Only user-id or email is required to identify the user who should be granted this access permission.  \n"
+        org_id:
+          type: integer
+          description: 'Users can belong to multiple organizations. Specify the org_id to explicitly set the organization context for this access permission. If this is not specified the platform will try to automatically assign the permission to the user''s default organization (when granting sharer access on a Nexset) or to the current organization (for all other access roles).
+
+            '
+    RequestOrgAccessor:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - ORG
+          description: "Choose this option if the access permissions should be granted to an entire organization.      \n"
+        id:
+          type: integer
+          description: 'Unique ID of the organization that should be granted this permission.
+
+            '
+    ResponseUserAccessor:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - USER
+        email:
+          type: string
+          example: example@nexla.com
+    ResponseOrgAccessor:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - ORG
+        email_domain:
+          type: string
+          example: nexla.com
+        client_identifier:
+          type: string
+          format: nullable
+  responses:
+    accessors_list:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AccessorsResponseSchema'
+  securitySchemes:
+    NexlaSessionToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: "The first step in calling the Nexla API or Nexla CLI is to fetch a Session access token by logging on to your Nexla UI instance. This ensures that your authentication is performed through your organization's preferred Identity Provider.\n\nTo fetch an access token from the Nexla UI, simply go to your Nexla UI instance, and try the route `/token`. For example, if your Nexla UI instance is at `https://dataops.nexla.io`, open `https://dataops.nexla.io/token` in the browser. \n\nThis will automatically route you to a login page, ask you to authenticate using your preferred Identity Provider, and, upon successful authentication, route you to a page where you can copy the Access Token.\n\nUsage format: `Bearer <JWT>`.\n"
+    NexlaApiKeyQuery:
+      type: apiKey
+      name: api_key
+      in: query
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as a query parameter to authenticate this request.
+
+        Usage: `?api_key=<api-key>`
+
+        '
+    NexlaApiKeyHeader:
+      type: http
+      scheme: Basic
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as an authorization header to authenticate this request.
+
+        Usage format: `Basic <api-key>`
+
+        '
+    basicAuth:
+      type: http
+      scheme: basic
+    GoogleSSOToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: 'The token that is used when logging into Nexla via Google SSO.
+
+        '
+x-tagGroups:
+- name: Session
+  tags:
+  - Session Management
+- name: Integrate
+  tags:
+  - Flows
+  - Sources
+  - Destinations (Data Sinks)
+  - Nexsets (Data Sets)
+  - Credentials
+  - Data Maps
+  - Code Containers
+  - Transforms
+  - Projects
+- name: Monitor
+  tags:
+  - Notifications
+  - Metrics
+  - Audit Logs
+  - Quarantine Settings
+- name: Collaborate
+  tags:
+  - Access Control
+- name: Account Management
+  tags:
+  - Organizations
+  - Users
+  - User Settings
+  - Teams
+  - Gen AI Configs
+- name: Real-Time Events
+  tags:
+  - Webhooks
+- name: Rate Limiting
+  tags:
+  - Limits
+- name: Marketplace
+  tags:
+  - Marketplace
+- name: Self Sign-Up
+  tags:
+  - Self Sign-Up
+  - Self Sign-Up Admin
+- name: Async Tasks
+  tags:
+  - Async Tasks

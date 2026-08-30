@@ -1,0 +1,573 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Nexla Rest Teams API
+  termsOfService: https://nexla.com/terms-of-service/
+  contact:
+    name: Nexla Support
+    url: https://docs.nexla.com
+    email: support@nexla.com
+  license:
+    name: Nexla
+    url: https://nexla.com
+  x-logo:
+    url: https://cdn.nexla.io/ui/assets/brand/v2/nexla-logo-color-portrait.svg
+    backgroundColor: '#ffffff'
+  description: '# Introduction
+
+
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
+
+
+    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
+
+
+    The API references in this document lists all API endpoints and the corresponding payloads.
+
+
+    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
+
+
+    # API Data Format and Versions
+
+
+    The API uses JSON for all data exchanges.
+
+
+    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
+
+    ```
+
+    Accept: application/vnd.nexla.api.v1+json
+
+    ```
+
+
+    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
+
+
+
+    ```
+
+    Accept: application/json
+
+    ```
+
+
+    # Authentication
+
+
+    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
+
+
+    <SecurityDefinitions />'
+servers:
+- url: https://{nexla-api-host}
+  variables:
+    nexla-api-host:
+      default: dataops.nexla.io/nexla-api
+      description: Nexla API URL your Nexla instance
+security:
+- NexlaSessionToken: []
+tags:
+- name: Teams
+  description: Operations for managing teams.
+paths:
+  /teams:
+    get:
+      tags:
+      - Teams
+      operationId: get_teams
+      summary: Get all Teams
+      description: 'Returns all teams accessible to the authenticated user.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/access_roles'
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/teams_many'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+    post:
+      tags:
+      - Teams
+      operationId: create_team
+      summary: Create a team
+      description: 'Creates a team with the specified configuration and members.
+
+        '
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/TeamCreate'
+      responses:
+        '200':
+          $ref: '#/components/responses/teams_one'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+  /teams/{team_id}:
+    get:
+      tags:
+      - Teams
+      operationId: get_team
+      summary: Get Team by ID
+      description: 'Returns a team if a valid ID is provided.
+
+        '
+      parameters:
+      - name: team_id
+        in: path
+        description: The unique ID of the team.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/teams_one'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Teams
+      operationId: update_team
+      summary: Modify a Team
+      description: 'Modifies a team''s information and settings if a valid ID and body are provided.
+
+        '
+      parameters:
+      - name: team_id
+        in: path
+        description: The unique ID of the team.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/TeamMutable'
+      responses:
+        '200':
+          $ref: '#/components/responses/teams_one'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+      - Teams
+      operationId: delete_team
+      summary: Delete Team by ID
+      description: 'Deletes a team if a valid ID is provided.
+
+        '
+      parameters:
+      - name: team_id
+        in: path
+        description: The unique ID of the team.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /teams/{team_id}/members:
+    get:
+      tags:
+      - Teams
+      operationId: get_team_members
+      summary: Get Team Members
+      description: 'Returns a list of the members belonging to a team.
+
+        '
+      parameters:
+      - name: team_id
+        in: path
+        description: The unique ID of the team.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/team_members'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+      - Teams
+      operationId: replace_team_members
+      summary: Replace Team Members List
+      description: 'Replaces the list of members belonging to a team. Existing members will be removed from the team.
+
+        '
+      parameters:
+      - name: team_id
+        in: path
+        description: The unique ID of the team.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/TeamMemberList'
+      responses:
+        '200':
+          $ref: '#/components/responses/team_members'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Teams
+      operationId: add_team_members
+      summary: Add Members to A Team
+      description: 'Adds a list of members to a team. The existing list of members will be retained and merged with the new list of members.
+
+        '
+      parameters:
+      - name: team_id
+        in: path
+        description: The unique ID of the team.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/TeamMemberList'
+      responses:
+        '200':
+          $ref: '#/components/responses/team_members'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+      - Teams
+      operationId: delete_team_members
+      summary: Remove Team Members
+      description: 'Removes members from a team. If no request body is provided, all members belonging to the team will be removed.
+
+        '
+      parameters:
+      - name: team_id
+        in: path
+        description: The unique ID of the team.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Optional list of members.
+        required: false
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/TeamMemberList'
+      responses:
+        '200':
+          $ref: '#/components/responses/team_members'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+components:
+  responses:
+    teams_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Team'
+    teams_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Team'
+    team_members:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/TeamMemberList'
+  schemas:
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
+    OrgSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: string
+        client_identifier:
+          type: string
+        org_webhook_host:
+          type: string
+    Team:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        owner:
+          $ref: '#/components/schemas/UserSimplified'
+        org:
+          $ref: '#/components/schemas/OrgSimplified'
+        member:
+          type: boolean
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamMemberResponseSchema'
+        access_roles:
+          $ref: '#/components/schemas/AccessRoles'
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            type: string
+    TeamMemberRequestSchema:
+      oneOf:
+      - type: object
+        properties:
+          id:
+            type: integer
+            description: "Unique ID of the user. \n"
+          admin:
+            type: boolean
+            description: 'Reflects whether the user is an administrator of this team or not.
+
+              '
+      - type: object
+        properties:
+          email:
+            type: string
+            format: email
+            description: 'Email ID of the user.
+
+              '
+          admin:
+            type: boolean
+            description: "Reflects whether the user is an administrator of this team or not.        \n"
+    TeamCreate:
+      allOf:
+      - $ref: '#/components/schemas/TeamMutable'
+      - type: object
+        required:
+        - name
+    TeamMemberResponseSchema:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: "Unique ID of the user. \n"
+        email:
+          type: string
+          format: email
+          description: "Email ID of the user. \n"
+        admin:
+          type: boolean
+          description: 'Reflects whether the user is an administrator of this team or not.
+
+            '
+    UserSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+        email_verified_at:
+          type: string
+          format: date-time
+    TeamMutable:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamMemberRequestSchema'
+    TeamMemberList:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamMemberResponseSchema'
+  parameters:
+    access_roles:
+      name: access_role
+      in: query
+      schema:
+        type: string
+        enum:
+        - collaborator
+        - operator
+        - admin
+        - owner
+        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
+        externalDocs:
+          description: Nexla API access roles
+          url: https://developers.nexla.com/docs/access-modes
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
+  securitySchemes:
+    NexlaSessionToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: "The first step in calling the Nexla API or Nexla CLI is to fetch a Session access token by logging on to your Nexla UI instance. This ensures that your authentication is performed through your organization's preferred Identity Provider.\n\nTo fetch an access token from the Nexla UI, simply go to your Nexla UI instance, and try the route `/token`. For example, if your Nexla UI instance is at `https://dataops.nexla.io`, open `https://dataops.nexla.io/token` in the browser. \n\nThis will automatically route you to a login page, ask you to authenticate using your preferred Identity Provider, and, upon successful authentication, route you to a page where you can copy the Access Token.\n\nUsage format: `Bearer <JWT>`.\n"
+    NexlaApiKeyQuery:
+      type: apiKey
+      name: api_key
+      in: query
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as a query parameter to authenticate this request.
+
+        Usage: `?api_key=<api-key>`
+
+        '
+    NexlaApiKeyHeader:
+      type: http
+      scheme: Basic
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as an authorization header to authenticate this request.
+
+        Usage format: `Basic <api-key>`
+
+        '
+    basicAuth:
+      type: http
+      scheme: basic
+    GoogleSSOToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: 'The token that is used when logging into Nexla via Google SSO.
+
+        '
+x-tagGroups:
+- name: Session
+  tags:
+  - Session Management
+- name: Integrate
+  tags:
+  - Flows
+  - Sources
+  - Destinations (Data Sinks)
+  - Nexsets (Data Sets)
+  - Credentials
+  - Data Maps
+  - Code Containers
+  - Transforms
+  - Projects
+- name: Monitor
+  tags:
+  - Notifications
+  - Metrics
+  - Audit Logs
+  - Quarantine Settings
+- name: Collaborate
+  tags:
+  - Access Control
+- name: Account Management
+  tags:
+  - Organizations
+  - Users
+  - User Settings
+  - Teams
+  - Gen AI Configs
+- name: Real-Time Events
+  tags:
+  - Webhooks
+- name: Rate Limiting
+  tags:
+  - Limits
+- name: Marketplace
+  tags:
+  - Marketplace
+- name: Self Sign-Up
+  tags:
+  - Self Sign-Up
+  - Self Sign-Up Admin
+- name: Async Tasks
+  tags:
+  - Async Tasks

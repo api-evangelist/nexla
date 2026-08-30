@@ -1,0 +1,173 @@
+openapi: 3.2.0
+info:
+  title: Nexla GenAI (RAG + MCPaaS) V2 Nexset Info API
+  description: Combined Nexla GenAI RAG API Service and MCPaaS
+  version: v0.2.3.3-combined
+tags:
+- name: v2-nexset-info
+paths:
+  /v2/nexsets/{nexset_id}/info:
+    patch:
+      tags:
+      - v2-nexset-info
+      summary: Update Nexset Info
+      description: 'Update a nexset''s title, description, and/or documentation.
+
+
+        name/description are written via ``PUT /data_sets/{id}``; documentation
+
+        is written via ``POST /data_sets/{id}/docs`` with the full docs list
+
+        after replacing the last record''s ``text``. Cache invalidation
+
+        (dataset_info, filter_schema, normalization_map) is scheduled iff at
+
+        least one Admin API write succeeded — even on a partial failure, so a
+
+        stale cache never persists past a successful first write.'
+      operationId: update_nexset_info_v2_nexsets__nexset_id__info_patch
+      parameters:
+      - name: nexset_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Nexset Id
+      - name: token_type
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/TokenType'
+          default: service_key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NexsetInfoPatchRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v2/nexsets/{nexset_id}/info/refresh:
+    post:
+      tags:
+      - v2-nexset-info
+      summary: Refresh Nexset Info Cache
+      description: 'Schedule background invalidation of the V2 caches for a nexset.
+
+
+        Returns immediately; the next read repopulates the cache from the
+
+        Admin API and Supabase.'
+      operationId: refresh_nexset_info_cache_v2_nexsets__nexset_id__info_refresh_post
+      parameters:
+      - name: nexset_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Nexset Id
+      - name: token_type
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/TokenType'
+          default: service_key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    NexsetInfoPatchRequest:
+      properties:
+        name:
+          anyOf:
+          - type: string
+            minLength: 1
+          - type: 'null'
+          title: Name
+          description: Updated nexset title.
+        description:
+          anyOf:
+          - type: string
+            minLength: 1
+          - type: 'null'
+          title: Description
+          description: Updated nexset description.
+        documentation:
+          anyOf:
+          - type: string
+            maxLength: 500000
+            minLength: 1
+          - type: 'null'
+          title: Documentation
+          description: Updated markdown documentation served by /data_sets/{id}/docs.
+      type: object
+      title: NexsetInfoPatchRequest
+      description: 'Request body for ``PATCH /v2/nexsets/{nexset_id}/info``.
+
+
+        Any subset of ``name``/``description``/``documentation`` may be supplied;
+
+        fields left ``None`` are not forwarded to the Admin API. The handler
+
+        rejects a fully empty payload with 400.'
+    TokenType:
+      type: string
+      enum:
+      - bearer
+      - service_key
+      title: TokenType

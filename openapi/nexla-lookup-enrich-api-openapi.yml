@@ -1,0 +1,146 @@
+openapi: 3.2.0
+info:
+  title: Nexla GenAI (RAG + MCPaaS) Lookup Enrich API
+  description: Combined Nexla GenAI RAG API Service and MCPaaS
+  version: v0.2.3.3-combined
+tags:
+- name: Lookup Enrich
+paths:
+  /lookup_enrich:
+    post:
+      summary: Lookup Enrich
+      description: "Lookup enrichment endpoint that reads from and writes to the same BigQuery table.\n\nArgs:\n    mode: Either 'init' (truncate and reload) or 'update' (append)\n    request: Request containing project_id, dataset_id, table_name, and gbq_key_path\n    auth_response: Authenticated response\n\nReturns:\n    LookupEnrichResponse with operation results"
+      operationId: lookup_enrich_lookup_enrich_post
+      parameters:
+      - name: mode
+        in: query
+        required: true
+        schema:
+          type: string
+          description: 'Mode: ''init'' or ''update'''
+          title: Mode
+        description: 'Mode: ''init'' or ''update'''
+      - name: token_type
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/TokenType'
+          default: service_key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LookupEnrichRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LookupEnrichResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Lookup Enrich
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    LookupEnrichResponse:
+      properties:
+        message:
+          type: string
+          title: Message
+          description: Operation result message
+        mode:
+          type: string
+          title: Mode
+          description: Operation mode (init/update)
+        processed_count:
+          type: integer
+          title: Processed Count
+          description: Number of records processed
+        total_records:
+          type: integer
+          title: Total Records
+          description: Total records found
+        enriched_records:
+          type: integer
+          title: Enriched Records
+          description: Records successfully enriched
+        failed_enrichments:
+          type: integer
+          title: Failed Enrichments
+          description: Records that failed enrichment
+        data_map_ids:
+          items:
+            type: integer
+          type: array
+          title: Data Map Ids
+          description: Data map IDs
+      type: object
+      required:
+      - message
+      - mode
+      - processed_count
+      - total_records
+      - enriched_records
+      - failed_enrichments
+      - data_map_ids
+      title: LookupEnrichResponse
+      description: Response model for lookup enrichment endpoint
+    TokenType:
+      type: string
+      enum:
+      - bearer
+      - service_key
+      title: TokenType
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    LookupEnrichRequest:
+      properties:
+        key_path:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Key Path
+          description: Path to file
+      type: object
+      title: LookupEnrichRequest
+      description: Request model for lookup enrichment endpoint

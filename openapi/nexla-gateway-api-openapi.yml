@@ -1,0 +1,1779 @@
+openapi: 3.2.0
+info:
+  title: Nexla GenAI (RAG + MCPaaS) Gateway API
+  description: Combined Nexla GenAI RAG API Service and MCPaaS
+  version: v0.2.3.3-combined
+tags:
+- name: gateway
+paths:
+  /v1/toolsets/{tool_set_id}/gateway/mcp-servers:
+    post:
+      tags:
+      - gateway
+      summary: Create Ext Mcp Server
+      operationId: create_ext_mcp_server_v1_toolsets__tool_set_id__gateway_mcp_servers_post
+      parameters:
+      - name: tool_set_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Tool Set Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: x-subject-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Subject-Id
+      - name: x-actor-type
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Actor-Type
+      - name: x-roles
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Roles
+      - name: x-client-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Client-Id
+      - name: X-Agent-Principal
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Principal
+      - name: x-agent-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Id
+      - name: x-agent-session-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Session-Id
+      - name: x-upstream-app
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Upstream-App
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExtMcpServerCreateIn'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Create Ext Mcp Server V1 Toolsets  Tool Set Id  Gateway Mcp Servers Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - gateway
+      summary: List Ext Mcp Servers
+      operationId: list_ext_mcp_servers_v1_toolsets__tool_set_id__gateway_mcp_servers_get
+      parameters:
+      - name: tool_set_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Tool Set Id
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 0
+          title: Offset
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: x-subject-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Subject-Id
+      - name: x-actor-type
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Actor-Type
+      - name: x-roles
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Roles
+      - name: x-client-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Client-Id
+      - name: X-Agent-Principal
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Principal
+      - name: x-agent-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Id
+      - name: x-agent-session-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Session-Id
+      - name: x-upstream-app
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Upstream-App
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response List Ext Mcp Servers V1 Toolsets  Tool Set Id  Gateway Mcp Servers Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/toolsets/{tool_set_id}/gateway/mcp-servers/{server_id}:
+    get:
+      tags:
+      - gateway
+      summary: Get Ext Mcp Server
+      operationId: get_ext_mcp_server_v1_toolsets__tool_set_id__gateway_mcp_servers__server_id__get
+      parameters:
+      - name: tool_set_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Tool Set Id
+      - name: server_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Server Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: x-subject-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Subject-Id
+      - name: x-actor-type
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Actor-Type
+      - name: x-roles
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Roles
+      - name: x-client-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Client-Id
+      - name: X-Agent-Principal
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Principal
+      - name: x-agent-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Id
+      - name: x-agent-session-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Session-Id
+      - name: x-upstream-app
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Upstream-App
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Get Ext Mcp Server V1 Toolsets  Tool Set Id  Gateway Mcp Servers  Server Id  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - gateway
+      summary: Update Ext Mcp Server
+      operationId: update_ext_mcp_server_v1_toolsets__tool_set_id__gateway_mcp_servers__server_id__put
+      parameters:
+      - name: tool_set_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Tool Set Id
+      - name: server_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Server Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: x-subject-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Subject-Id
+      - name: x-actor-type
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Actor-Type
+      - name: x-roles
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Roles
+      - name: x-client-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Client-Id
+      - name: X-Agent-Principal
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Principal
+      - name: x-agent-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Id
+      - name: x-agent-session-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Session-Id
+      - name: x-upstream-app
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Upstream-App
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExtMcpServerUpdateIn'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Update Ext Mcp Server V1 Toolsets  Tool Set Id  Gateway Mcp Servers  Server Id  Put
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - gateway
+      summary: Delete Ext Mcp Server
+      operationId: delete_ext_mcp_server_v1_toolsets__tool_set_id__gateway_mcp_servers__server_id__delete
+      parameters:
+      - name: tool_set_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Tool Set Id
+      - name: server_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Server Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: x-subject-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Subject-Id
+      - name: x-actor-type
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Actor-Type
+      - name: x-roles
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Roles
+      - name: x-client-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Client-Id
+      - name: X-Agent-Principal
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Principal
+      - name: x-agent-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Id
+      - name: x-agent-session-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Session-Id
+      - name: x-upstream-app
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Upstream-App
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Delete Ext Mcp Server V1 Toolsets  Tool Set Id  Gateway Mcp Servers  Server Id  Delete
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/toolsets/{tool_set_id}/gateway/mcp-servers/{server_id}/sync:
+    post:
+      tags:
+      - gateway
+      summary: Sync Ext Mcp Server
+      operationId: sync_ext_mcp_server_v1_toolsets__tool_set_id__gateway_mcp_servers__server_id__sync_post
+      parameters:
+      - name: tool_set_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Tool Set Id
+      - name: server_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Server Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: x-subject-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Subject-Id
+      - name: x-actor-type
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Actor-Type
+      - name: x-roles
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Roles
+      - name: x-client-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Client-Id
+      - name: X-Agent-Principal
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Principal
+      - name: x-agent-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Id
+      - name: x-agent-session-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Session-Id
+      - name: x-upstream-app
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Upstream-App
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Sync Ext Mcp Server V1 Toolsets  Tool Set Id  Gateway Mcp Servers  Server Id  Sync Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/toolsets/{tool_set_id}/gateway/mcp-servers/{server_id}/available-tools:
+    get:
+      tags:
+      - gateway
+      summary: List Available Ext Mcp Tools
+      description: 'Preview tools available on an external MCP server.
+
+
+        Connects to the remote MCP server, lists all tools, and returns each
+
+        tool annotated with whether it is currently ``selected`` based on the
+
+        server''s ``tool_filter`` configuration.  Warnings are included for any
+
+        tool names in the filter that do not exist on the remote server.'
+      operationId: list_available_ext_mcp_tools_v1_toolsets__tool_set_id__gateway_mcp_servers__server_id__available_tools_get
+      parameters:
+      - name: tool_set_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Tool Set Id
+      - name: server_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Server Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: x-subject-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Subject-Id
+      - name: x-actor-type
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Actor-Type
+      - name: x-roles
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Roles
+      - name: x-client-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Client-Id
+      - name: X-Agent-Principal
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Principal
+      - name: x-agent-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Id
+      - name: x-agent-session-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Session-Id
+      - name: x-upstream-app
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Upstream-App
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response List Available Ext Mcp Tools V1 Toolsets  Tool Set Id  Gateway Mcp Servers  Server Id  Available Tools Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/toolsets/{tool_set_id}/gateway/mcp-servers/{server_id}/tool-filter:
+    put:
+      tags:
+      - gateway
+      summary: Update Ext Mcp Server Tool Filter
+      description: 'Update (or clear) the tool filter for an external MCP server.
+
+
+        Pass an empty ``tool_names`` and ``patterns`` list to clear the filter
+
+        and revert to syncing all tools.'
+      operationId: update_ext_mcp_server_tool_filter_v1_toolsets__tool_set_id__gateway_mcp_servers__server_id__tool_filter_put
+      parameters:
+      - name: tool_set_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Tool Set Id
+      - name: server_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Server Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: x-subject-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Subject-Id
+      - name: x-actor-type
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Actor-Type
+      - name: x-roles
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Roles
+      - name: x-client-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Client-Id
+      - name: X-Agent-Principal
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Principal
+      - name: x-agent-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Id
+      - name: x-agent-session-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Session-Id
+      - name: x-upstream-app
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Upstream-App
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ToolFilterIn'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Update Ext Mcp Server Tool Filter V1 Toolsets  Tool Set Id  Gateway Mcp Servers  Server Id  Tool Filter Put
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/toolsets/{tool_set_id}/gateway/tools:
+    get:
+      tags:
+      - gateway
+      summary: List Gateway Tools
+      operationId: list_gateway_tools_v1_toolsets__tool_set_id__gateway_tools_get
+      parameters:
+      - name: tool_set_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Tool Set Id
+      - name: search
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Search
+      - name: source_type
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Type
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: active
+          title: Status
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 0
+          title: Offset
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: x-subject-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Subject-Id
+      - name: x-actor-type
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Actor-Type
+      - name: x-roles
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Roles
+      - name: x-client-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Client-Id
+      - name: X-Agent-Principal
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Principal
+      - name: x-agent-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Id
+      - name: x-agent-session-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Session-Id
+      - name: x-upstream-app
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Upstream-App
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response List Gateway Tools V1 Toolsets  Tool Set Id  Gateway Tools Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/toolsets/{tool_set_id}/gateway/tools:search:
+    post:
+      tags:
+      - gateway
+      summary: Semantic Search Gateway Tools
+      operationId: semantic_search_gateway_tools_v1_toolsets__tool_set_id__gateway_tools_search_post
+      parameters:
+      - name: tool_set_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Tool Set Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: x-subject-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Subject-Id
+      - name: x-actor-type
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Actor-Type
+      - name: x-roles
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Roles
+      - name: x-client-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Client-Id
+      - name: X-Agent-Principal
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Principal
+      - name: x-agent-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Id
+      - name: x-agent-session-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Session-Id
+      - name: x-upstream-app
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Upstream-App
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GatewaySearchIn'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Semantic Search Gateway Tools V1 Toolsets  Tool Set Id  Gateway Tools Search Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/toolsets/{tool_set_id}/gateway/tools/{tool_name}:
+    get:
+      tags:
+      - gateway
+      summary: Get Gateway Tool
+      operationId: get_gateway_tool_v1_toolsets__tool_set_id__gateway_tools__tool_name__get
+      parameters:
+      - name: tool_set_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Tool Set Id
+      - name: tool_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Tool Name
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: x-subject-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Subject-Id
+      - name: x-actor-type
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Actor-Type
+      - name: x-roles
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Roles
+      - name: x-client-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Client-Id
+      - name: X-Agent-Principal
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Principal
+      - name: x-agent-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Id
+      - name: x-agent-session-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Session-Id
+      - name: x-upstream-app
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Upstream-App
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Get Gateway Tool V1 Toolsets  Tool Set Id  Gateway Tools  Tool Name  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/toolsets/{tool_set_id}/gateway/sync-logs:
+    get:
+      tags:
+      - gateway
+      summary: List Gateway Sync Logs For Toolset
+      operationId: list_gateway_sync_logs_for_toolset_v1_toolsets__tool_set_id__gateway_sync_logs_get
+      parameters:
+      - name: tool_set_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Tool Set Id
+      - name: sync_type
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Sync Type
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+      - name: ext_mcp_server_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Ext Mcp Server Id
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 0
+          title: Offset
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: x-subject-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Subject-Id
+      - name: x-actor-type
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Actor-Type
+      - name: x-roles
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Roles
+      - name: x-client-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Client-Id
+      - name: X-Agent-Principal
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Principal
+      - name: x-agent-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Id
+      - name: x-agent-session-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Session-Id
+      - name: x-upstream-app
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Upstream-App
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response List Gateway Sync Logs For Toolset V1 Toolsets  Tool Set Id  Gateway Sync Logs Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/gateway/sync/vendor-tools:
+    post:
+      tags:
+      - gateway
+      summary: Trigger Vendor Sync
+      operationId: trigger_vendor_sync_v1_gateway_sync_vendor_tools_post
+      parameters:
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: x-subject-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Subject-Id
+      - name: x-actor-type
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Actor-Type
+      - name: x-roles
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Roles
+      - name: x-client-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Client-Id
+      - name: X-Agent-Principal
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Principal
+      - name: x-agent-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Id
+      - name: x-agent-session-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Session-Id
+      - name: x-upstream-app
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Upstream-App
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Trigger Vendor Sync V1 Gateway Sync Vendor Tools Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/gateway/sync-logs:
+    get:
+      tags:
+      - gateway
+      summary: List Gateway Sync Logs
+      operationId: list_gateway_sync_logs_v1_gateway_sync_logs_get
+      parameters:
+      - name: sync_type
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Sync Type
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+      - name: ext_mcp_server_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Ext Mcp Server Id
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 0
+          title: Offset
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: x-subject-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Subject-Id
+      - name: x-actor-type
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Actor-Type
+      - name: x-roles
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Roles
+      - name: x-client-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Client-Id
+      - name: X-Agent-Principal
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Principal
+      - name: x-agent-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Id
+      - name: x-agent-session-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Session-Id
+      - name: x-upstream-app
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Upstream-App
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response List Gateway Sync Logs V1 Gateway Sync Logs Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ExtMcpServerUpdateIn:
+      properties:
+        server_name:
+          anyOf:
+          - type: string
+            maxLength: 255
+            minLength: 1
+          - type: 'null'
+          title: Server Name
+        server_description:
+          anyOf:
+          - type: string
+            maxLength: 4096
+          - type: 'null'
+          title: Server Description
+        server_url:
+          anyOf:
+          - type: string
+            maxLength: 1024
+          - type: 'null'
+          title: Server Url
+        status:
+          anyOf:
+          - type: string
+            enum:
+            - active
+            - inactive
+            - error
+            - auth_error
+          - type: 'null'
+          title: Status
+        mcp_config:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Mcp Config
+        tool_filter:
+          anyOf:
+          - $ref: '#/components/schemas/ToolFilterIn'
+          - type: 'null'
+          description: Update the tool filter for this server. Set to an empty object to clear the filter and sync all tools.
+      additionalProperties: false
+      type: object
+      title: ExtMcpServerUpdateIn
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    GatewaySearchIn:
+      properties:
+        search_term:
+          type: string
+          maxLength: 2048
+          minLength: 1
+          title: Search Term
+        limit:
+          type: integer
+          maximum: 50.0
+          minimum: 1.0
+          title: Limit
+          default: 10
+      additionalProperties: false
+      type: object
+      required:
+      - search_term
+      title: GatewaySearchIn
+    ToolFilterIn:
+      properties:
+        mode:
+          type: string
+          enum:
+          - include
+          - exclude
+          title: Mode
+          description: 'Filter mode: ''include'' syncs only matching tools, ''exclude'' syncs all except matching.'
+          default: include
+        tool_names:
+          items:
+            type: string
+          type: array
+          title: Tool Names
+          description: Exact original tool names (as reported by the remote MCP server) to match.
+        patterns:
+          items:
+            type: string
+          type: array
+          title: Patterns
+          description: 'Glob patterns matched against original tool names. Supported wildcards: ''*'' matches any sequence of characters, ''?'' matches exactly one character. Bracket expressions like ''[abc]'' are NOT supported. Examples: ''github_*'', ''*_readonly'', ''tool_?''.'
+      additionalProperties: false
+      type: object
+      title: ToolFilterIn
+      description: 'Optional filter for selecting a subset of tools from an external MCP server.
+
+
+        When ``mode`` is ``"include"``, only tools matching ``tool_names`` or
+
+        ``patterns`` are synced.  When ``mode`` is ``"exclude"``, all tools
+
+        *except* those matching are synced.'
+    ExtMcpServerCreateIn:
+      properties:
+        server_name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          title: Server Name
+        server_description:
+          anyOf:
+          - type: string
+            maxLength: 4096
+          - type: 'null'
+          title: Server Description
+        server_url:
+          anyOf:
+          - type: string
+            maxLength: 1024
+          - type: 'null'
+          title: Server Url
+        mcp_config:
+          additionalProperties: true
+          type: object
+          title: Mcp Config
+        tool_filter:
+          anyOf:
+          - $ref: '#/components/schemas/ToolFilterIn'
+          - type: 'null'
+          description: Optional filter to select a subset of tools from the external MCP server. When omitted, all tools discovered on the server are synced.
+      additionalProperties: false
+      type: object
+      required:
+      - server_name
+      - mcp_config
+      title: ExtMcpServerCreateIn
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError

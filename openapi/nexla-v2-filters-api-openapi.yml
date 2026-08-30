@@ -1,0 +1,324 @@
+openapi: 3.2.0
+info:
+  title: Nexla GenAI (RAG + MCPaaS) V2 Filters API
+  description: Combined Nexla GenAI RAG API Service and MCPaaS
+  version: v0.2.3.3-combined
+tags:
+- name: v2-filters
+paths:
+  /v2/nexsets/{nexset_id}/filters:
+    post:
+      tags:
+      - v2-filters
+      summary: Register Filters
+      description: Register or replace the full filter schema for a nexset.
+      operationId: register_filters_v2_nexsets__nexset_id__filters_post
+      parameters:
+      - name: nexset_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Nexset Id
+      - name: token_type
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/TokenType'
+          default: service_key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilterRegistrationRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - v2-filters
+      summary: Get Filters
+      description: Retrieve the current filter schema for a nexset.
+      operationId: get_filters_v2_nexsets__nexset_id__filters_get
+      parameters:
+      - name: nexset_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Nexset Id
+      - name: token_type
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/TokenType'
+          default: service_key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v2/nexsets/{nexset_id}/filters/{key}:
+    patch:
+      tags:
+      - v2-filters
+      summary: Update Filter Key
+      description: Update a single filter key for a nexset.
+      operationId: update_filter_key_v2_nexsets__nexset_id__filters__key__patch
+      parameters:
+      - name: nexset_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Nexset Id
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Key
+      - name: type
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/FilterType'
+      - name: token_type
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/TokenType'
+          default: service_key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilterKeyPatchRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - v2-filters
+      summary: Delete Filter Key
+      description: Remove a single filter key from a nexset.
+      operationId: delete_filter_key_v2_nexsets__nexset_id__filters__key__delete
+      parameters:
+      - name: nexset_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Nexset Id
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Key
+      - name: type
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/FilterType'
+      - name: token_type
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/TokenType'
+          default: service_key
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v2/nexsets/{nexset_id}/filters/refresh:
+    post:
+      tags:
+      - v2-filters
+      summary: Refresh Filter Cache
+      description: 'Schedule background invalidation of the filter_schema cache for a nexset.
+
+
+        Returns immediately; the next read repopulates the cache from Supabase.'
+      operationId: refresh_filter_cache_v2_nexsets__nexset_id__filters_refresh_post
+      parameters:
+      - name: nexset_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Nexset Id
+      - name: token_type
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/TokenType'
+          default: service_key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    FilterRegistrationRequest:
+      properties:
+        filters:
+          items:
+            $ref: '#/components/schemas/FilterKeyDefinition'
+          type: array
+          title: Filters
+          description: List of filter key definitions to register.
+      type: object
+      required:
+      - filters
+      title: FilterRegistrationRequest
+      description: Request body for ``POST /v2/nexsets/{nexset_id}/filters``.
+    FilterKeyDefinition:
+      properties:
+        key:
+          type: string
+          title: Key
+          description: Metadata key name (e.g. 'tenant_id').
+        type:
+          $ref: '#/components/schemas/FilterType'
+          description: 'Filter layer: ''access_rules'', ''access_scope'', or ''filters''.'
+        operator:
+          type: string
+          title: Operator
+          description: 'Default operator: EQ, IN, CONTAINS, etc.'
+          default: EQ
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          description: Human-readable description.
+        nexset_field:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Nexset Field
+          description: Backend field name if different from key. When set, 'key' is used to look up the value in user_context and 'nexset_field' is the actual column/metadata field in the backend.
+      type: object
+      required:
+      - key
+      - type
+      title: FilterKeyDefinition
+      description: Definition of a single filter key in a nexset's filter schema.
+    FilterKeyPatchRequest:
+      properties:
+        type:
+          anyOf:
+          - $ref: '#/components/schemas/FilterType'
+          - type: 'null'
+          description: Updated filter type.
+        operator:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Operator
+          description: Updated operator.
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          description: Updated description.
+        nexset_field:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Nexset Field
+          description: Updated backend field name.
+      type: object
+      title: FilterKeyPatchRequest
+      description: Request body for ``PATCH /v2/nexsets/{nexset_id}/filters/{key}``.
+    TokenType:
+      type: string
+      enum:
+      - bearer
+      - service_key
+      title: TokenType
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    FilterType:
+      type: string
+      enum:
+      - access_rules
+      - access_scope
+      - filters
+      title: FilterType
+      description: Supported user-context layers for registered nexset filters.

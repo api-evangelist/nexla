@@ -1,0 +1,242 @@
+openapi: 3.2.0
+info:
+  title: Nexla GenAI (RAG + MCPaaS) MCP Tools API
+  description: Combined Nexla GenAI RAG API Service and MCPaaS
+  version: v0.2.3.3-combined
+tags:
+- name: MCP Tools
+paths:
+  /get-valid-nexsets-for-user:
+    post:
+      tags:
+      - MCP Tools
+      summary: Get valid nexsets for a user.
+      operationId: get-valid-nexsets-for-user
+      responses:
+        '200':
+          description: Get all the nexsets available for the user.
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/TextContent'
+                type: array
+                title: Response Get-Valid-Nexsets-For-User
+  /list-registered-nexsets-for-user:
+    post:
+      tags:
+      - MCP Tools
+      summary: List registered nexsets for a user.
+      description: "Nexset is the same as dataset.\nList all registered dataset IDs in the server. This returns the list of nexsets that the user is interested in querying at any point of time.\nThis tool is not to get ALL the available nexsets for the user.\n\nReturns:\n    A list of all registered dataset IDs"
+      operationId: list-registered-nexsets-for-user
+      responses:
+        '200':
+          description: List all the nexsets registered for the user.
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/TextContent'
+                type: array
+                title: Response List-Registered-Nexsets-For-User
+  /clear-registered-nexsets-for-user:
+    post:
+      tags:
+      - MCP Tools
+      summary: Clear registered nexsets for a user.
+      description: "Nexset is the same as dataset.\nClear all registered dataset IDs from the server.\n\nReturns:\n    A message confirming the clearing of all registered nexsets"
+      operationId: clear-registered-nexsets-for-user
+      responses:
+        '200':
+          description: Clear all the nexsets registered for the user.
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/TextContent'
+                type: array
+                title: Response Clear-Registered-Nexsets-For-User
+  /delete-registered-nexset:
+    post:
+      tags:
+      - MCP Tools
+      summary: Delete a registered nexset for a user.
+      description: "Nexset is the same as dataset.\nDelete a specific dataset ID from the server's registered nexsets set.\n\nArgs:\n    nexset_id: The ID of the dataset to delete\n\nReturns:\n    A message confirming the deletion or indicating that the dataset was not found"
+      operationId: delete-registered-nexset
+      parameters:
+      - name: nexset_id
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Nexset Id
+      responses:
+        '200':
+          description: Delete a specific nexset from the user's registered nexsets set.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TextContent'
+                title: Response Delete-Registered-Nexset
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /register-nexset:
+    post:
+      tags:
+      - MCP Tools
+      summary: Register a nexset ID in the server's registered nexsets set.
+      description: "Nexset is the same as dataset.\nRegister a nexset ID in the server's registered nexsets set. The registered nexset will be the one that will be used by the user for querying.\nIf the user says \"I want to query nexset 123\", then this tool will be used to register nexset 123 in the server's registered nexsets set.\n\nArgs:\n    nexset_id: The ID of the nexset to register\n\nReturns:\n    A message confirming the registration or an error if the nexset ID is invalid"
+      operationId: register-nexset
+      parameters:
+      - name: nexset_id
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Nexset Id
+      responses:
+        '200':
+          description: A message confirming the registration or an error if the nexset ID is invalid.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TextContent'
+                title: Response Register-Nexset
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /nexla-query-service:
+    post:
+      tags:
+      - MCP Tools
+      summary: Query Oaktree Capital finance-related information...
+      description: "Endpoint to query Oaktree Capital finance-related information.\n\nArgs:\n    request (Request): FastAPI request object.\n    user_query (str): The user's query text.\n\nReturns:\n    List[TextContent]: List of relevant financial and investment data.\n\nRaises:\n    HTTPException: If the private query fails."
+      operationId: Nexla-Query-Service
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Body_Nexla-Query-Service'
+        required: true
+      responses:
+        '200':
+          description: A list of relevant financial and investment data.
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/TextContent'
+                type: array
+                title: Response Nexla-Query-Service
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    Body_Nexla-Query-Service:
+      properties:
+        user_query:
+          type: string
+          title: User Query
+          description: The user's query text.
+      type: object
+      required:
+      - user_query
+      title: Body_Nexla-Query-Service
+    Annotations:
+      properties:
+        audience:
+          anyOf:
+          - items:
+              type: string
+              enum:
+              - user
+              - assistant
+            type: array
+          - type: 'null'
+          title: Audience
+        priority:
+          anyOf:
+          - type: number
+            maximum: 1.0
+            minimum: 0.0
+          - type: 'null'
+          title: Priority
+      additionalProperties: true
+      type: object
+      title: Annotations
+    TextContent:
+      properties:
+        type:
+          type: string
+          const: text
+          title: Type
+        text:
+          type: string
+          title: Text
+        annotations:
+          anyOf:
+          - $ref: '#/components/schemas/Annotations'
+          - type: 'null'
+        _meta:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Meta
+      additionalProperties: true
+      type: object
+      required:
+      - type
+      - text
+      title: TextContent
+      description: Text content for a message.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError

@@ -1,0 +1,1165 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Nexla Rest Notifications API
+  termsOfService: https://nexla.com/terms-of-service/
+  contact:
+    name: Nexla Support
+    url: https://docs.nexla.com
+    email: support@nexla.com
+  license:
+    name: Nexla
+    url: https://nexla.com
+  x-logo:
+    url: https://cdn.nexla.io/ui/assets/brand/v2/nexla-logo-color-portrait.svg
+    backgroundColor: '#ffffff'
+  description: '# Introduction
+
+
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
+
+
+    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
+
+
+    The API references in this document lists all API endpoints and the corresponding payloads.
+
+
+    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
+
+
+    # API Data Format and Versions
+
+
+    The API uses JSON for all data exchanges.
+
+
+    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
+
+    ```
+
+    Accept: application/vnd.nexla.api.v1+json
+
+    ```
+
+
+    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
+
+
+
+    ```
+
+    Accept: application/json
+
+    ```
+
+
+    # Authentication
+
+
+    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
+
+
+    <SecurityDefinitions />'
+servers:
+- url: https://{nexla-api-host}
+  variables:
+    nexla-api-host:
+      default: dataops.nexla.io/nexla-api
+      description: Nexla API URL your Nexla instance
+security:
+- NexlaSessionToken: []
+tags:
+- name: Notifications
+  description: Operations for managing notifications.
+paths:
+  /notifications:
+    get:
+      operationId: get_notifications
+      summary: Get All Notifications
+      description: 'Returns all notifications in the authenticated user''s account. Note that this only includes notifications generated to be displayed in the Nexla UI.
+
+        '
+      tags:
+      - Notifications
+      parameters:
+      - name: read
+        in: path
+        description: 'Set the read query parameter to 0 to fetch only notifications that have not yet been read, or set it to 1 to fetch only those that have been read.
+
+          '
+        schema:
+          type: integer
+      - name: level
+        in: query
+        description: 'Filter by level of notifications. Values are: ''DEBUG'', ''INFO'', ''WARN'', ''ERROR'', ''RECOVERED'', ''RESOLVED''."
+
+          '
+        schema:
+          type: string
+          enum:
+          - DEBUG
+          - INFO
+          - WARN
+          - ERROR
+          - RECOVERED
+      - name: from
+        in: query
+        description: 'Filter notifications starting from timestamp. Format is unix timestamp.
+
+          '
+        schema:
+          type: integer
+      - name: to
+        in: query
+        description: 'Filter notifications ending at timestamp. Format is unix timestamp.
+
+          '
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          $ref: '#/components/responses/notifications_many'
+        '403':
+          description: Forbidden
+  /notifications/{notification_id}:
+    get:
+      tags:
+      - Notifications
+      operationId: get_notification
+      summary: Get a Notification
+      description: 'Returns a notification if a valid ID is provided.
+
+        '
+      parameters:
+      - name: notification_id
+        in: path
+        description: The unique ID of the notification.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/notifications_one'
+        '403':
+          description: Forbidden
+    delete:
+      operationId: delete_notifications
+      summary: Delete a Notification
+      description: 'Deletes a notification if a valid ID is provided.
+
+        '
+      tags:
+      - Notifications
+      parameters:
+      - name: notification_id
+        in: path
+        description: The unique ID of the notification.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: Forbidden
+  /notifications/all:
+    delete:
+      operationId: delete_all_notifications
+      summary: Delete All Notifications
+      description: 'Deletes all notifications belonging to the authenticated user. Note that this is only the list of notifications generated to be displayed in the Nexla UI.
+
+        '
+      tags:
+      - Notifications
+      parameters:
+      - name: async
+        in: query
+        description: If set to 'true', request will be executed in a deferred way, and results will be provided later.
+        required: false
+        schema:
+          type: boolean
+      - name: request_id
+        in: query
+        description: The unique ID of the asynchronous request. In case it's provided, returns info about the deferred request.
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/async_or_null'
+        '403':
+          description: Forbidden
+  /notifications/count:
+    get:
+      operationId: get_notification_count
+      summary: Get Notifications Count
+      description: 'Returns the total number of notifications in the authenticated user''s account. Note that this only includes notifications generated to be displayed in the Nexla UI.
+
+        '
+      tags:
+      - Notifications
+      parameters:
+      - name: read
+        in: path
+        description: Set the read query parameter to 0 to fetch only notifications that have not yet been read, or set it to 1 to fetch only those that have been read. If you don't send a read query parameter, all notifications (both read and unread) will be fetched.
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/notifications_count'
+        '403':
+          description: Forbidden
+  /notifications/mark_read:
+    put:
+      tags:
+      - Notifications
+      operationId: notifications_mark_read
+      summary: Mark Notification Read
+      description: 'Use this endpoint to mark one, multiple, or all notifications as read. To mark a list of notifications, send an array of notification IDs as the payload. To mark all notifications, send the notification_id query parameter with the value `all`.
+
+        '
+      parameters:
+      - name: notification_id
+        in: query
+        description: 'The unique ID of one or more notifications, or enter "all" to mark all notifications as read.
+
+          This can be used in place of an array of IDs in the request body.
+
+          '
+        required: false
+        schema:
+          oneOf:
+          - type: string
+            enum:
+            - all
+          - type: integer
+      - name: async
+        in: query
+        description: If set to 'true', request will be executed in a deferred way, and results will be provided later.
+        required: false
+        schema:
+          type: boolean
+      - name: request_id
+        in: query
+        description: The unique ID of the asynchronous request. In case it's provided, returns info about the deferred request.
+        required: false
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              description: Accepts a JSON array of notification IDs.
+              items:
+                type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/async_or_null'
+        '403':
+          description: Forbidden
+  /notifications/mark_unread:
+    put:
+      tags:
+      - Notifications
+      operationId: notifications_mark_unread
+      summary: Mark Notification Unread
+      description: 'Use this endpoint to mark one, multiple, or all notifications as read. To mark a list of notifications, send an array of notification IDs as the payload. To mark all notifications, send the notification_id query parameter with the value `all`.
+
+        '
+      parameters:
+      - name: notification_id
+        in: query
+        description: 'The unique ID of one or more notifications, or enter "all" to mark all notifications as unread.
+
+          This can be used in place of an array of IDs in the request body.
+
+          '
+        required: false
+        schema:
+          oneOf:
+          - type: string
+            enum:
+            - all
+          - type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              description: Accepts a JSON array of notification IDs.
+              items:
+                type: integer
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: Forbidden
+  /notification_types:
+    get:
+      operationId: get_notification_types
+      summary: Get All Notification Types
+      description: 'Fetches a list of all notifications supported by Nexla in this environment.
+
+
+        When users choose whether or not some notifications are enabled, their choices are saved in `notification_settings` and linked to the ID of the relevant notification type.
+
+        '
+      tags:
+      - Notifications
+      parameters:
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - ACTIVE
+          - PAUSE
+          description: "The status field indicates whether the environment is configured to generate these notifications. Usually, all notifications will be in the `ACTIVE` state. \n"
+      responses:
+        '200':
+          $ref: '#/components/responses/notification_types_many'
+        '403':
+          description: Forbidden
+  /notification_types/list:
+    get:
+      operationId: list_notification_type
+      summary: Get One Notification Type
+      description: "Fetches details about a specific notification type supported by Nexla in this environment.    \n"
+      tags:
+      - Notifications
+      parameters:
+      - name: event_type
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/NotificationEventType'
+      - name: resource_type
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/NotificationResourceType'
+      responses:
+        '200':
+          $ref: '#/components/responses/notification_types_one'
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /notification_channel_settings:
+    get:
+      operationId: list_notification_channel_settings
+      summary: List Notification Channel Settings
+      description: "Notification channel settings contain configuration settings relevant to where notifications should be delivered. For example, the settings for the `EMAIL` channel contain the email addresses to which notifications can be sent.\n\nYou can maintain multiple configuration settings for the same channel to route notifications for specific resources and types to different locations. \n\nThis endpoint lists all notification channel settings in the authenticated user's account.\n"
+      tags:
+      - Notifications
+      responses:
+        '200':
+          $ref: '#/components/responses/notification_channel_settings_many'
+        '403':
+          description: Forbidden
+    post:
+      operationId: create_notification_channel_setting
+      summary: Create a Notification Channel Setting
+      description: "Create a new configuration for a notification channel. \n\nYou can maintain multiple configuration settings for the same channel to route notifications for specific resources and types to different locations. \n"
+      tags:
+      - Notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationChannelSettingCreateRequired'
+      responses:
+        '200':
+          $ref: '#/components/responses/notification_channel_settings_one'
+        '400':
+          description: Bad Request
+        '403':
+          description: Forbidden
+  /notification_channel_settings/{notification_channel_setting_id}:
+    get:
+      tags:
+      - Notifications
+      operationId: get_notification_channel_setting
+      summary: Get a Notification Channel Setting
+      description: 'Returns a notification channel setting if a valid ID is provided.
+
+        '
+      parameters:
+      - name: notification_channel_setting_id
+        in: path
+        description: The unique ID of the notification channel setting.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/notification_channel_settings_one'
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Notifications
+      operationId: update_notification_channel_setting
+      summary: Update a Notification Channel Setting
+      description: 'Update the configuration of a notification channel setting.
+
+        '
+      parameters:
+      - name: notification_channel_setting_id
+        in: path
+        description: The unique ID of the notification channel setting.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationChannelSettingUpdate'
+      responses:
+        '200':
+          $ref: '#/components/responses/notification_channel_settings_one'
+        '400':
+          description: Bad Request
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      operationId: delete_notification_channel_setting
+      summary: Delete a Notification Channel Setting
+      description: Deletes a notification channel setting if a valid ID is provided.
+      tags:
+      - Notifications
+      parameters:
+      - name: notification_channel_setting_id
+        in: path
+        description: The unique ID of the notification channel setting.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /notification_settings:
+    get:
+      operationId: list_notification_settings
+      summary: List Notification Settings
+      description: "This endpoint lists all notification settings in the authenticated user's account.\n\n\nNotification settings contain the following user settings:\n1. Whether the user wants to be notified about a specific event (`status` of a `notification_type` on a `notification_resource_type`)\n2. If yes, on what `channel` the user wants to be notified \n3. The configuration of the channel (`notification_channel_setting_id`)\n4. Configuration parameters affect when the notification should be fired. This is usually left empty to use platform defaults, but it is relevant when users want to override the default settings of some notifications, such as `Source Data Delayed`  \n"
+      tags:
+      - Notifications
+      parameters:
+      - name: event_type
+        in: query
+        schema:
+          $ref: '#/components/schemas/NotificationEventType'
+      - name: resource_type
+        in: query
+        schema:
+          $ref: '#/components/schemas/NotificationResourceType'
+      - name: status
+        in: query
+        schema:
+          $ref: '#/components/schemas/NotificationSettingStatus'
+      responses:
+        '200':
+          $ref: '#/components/responses/notification_settings_many'
+        '400':
+          description: Bad Request
+        '403':
+          description: Forbidden
+    post:
+      operationId: create_notification_setting
+      summary: Create a Notification Setting
+      description: 'Create a setting to designate whether, when, and how a specific notification should be fired.
+
+        '
+      tags:
+      - Notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationSettingCreateRequired'
+      responses:
+        '200':
+          $ref: '#/components/responses/notification_settings_one'
+        '400':
+          description: Bad Request
+        '403':
+          description: Forbidden
+  /notification_settings/{notification_setting_id}:
+    get:
+      tags:
+      - Notifications
+      operationId: get_notification_setting
+      summary: Get a Notification Setting
+      description: 'Returns a notification if a valid ID is provided.
+
+        '
+      parameters:
+      - name: notification_setting_id
+        in: path
+        description: The unique ID of the notification setting.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/notification_settings_one'
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Notifications
+      operationId: update_notification_setting
+      summary: Modify a Notification Setting
+      description: 'Modifies a notification if a valid ID and body are provided.
+
+        '
+      parameters:
+      - name: notification_setting_id
+        in: path
+        description: The unique ID of the notification setting.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationSettingUpdate'
+      responses:
+        '200':
+          $ref: '#/components/responses/notification_settings_one'
+        '400':
+          description: Bad Request
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      operationId: delete_notification_setting
+      summary: Delete a Notification Setting
+      description: 'Delete a notification setting if a valid ID is provided.
+
+        '
+      tags:
+      - Notifications
+      parameters:
+      - name: notification_setting_id
+        in: path
+        description: The unique ID of the notification setting.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /notification_settings/notification_types/{notification_type_id}:
+    get:
+      operationId: list_notification_settings_by_type
+      summary: Get Notification Settings for an Event
+      description: "Use this endpoint to fetch all notification settings of a specific type. \n\nThis can be used as a filter that is easy to use to understand, which returns all notifications that a user can expect to receive for a specific event.\n"
+      tags:
+      - Notifications
+      parameters:
+      - name: notification_type_id
+        in: path
+        description: The unique ID of the notification type.
+        required: true
+        schema:
+          type: integer
+      - name: expand
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/notification_settings_many_type'
+        '400':
+          description: Bad Request
+        '403':
+          description: Forbidden
+  /notification_settings/{resource_type}/{resource_id}:
+    get:
+      operationId: list_resource_notification_settings
+      summary: Get Notification Settings For a Resource
+      description: "Use this endpoint to fetch all notification settings for a given resource. \n\nThis can be used as a filter that is easy to understand, which returns all notifications that a user can expect to receive for a specific resource.\n"
+      tags:
+      - Notifications
+      parameters:
+      - name: expand
+        in: query
+        schema:
+          type: boolean
+      - name: filter_overridden_settings
+        in: query
+        schema:
+          type: boolean
+      - name: notification_type_id
+        in: query
+        schema:
+          type: integer
+        example: 1
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 2
+      - name: resource_type
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/NotificationResourceType'
+      responses:
+        '200':
+          $ref: '#/components/responses/notification_settings_many'
+        '400':
+          description: Bad Request
+        '403':
+          description: Forbidden
+components:
+  schemas:
+    NotificationEventType:
+      type: string
+      enum:
+      - SHARE
+      - CREATE
+      - DELETE
+      - UPDATE
+      - ACTIVATE
+      - PAUSE
+      - METRICS
+      - RESETPASS
+      - ERROR_AGGREGATED
+      - ERROR
+      - MONITOR
+      - WRITE
+      - EMPTY_DATA
+      - READ_START
+      - READ_DONE
+      - WRITE_START
+      - WRITE_DONE
+    NotificationChannel:
+      type: string
+      enum:
+      - APP
+      - EMAIL
+      - SMS
+      - SLACK
+      - WEBHOOKS
+    NotificationChannelSettingUpdate:
+      type: object
+      properties:
+        channel:
+          $ref: '#/components/schemas/NotificationChannel'
+        config:
+          type: object
+          additionalProperties:
+            type: string
+            x-additionalPropertiesName: config_property
+            description: "Set the relevant configuration properties based on the type of notification channel. \n"
+    NotificationSettingStatus:
+      type: string
+      description: 'Whether or not the user should be notified about this event for this resource on the selected channel.
+
+        '
+      enum:
+      - PAUSED
+      - ACTIVE
+    NotificationSettingTypeView:
+      type: object
+      properties:
+        setting_id:
+          type: integer
+          format: int32
+        org_id:
+          type: integer
+          format: int32
+        owner_id:
+          type: integer
+          format: int32
+        channel:
+          $ref: '#/components/schemas/NotificationChannel'
+        resource_type:
+          $ref: '#/components/schemas/NotificationResourceType'
+        resource_id:
+          type: integer
+          format: int32
+        setting_config:
+          type: string
+          format: nullable
+        priority:
+          type: integer
+          format: int32
+        status:
+          $ref: '#/components/schemas/NotificationSettingStatus'
+        notification_type_id:
+          type: integer
+          format: int32
+        setting_created_at:
+          type: string
+        setting_updated_at:
+          type: string
+        notification_type_name:
+          type: string
+        notification_type_description:
+          type: string
+        notification_type_code:
+          type: integer
+          format: int32
+        notification_type_category:
+          type: string
+        notification_type_event_type:
+          $ref: '#/components/schemas/NotificationEventType'
+        resource_owner_id:
+          type: integer
+          format: int32
+        resource_org_id:
+          type: integer
+          format: int32
+        resource_name:
+          type: string
+        resource_description:
+          type: string
+        resource_status:
+          $ref: '#/components/schemas/NotificationSettingResourceStatus'
+    UserSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+        email_verified_at:
+          type: string
+          format: date-time
+    NotificationSettingCreateRequired:
+      allOf:
+      - $ref: '#/components/schemas/NotificationSettingUpdate'
+      - type: object
+        required:
+        - channel
+        - notification_type_id
+    NotificationChannelSettingCreateRequired:
+      allOf:
+      - $ref: '#/components/schemas/NotificationChannelSettingUpdate'
+      - type: object
+        required:
+        - channel
+        - config
+    NotificationSetting:
+      type: object
+      properties:
+        id:
+          type: integer
+        org_id:
+          type: integer
+        owner_id:
+          type: integer
+        channel:
+          $ref: '#/components/schemas/NotificationChannel'
+        notification_resource_type:
+          $ref: '#/components/schemas/NotificationResourceType'
+        resource_id:
+          type: integer
+        config:
+          type: object
+        priority:
+          type: integer
+        status:
+          $ref: '#/components/schemas/NotificationSettingStatus'
+        notification_type_id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        code:
+          type: integer
+        category:
+          type: string
+        event_type:
+          $ref: '#/components/schemas/NotificationEventType'
+        resource_type:
+          $ref: '#/components/schemas/NotificationResourceType'
+    NotificationType:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          $ref: '#/components/schemas/NotificationTypeCategory'
+        default:
+          type: boolean
+        status:
+          type: boolean
+        event_type:
+          $ref: '#/components/schemas/NotificationEventType'
+        resource_type:
+          $ref: '#/components/schemas/NotificationResourceType'
+    NotificationTypeCategory:
+      type: string
+      enum:
+      - PLATFORM
+      - SYSTEM
+      - DATA
+    AsyncResponse:
+      type: object
+      description: 'This object represents the response of an asynchronous operation. The response can be a dictionary or an array of dictionaries. The format of the response depends on the operation that was executed.
+
+        '
+      properties:
+        request_id:
+          type: integer
+          description: 'The unique ID of the request that was executed. This ID can be used to track the status of the request.
+
+            '
+        status:
+          type: string
+          enum:
+          - pending
+          - running
+          - completed
+          - failed
+          - cancelled
+        request_started_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was started.
+
+            '
+        progress:
+          type: integer
+          description: 'The progress of the request (value from 0 to 100). This value is a percentage of the total progress of the request. Applicable only to certain types of async operations.
+
+            '
+        result:
+          type: object
+          description: 'The result of the async operation. Format depends on the task type.
+
+            '
+          additionalProperties: true
+        request_stopped_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was stopped. This field is only present if the request has been stopped (due to cancellation or error).
+
+            '
+        request_completed_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was completed. This field is only present if the request has been completed successfully.
+
+            '
+    NotificationSettingUpdate:
+      type: object
+      properties:
+        channel:
+          $ref: '#/components/schemas/NotificationChannel'
+        status:
+          $ref: '#/components/schemas/NotificationSettingStatus'
+        config:
+          type: object
+          description: 'Configuration properties for customizing the criteria for firing the event.
+
+            '
+          additionalProperties:
+            type: string
+            x-additionalPropertiesName: config_property
+            description: "Set the relevant configuration properties if you want to override the default platform settings.    \n"
+        notification_resource_type:
+          $ref: '#/components/schemas/NotificationResourceType'
+        resource_id:
+          type: integer
+        checked:
+          type: boolean
+        notification_channel_setting_id:
+          type: integer
+        notification_type_id:
+          type: integer
+    async_or_null:
+      oneOf:
+      - $ref: '#/components/schemas/AsyncResponse'
+      - type: 'null'
+    NotificationSettingResourceStatus:
+      type: string
+      enum:
+      - INIT
+      - PAUSED
+      - ACTIVE
+      - RATE_LIMITED
+    NotificationChannelSetting:
+      type: object
+      properties:
+        id:
+          type: integer
+        owner_id:
+          type: integer
+        org_id:
+          type: integer
+        channel:
+          $ref: '#/components/schemas/NotificationChannel'
+        config:
+          type: object
+          additionalProperties:
+            type: string
+            x-additionalPropertiesName: config_property
+            description: "Set the relevant configuration properties based on the type of notification channel.    \n"
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
+    Notification:
+      type: object
+      properties:
+        id:
+          type: integer
+        owner:
+          $ref: '#/components/schemas/UserSimplified'
+        org:
+          $ref: '#/components/schemas/OrgSimplified'
+        access_roles:
+          $ref: '#/components/schemas/AccessRoles'
+        level:
+          type: string
+        resource_id:
+          type: integer
+        resource_type:
+          type: string
+        message_id:
+          type: integer
+        message:
+          type: string
+        read_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+    OrgSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: string
+        client_identifier:
+          type: string
+        org_webhook_host:
+          type: string
+    NotificationResourceType:
+      type: string
+      enum:
+      - ORG
+      - USER
+      - DATA_FLOW
+      - CUSTOM_DATA_FLOW
+      - SOURCE
+      - DATASET
+      - SINK
+  responses:
+    notification_settings_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotificationSetting'
+    notification_channel_settings_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotificationChannelSetting'
+    notifications_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Notification'
+    notification_settings_many_type:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/NotificationSettingTypeView'
+    notifications_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Notification'
+    notification_types_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotificationType'
+    notification_types_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/NotificationType'
+    notification_channel_settings_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/NotificationChannelSetting'
+    notification_settings_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/NotificationSetting'
+    notifications_count:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              count:
+                type: integer
+  securitySchemes:
+    NexlaSessionToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: "The first step in calling the Nexla API or Nexla CLI is to fetch a Session access token by logging on to your Nexla UI instance. This ensures that your authentication is performed through your organization's preferred Identity Provider.\n\nTo fetch an access token from the Nexla UI, simply go to your Nexla UI instance, and try the route `/token`. For example, if your Nexla UI instance is at `https://dataops.nexla.io`, open `https://dataops.nexla.io/token` in the browser. \n\nThis will automatically route you to a login page, ask you to authenticate using your preferred Identity Provider, and, upon successful authentication, route you to a page where you can copy the Access Token.\n\nUsage format: `Bearer <JWT>`.\n"
+    NexlaApiKeyQuery:
+      type: apiKey
+      name: api_key
+      in: query
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as a query parameter to authenticate this request.
+
+        Usage: `?api_key=<api-key>`
+
+        '
+    NexlaApiKeyHeader:
+      type: http
+      scheme: Basic
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as an authorization header to authenticate this request.
+
+        Usage format: `Basic <api-key>`
+
+        '
+    basicAuth:
+      type: http
+      scheme: basic
+    GoogleSSOToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: 'The token that is used when logging into Nexla via Google SSO.
+
+        '
+x-tagGroups:
+- name: Session
+  tags:
+  - Session Management
+- name: Integrate
+  tags:
+  - Flows
+  - Sources
+  - Destinations (Data Sinks)
+  - Nexsets (Data Sets)
+  - Credentials
+  - Data Maps
+  - Code Containers
+  - Transforms
+  - Projects
+- name: Monitor
+  tags:
+  - Notifications
+  - Metrics
+  - Audit Logs
+  - Quarantine Settings
+- name: Collaborate
+  tags:
+  - Access Control
+- name: Account Management
+  tags:
+  - Organizations
+  - Users
+  - User Settings
+  - Teams
+  - Gen AI Configs
+- name: Real-Time Events
+  tags:
+  - Webhooks
+- name: Rate Limiting
+  tags:
+  - Limits
+- name: Marketplace
+  tags:
+  - Marketplace
+- name: Self Sign-Up
+  tags:
+  - Self Sign-Up
+  - Self Sign-Up Admin
+- name: Async Tasks
+  tags:
+  - Async Tasks

@@ -1,0 +1,361 @@
+openapi: 3.2.0
+info:
+  title: Nexla GenAI (RAG + MCPaaS) MCP Config API
+  description: Combined Nexla GenAI RAG API Service and MCPaaS
+  version: v0.2.3.3-combined
+tags:
+- name: mcp-config
+paths:
+  /v1/toolsets/{tool_set_id}/mcp_config:
+    get:
+      tags:
+      - mcp-config
+      summary: Get Mcp Config By Toolset
+      description: Get MCP config for a tool set using its mcp_server_key.
+      operationId: get_mcp_config_by_toolset_v1_toolsets__tool_set_id__mcp_config_get
+      parameters:
+      - name: tool_set_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Tool Set Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: x-subject-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Subject-Id
+      - name: x-actor-type
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Actor-Type
+      - name: x-roles
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Roles
+      - name: x-client-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Client-Id
+      - name: X-Agent-Principal
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Principal
+      - name: x-agent-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Id
+      - name: x-agent-session-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Session-Id
+      - name: x-upstream-app
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Upstream-App
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Get Mcp Config By Toolset V1 Toolsets  Tool Set Id  Mcp Config Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/mcp/{server_key}/config:
+    get:
+      tags:
+      - mcp-config
+      summary: Get Mcp Config By Server Key
+      description: 'Get MCP config by server key.
+
+
+        Supports both:
+
+        - New mcp_server_key format on toolsets (e.g., "my-tools-abc123")
+
+        - Legacy server_key format on exports (43-char base64url)'
+      operationId: get_mcp_config_by_server_key_v1_mcp__server_key__config_get
+      parameters:
+      - name: server_key
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Server Key
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: x-subject-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Subject-Id
+      - name: x-actor-type
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Actor-Type
+      - name: x-roles
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Roles
+      - name: x-client-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Client-Id
+      - name: X-Agent-Principal
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Principal
+      - name: x-agent-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Id
+      - name: x-agent-session-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Session-Id
+      - name: x-upstream-app
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Upstream-App
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Get Mcp Config By Server Key V1 Mcp  Server Key  Config Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/toolsets/{tool_set_id}/exports/{export_id}/mcp_config:
+    get:
+      tags:
+      - mcp-config
+      summary: Get Mcp Config By Export Id
+      description: Get MCP config by export ID.
+      operationId: get_mcp_config_by_export_id_v1_toolsets__tool_set_id__exports__export_id__mcp_config_get
+      parameters:
+      - name: tool_set_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Tool Set Id
+      - name: export_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Export Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      - name: x-subject-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Subject-Id
+      - name: x-actor-type
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Actor-Type
+      - name: x-roles
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Roles
+      - name: x-client-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Client-Id
+      - name: X-Agent-Principal
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Principal
+      - name: x-agent-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Id
+      - name: x-agent-session-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Agent-Session-Id
+      - name: x-upstream-app
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Upstream-App
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Get Mcp Config By Export Id V1 Toolsets  Tool Set Id  Exports  Export Id  Mcp Config Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError

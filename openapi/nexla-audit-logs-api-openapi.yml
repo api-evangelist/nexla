@@ -1,0 +1,794 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Nexla Rest Audit Logs API
+  termsOfService: https://nexla.com/terms-of-service/
+  contact:
+    name: Nexla Support
+    url: https://docs.nexla.com
+    email: support@nexla.com
+  license:
+    name: Nexla
+    url: https://nexla.com
+  x-logo:
+    url: https://cdn.nexla.io/ui/assets/brand/v2/nexla-logo-color-portrait.svg
+    backgroundColor: '#ffffff'
+  description: '# Introduction
+
+
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
+
+
+    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
+
+
+    The API references in this document lists all API endpoints and the corresponding payloads.
+
+
+    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
+
+
+    # API Data Format and Versions
+
+
+    The API uses JSON for all data exchanges.
+
+
+    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
+
+    ```
+
+    Accept: application/vnd.nexla.api.v1+json
+
+    ```
+
+
+    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
+
+
+
+    ```
+
+    Accept: application/json
+
+    ```
+
+
+    # Authentication
+
+
+    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
+
+
+    <SecurityDefinitions />'
+servers:
+- url: https://{nexla-api-host}
+  variables:
+    nexla-api-host:
+      default: dataops.nexla.io/nexla-api
+      description: Nexla API URL your Nexla instance
+security:
+- NexlaSessionToken: []
+tags:
+- name: Audit Logs
+  description: Operations for reviewing the change history of resources.
+paths:
+  /data_sources/{source_id}/audit_log:
+    get:
+      tags:
+      - Audit Logs
+      operationId: get_data_source_audit_log
+      summary: Get Audit Log for a Data Source
+      description: 'Retrieves the history of changes made to the properties of a data source.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: data_source_id
+        in: path
+        description: The unique ID of the resource being queried.
+        required: true
+        schema:
+          type: integer
+      - name: async
+        in: query
+        description: If set to 'true', request will be executed in a deferred way, and results will be provided later.
+        required: false
+        schema:
+          type: boolean
+      - name: request_id
+        in: query
+        description: The unique ID of the asynchronous request. In case it's provided, returns info about the deferred request.
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/audit_log_response'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+  /data_sinks/{sink_id}/audit_log:
+    get:
+      tags:
+      - Audit Logs
+      operationId: get_data_sink_audit_log
+      summary: Get Audit Log for a Data Sink
+      description: 'Retrieves the history of changes made to the properties of a data sink.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: data_sink_id
+        in: path
+        description: The unique ID of the resource being queried.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/audit_log_response'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+  /data_sets/{set_id}/audit_log:
+    get:
+      tags:
+      - Audit Logs
+      operationId: get_nexset_audit_log
+      summary: Get Audit Log for a Nexset
+      description: 'Retrieves the history of changes made to the properties of a Nexset.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: data_set_id
+        in: path
+        description: The unique ID of the resource being queried.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/audit_log_response'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+  /data_credentials/{credential_id}/audit_log:
+    get:
+      tags:
+      - Audit Logs
+      operationId: get_data_credential_audit_log
+      summary: Get Audit Log for a Data Credential
+      description: 'Retrieves the history of changes made to the properties of a data credential.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: data_credential_id
+        in: path
+        description: The unique ID of the resource being queried.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/audit_log_response'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+  /data_maps/{data_map_id}/audit_log:
+    get:
+      tags:
+      - Audit Logs
+      operationId: get_data_map_audit_log
+      summary: Get Audit Log for a Data Map
+      description: 'Retrieves the history of changes made to the properties of a data map.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: data_map_id
+        in: path
+        description: The unique ID of the resource being queried.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/audit_log_response'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+  /data_schemas/{schema_id}/audit_log:
+    get:
+      tags:
+      - Audit Logs
+      operationId: get_data_schema_audit_log
+      summary: Get Audit Log for a Data Schema
+      description: 'Retrieves the history of changes made to the properties of a data schema.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: data_schema_id
+        in: path
+        description: The unique ID of the resource being queried.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/audit_log_response'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+  /code_containers/{code_container_id}/audit_log:
+    get:
+      tags:
+      - Audit Logs
+      operationId: get_code_container_audit_log
+      summary: Get Audit Log for a Code Container
+      description: 'Retrieves the history of changes made to the properties of a code container. This endpoint can also be used to fetch the history of changes made to any transform object.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: code_container_id
+        in: path
+        description: The unique ID of the resource being queried.
+        required: true
+        schema:
+          type: integer
+      - name: async
+        in: query
+        description: If set to 'true', request will be executed in a deferred way, and results will be provided later.
+        required: false
+        schema:
+          type: boolean
+      - name: request_id
+        in: query
+        description: The unique ID of the asynchronous request. In case it's provided, returns info about the deferred request.
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/audit_log_response'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+  /projects/{project_id}/audit_log:
+    get:
+      tags:
+      - Audit Logs
+      operationId: get_project_audit_log
+      summary: Get Audit Log for a Project
+      description: 'Retrieves the history of changes made to the properties of a project.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: project_id
+        in: path
+        description: The unique ID of the resource being queried.
+        required: true
+        schema:
+          type: integer
+      - name: async
+        in: query
+        description: If set to 'true', request will be executed in a deferred way, and results will be provided later.
+        required: false
+        schema:
+          type: boolean
+      - name: request_id
+        in: query
+        description: The unique ID of the asynchronous request. In case it's provided, returns info about the deferred request.
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/audit_log_response'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+  /doc_containers/{doc_container_id}/audit_log:
+    get:
+      tags:
+      - Audit Logs
+      operationId: get_doc_container_audit_log
+      summary: Get Audit Log for a Document
+      description: 'Retrieves the history of changes made to the properties of a document.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: doc_container_id
+        in: path
+        description: The unique ID of the resource being queried.
+        required: true
+        schema:
+          type: integer
+      - name: async
+        in: query
+        description: If set to 'true', request will be executed in a deferred way, and results will be provided later.
+        required: false
+        schema:
+          type: boolean
+      - name: request_id
+        in: query
+        description: The unique ID of the asynchronous request. In case it's provided, returns info about the deferred request.
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/audit_log_response'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+  /users/{user_id}/audit_log:
+    get:
+      tags:
+      - Audit Logs
+      operationId: get_user_audit_log
+      summary: Get Audit Log for a User
+      description: 'Retrieves the history of changes made to the properties of a user.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: user_id
+        in: path
+        description: The unique ID of the resource being queried.
+        required: true
+        schema:
+          type: integer
+      - name: async
+        in: query
+        description: If set to 'true', request will be executed in a deferred way, and results will be provided later.
+        required: false
+        schema:
+          type: boolean
+      - name: request_id
+        in: query
+        description: The unique ID of the asynchronous request. In case it's provided, returns info about the deferred request.
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/audit_log_response'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+  /orgs/{org_id}/audit_log:
+    get:
+      tags:
+      - Audit Logs
+      operationId: get_org_audit_log
+      summary: Get Audit Log for an Organization
+      description: 'Retrieves the history of changes made to the properties of an organization.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: org_id
+        in: path
+        description: The unique ID of the resource being queried.
+        required: true
+        schema:
+          type: integer
+      - name: async
+        in: query
+        description: If set to 'true', request will be executed in a deferred way, and results will be provided later.
+        required: false
+        schema:
+          type: boolean
+      - name: request_id
+        in: query
+        description: The unique ID of the asynchronous request. In case it's provided, returns info about the deferred request.
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/audit_log_response'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+  /teams/{team_id}/audit_log:
+    get:
+      tags:
+      - Audit Logs
+      operationId: get_team_audit_log
+      summary: Get Audit Log for a Team
+      description: 'Retrieves the history of changes made to the properties of a team.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: team_id
+        in: path
+        description: The unique ID of the resource being queried.
+        required: true
+        schema:
+          type: integer
+      - name: async
+        in: query
+        description: If set to 'true', request will be executed in a deferred way, and results will be provided later.
+        required: false
+        schema:
+          type: boolean
+      - name: request_id
+        in: query
+        description: The unique ID of the asynchronous request. In case it's provided, returns info about the deferred request.
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/audit_log_response'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+components:
+  schemas:
+    LogEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: 'Unique ID of this change event.
+
+            '
+        item_type:
+          type: string
+          example: DataSource
+          description: 'The type of resource that the change was performed on.
+
+            '
+        item_id:
+          type: integer
+          format: int32
+          description: 'Unique ID of resource that the change was performed on.
+
+            '
+        event:
+          type: string
+          example: association_added
+          description: 'The type of change event that was executed.
+
+            '
+        change_summary:
+          type: array
+          items:
+            type: string
+            example: status
+            description: 'Summary of types of changes executed during this change event. This is usually a comma-separated list of properties or types of properties that were modified as a result of some user action.
+
+              '
+        object_changes:
+          type: object
+          description: "This object contains before and after information on each property that was modified as a result of this change event.\n\nEach key in this object is the name of the property that was modified. The value of each property is a 2-element array. The first element shows the value of the property before the change event was executed and the second element shows the value of this property after the change event was executed. \n\nFor example, the values below should be interpreted as resource `status` was changed from `ACTIVE` to `PAUSED` and resource `name` was changed from `before` to `after`. \n\n```\n {\n   \"status\": [\"ACTIVE\", \"PAUSED\"],\n   \"name\": [\"before\", \"after\"]\n\n }\n\n```     \n"
+          additionalProperties:
+            x-additionalPropertiesName: property_name
+            description: "The object key shows the resource property name that was modified. The value of each property is a 2-element array. The first element shows the value of the property before the change event was executed and the second element shows the value of this property after the change event was executed. \n"
+            type: array
+            items:
+              type:
+              - string
+              - number
+              - integer
+              - boolean
+              - object
+              - array
+              - 'null'
+              minItems: 2
+              maxItems: 2
+        association_resource:
+          type: object
+          format: nullable
+          description: 'Sometimes change events result in updates to relationships between resources. This object reflects information about the resource relationship that was modified.
+
+            '
+          properties:
+            type:
+              type: string
+              description: 'The resource type of the resource whose relationship with this resource was modified.
+
+                '
+            id:
+              type: integer
+              format: int32
+              description: "The ID of the resource whose relationship with this resource was modified.          \n"
+        request_ip:
+          type: string
+          format: ipv4
+          example: 1.2.3.4
+          description: 'IP Address of the device where this change event request originated.
+
+            '
+        request_user_agent:
+          type: string
+          description: 'User Agent of the browser where this change event request originated.
+
+            '
+        request_url:
+          type: string
+          format: url
+          description: 'Nexla UI or API URL that was accessed by the user to trigger this change event.
+
+            '
+        user:
+          type: object
+          description: 'Details about the user who triggered this change event. Note that if changes were triggered by a Nexla support team member acting on behalf of a user then this field reflects information about that user while `impersonator_id` reflects information about the Nexla support team member.
+
+            '
+          properties:
+            id:
+              type: integer
+              format: int32
+            email:
+              type: string
+              format: email
+              example: user@nexla.com
+        impersonator_id:
+          type: string
+          format: nullable
+          description: "If the changes were made by a Nexla support team member acting on behalf of a user then this field reflects information about the Nexla support team member.      \n"
+        org_id:
+          type: integer
+          format: int32
+          description: 'The ID of the organization that this resource belongs to.
+
+            '
+        owner_id:
+          type: integer
+          format: int32
+          description: "The ID of the user that this resource belongs to.  \n"
+        owner_email:
+          type: string
+          description: "Email ID of the user that this resource belongs to. \n"
+        created_at:
+          type: string
+          format: date-time
+          example: '2022-11-08T22:51:47.720Z'
+    AsyncResponse:
+      type: object
+      description: 'This object represents the response of an asynchronous operation. The response can be a dictionary or an array of dictionaries. The format of the response depends on the operation that was executed.
+
+        '
+      properties:
+        request_id:
+          type: integer
+          description: 'The unique ID of the request that was executed. This ID can be used to track the status of the request.
+
+            '
+        status:
+          type: string
+          enum:
+          - pending
+          - running
+          - completed
+          - failed
+          - cancelled
+        request_started_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was started.
+
+            '
+        progress:
+          type: integer
+          description: 'The progress of the request (value from 0 to 100). This value is a percentage of the total progress of the request. Applicable only to certain types of async operations.
+
+            '
+        result:
+          type: object
+          description: 'The result of the async operation. Format depends on the task type.
+
+            '
+          additionalProperties: true
+        request_stopped_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was stopped. This field is only present if the request has been stopped (due to cancellation or error).
+
+            '
+        request_completed_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was completed. This field is only present if the request has been completed successfully.
+
+            '
+    audit_log_response:
+      oneOf:
+      - type: array
+        items:
+          $ref: '#/components/schemas/LogEntry'
+      - $ref: '#/components/schemas/AsyncResponse'
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
+  securitySchemes:
+    NexlaSessionToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: "The first step in calling the Nexla API or Nexla CLI is to fetch a Session access token by logging on to your Nexla UI instance. This ensures that your authentication is performed through your organization's preferred Identity Provider.\n\nTo fetch an access token from the Nexla UI, simply go to your Nexla UI instance, and try the route `/token`. For example, if your Nexla UI instance is at `https://dataops.nexla.io`, open `https://dataops.nexla.io/token` in the browser. \n\nThis will automatically route you to a login page, ask you to authenticate using your preferred Identity Provider, and, upon successful authentication, route you to a page where you can copy the Access Token.\n\nUsage format: `Bearer <JWT>`.\n"
+    NexlaApiKeyQuery:
+      type: apiKey
+      name: api_key
+      in: query
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as a query parameter to authenticate this request.
+
+        Usage: `?api_key=<api-key>`
+
+        '
+    NexlaApiKeyHeader:
+      type: http
+      scheme: Basic
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as an authorization header to authenticate this request.
+
+        Usage format: `Basic <api-key>`
+
+        '
+    basicAuth:
+      type: http
+      scheme: basic
+    GoogleSSOToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: 'The token that is used when logging into Nexla via Google SSO.
+
+        '
+x-tagGroups:
+- name: Session
+  tags:
+  - Session Management
+- name: Integrate
+  tags:
+  - Flows
+  - Sources
+  - Destinations (Data Sinks)
+  - Nexsets (Data Sets)
+  - Credentials
+  - Data Maps
+  - Code Containers
+  - Transforms
+  - Projects
+- name: Monitor
+  tags:
+  - Notifications
+  - Metrics
+  - Audit Logs
+  - Quarantine Settings
+- name: Collaborate
+  tags:
+  - Access Control
+- name: Account Management
+  tags:
+  - Organizations
+  - Users
+  - User Settings
+  - Teams
+  - Gen AI Configs
+- name: Real-Time Events
+  tags:
+  - Webhooks
+- name: Rate Limiting
+  tags:
+  - Limits
+- name: Marketplace
+  tags:
+  - Marketplace
+- name: Self Sign-Up
+  tags:
+  - Self Sign-Up
+  - Self Sign-Up Admin
+- name: Async Tasks
+  tags:
+  - Async Tasks

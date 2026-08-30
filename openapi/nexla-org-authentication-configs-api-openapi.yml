@@ -1,0 +1,593 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Nexla Rest Org authentication configs API
+  termsOfService: https://nexla.com/terms-of-service/
+  contact:
+    name: Nexla Support
+    url: https://docs.nexla.com
+    email: support@nexla.com
+  license:
+    name: Nexla
+    url: https://nexla.com
+  x-logo:
+    url: https://cdn.nexla.io/ui/assets/brand/v2/nexla-logo-color-portrait.svg
+    backgroundColor: '#ffffff'
+  description: '# Introduction
+
+
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
+
+
+    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
+
+
+    The API references in this document lists all API endpoints and the corresponding payloads.
+
+
+    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
+
+
+    # API Data Format and Versions
+
+
+    The API uses JSON for all data exchanges.
+
+
+    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
+
+    ```
+
+    Accept: application/vnd.nexla.api.v1+json
+
+    ```
+
+
+    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
+
+
+
+    ```
+
+    Accept: application/json
+
+    ```
+
+
+    # Authentication
+
+
+    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
+
+
+    <SecurityDefinitions />'
+servers:
+- url: https://{nexla-api-host}
+  variables:
+    nexla-api-host:
+      default: dataops.nexla.io/nexla-api
+      description: Nexla API URL your Nexla instance
+security:
+- NexlaSessionToken: []
+tags:
+- name: Org authentication configs
+  description: Operations for managing organization authentication configurations.
+paths:
+  /api_auth_configs:
+    get:
+      tags:
+      - Org authentication configs
+      operationId: get_api_auth_configs
+      summary: Get auth configs.
+      description: "Get the authentication configurations for the API. This will return auth configs owned by current user. \n"
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/auth_configs_many'
+        '403':
+          description: Forbidden
+    post:
+      tags:
+      - Org authentication configs
+      operationId: create_api_auth_config
+      summary: Create auth config.
+      description: 'Create a new authentication configuration for the API.
+
+        '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthConfigPayload'
+      responses:
+        '200':
+          $ref: '#/components/responses/auth_config_one'
+        '400':
+          description: Bad Request
+        '403':
+          description: Forbidden
+  /api_auth_configs/all:
+    get:
+      tags:
+      - Org authentication configs
+      operationId: get_all_api_auth_configs
+      summary: Get all auth configs.
+      description: 'Get the authentication configurations for the API. This will return all auth configs. Super-admin privilege is required.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/auth_configs_many'
+        '403':
+          description: Forbidden
+  /api_auth_configs/{auth_config_id}:
+    get:
+      tags:
+      - Org authentication configs
+      operationId: get_api_auth_configs
+      summary: Get auth configs.
+      description: 'Get the authentication configurations by it''s ID.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: auth_config_id
+        in: path
+        description: ID of the authentication configuration.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/auth_config_one'
+        '403':
+          description: Forbidden
+    put:
+      tags:
+      - Org authentication configs
+      operationId: update_api_auth_config
+      summary: Update auth config.
+      description: 'Update an authentication configuration for the API.
+
+        '
+      parameters:
+      - name: auth_config_id
+        in: path
+        description: The unique ID of the organization that needs to be updated.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthConfigPayload'
+      responses:
+        '200':
+          $ref: '#/components/responses/auth_config_one'
+        '400':
+          description: Bad Request
+        '403':
+          description: Forbidden
+    delete:
+      tags:
+      - Org authentication configs
+      operationId: delete_api_auth_config
+      summary: Delete auth config.
+      description: 'Delete an authentication configuration for the API.
+
+        '
+      parameters:
+      - name: auth_config_id
+        in: path
+        description: The unique ID of the organization that needs to be deleted.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: Forbidden
+  /orgs/{org_id}/auth_settings:
+    get:
+      tags:
+      - Org authentication configs
+      operationId: get_api_auth_settings
+      summary: Get auth settings for org.
+      description: "Get the authentication settings for the given org. This allows to enable or disable specific auth configs for the org. \n"
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: org_id
+        in: path
+        description: The unique ID of the organization for which settings will be returned.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/auth_settings_many'
+        '403':
+          description: Forbidden
+  /orgs/{org_id}/auth_settings/{auth_setting_id}:
+    put:
+      tags:
+      - Org authentication configs
+      operationId: update_api_auth_config
+      summary: Update auth config (enable/disable).
+      description: 'Update an authentication configuration for the API.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: org_id
+        in: path
+        description: The unique ID of the organization for which settings will be returned.
+        required: true
+        schema:
+          type: integer
+      - name: auth_setting_id
+        in: path
+        description: The unique ID of the authentication setting that needs to be updated.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthSettingPayload'
+      responses:
+        '200':
+          $ref: '#/components/responses/auth_setting_one'
+        '400':
+          description: Bad Request
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+components:
+  responses:
+    auth_settings_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AuthSetting'
+    auth_setting_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthSetting'
+    auth_configs_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AuthConfig'
+    auth_config_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthConfig'
+  schemas:
+    AuthConfig:
+      type: object
+      properties:
+        id:
+          type: integer
+        owner:
+          $ref: '#/components/schemas/UserSimplified'
+        org:
+          $ref: '#/components/schemas/OrgSimplified'
+        uid:
+          type: string
+          description: 'Unique external identifier for the authentication configuration.
+
+            '
+        protocol:
+          type: string
+          enum:
+          - saml
+          - oidc
+          - google
+          - password
+        name:
+          type: string
+        description:
+          type: string
+        global:
+          type: boolean
+          description: 'If true, this configuration is available to all organizations in the environment.
+
+            '
+        auto_create_users_enabled:
+          type: boolean
+          description: 'If true, Nexla will automatically create users in the environment when they log in using this authentication configuration.
+
+            '
+        name_identifier_format:
+          type: string
+          description: 'The format of the NameID element in the SAML assertion. This is used to identify the user.
+
+            '
+        nexla_base_url:
+          type: string
+          description: 'The base URL of the Nexla environment where the user should be redirected after authentication.
+
+            '
+        service_entity_id:
+          type: string
+        assertion_consumer_url:
+          type: string
+        logout_url:
+          type: string
+        metadata_url:
+          type: string
+        idp_entity_id:
+          type: string
+        idp_sso_target_url:
+          type: string
+        idp_slo_target_url:
+          type: string
+        idp_cert:
+          type: string
+        security_settings:
+          type: string
+        oidc_domain:
+          type: string
+        oidc_keys_url_key:
+          type: string
+        oidc_token_verify_url:
+          type: string
+        oidc_id_claims:
+          type: string
+        oidc_access_claims:
+          type: string
+        client_config:
+          type: object
+          additionalProperties: true
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+    AuthSettingPayload:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+    OrgSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: string
+        client_identifier:
+          type: string
+        org_webhook_host:
+          type: string
+    AuthConfigPayload:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner_id:
+          type: integer
+        org_id:
+          type: integer
+        uid:
+          type: string
+        protocol:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        global:
+          type: boolean
+        enabled_by_default:
+          type: boolean
+        auto_create_users_enabled:
+          type: boolean
+        name_identifier_format:
+          type: string
+        nexla_base_url:
+          type: string
+        service_entity_id:
+          type: string
+        assertion_consumer_url:
+          type: string
+        idp_entity_id:
+          type: string
+        idp_sso_target_url:
+          type: string
+        idp_slo_target_url:
+          type: string
+        idp_cert:
+          type: string
+        security_settings:
+          type: object
+          additionalProperties: true
+        metadata:
+          type: string
+        oidc_domain:
+          type: string
+        oidc_keys_url_key:
+          type: string
+        oidc_id_claims:
+          type: object
+          additionalProperties: true
+        oidc_access_claims:
+          type: object
+          additionalProperties: true
+        client_config:
+          type: object
+          additionalProperties: true
+        secret_config:
+          type: object
+          additionalProperties: true
+        check_state:
+          type: boolean
+    AuthSetting:
+      type: object
+      properties:
+        id:
+          type: integer
+        org:
+          $ref: '#/components/schemas/OrgSimplified'
+        auth_config:
+          type: object
+          properties:
+            id:
+              type: integer
+            uid:
+              type: string
+            protocol:
+              type: string
+              enum:
+              - saml
+              - oidc
+              - google
+              - password
+            name:
+              type: string
+            description:
+              type: string
+            global:
+              type: boolean
+        enabled:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    UserSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+        email_verified_at:
+          type: string
+          format: date-time
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
+  securitySchemes:
+    NexlaSessionToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: "The first step in calling the Nexla API or Nexla CLI is to fetch a Session access token by logging on to your Nexla UI instance. This ensures that your authentication is performed through your organization's preferred Identity Provider.\n\nTo fetch an access token from the Nexla UI, simply go to your Nexla UI instance, and try the route `/token`. For example, if your Nexla UI instance is at `https://dataops.nexla.io`, open `https://dataops.nexla.io/token` in the browser. \n\nThis will automatically route you to a login page, ask you to authenticate using your preferred Identity Provider, and, upon successful authentication, route you to a page where you can copy the Access Token.\n\nUsage format: `Bearer <JWT>`.\n"
+    NexlaApiKeyQuery:
+      type: apiKey
+      name: api_key
+      in: query
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as a query parameter to authenticate this request.
+
+        Usage: `?api_key=<api-key>`
+
+        '
+    NexlaApiKeyHeader:
+      type: http
+      scheme: Basic
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as an authorization header to authenticate this request.
+
+        Usage format: `Basic <api-key>`
+
+        '
+    basicAuth:
+      type: http
+      scheme: basic
+    GoogleSSOToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: 'The token that is used when logging into Nexla via Google SSO.
+
+        '
+x-tagGroups:
+- name: Session
+  tags:
+  - Session Management
+- name: Integrate
+  tags:
+  - Flows
+  - Sources
+  - Destinations (Data Sinks)
+  - Nexsets (Data Sets)
+  - Credentials
+  - Data Maps
+  - Code Containers
+  - Transforms
+  - Projects
+- name: Monitor
+  tags:
+  - Notifications
+  - Metrics
+  - Audit Logs
+  - Quarantine Settings
+- name: Collaborate
+  tags:
+  - Access Control
+- name: Account Management
+  tags:
+  - Organizations
+  - Users
+  - User Settings
+  - Teams
+  - Gen AI Configs
+- name: Real-Time Events
+  tags:
+  - Webhooks
+- name: Rate Limiting
+  tags:
+  - Limits
+- name: Marketplace
+  tags:
+  - Marketplace
+- name: Self Sign-Up
+  tags:
+  - Self Sign-Up
+  - Self Sign-Up Admin
+- name: Async Tasks
+  tags:
+  - Async Tasks

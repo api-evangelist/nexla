@@ -1,0 +1,32 @@
+openapi: 3.2.0
+info:
+  title: Nexla GenAI (RAG + MCPaaS) MCP API
+  description: Combined Nexla GenAI RAG API Service and MCPaaS
+  version: v0.2.3.3-combined
+tags:
+- name: Mcp
+paths:
+  /mcp/auth/google/callback:
+    get:
+      summary: Google Upstream Callback Bridge
+      operationId: google_upstream_callback_bridge_mcp_auth_google_callback_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      tags:
+      - Mcp
+  /mcp/auth/azure/callback:
+    get:
+      summary: Azure Upstream Callback Bridge
+      operationId: azure_upstream_callback_bridge_mcp_auth_azure_callback_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      tags:
+      - Mcp

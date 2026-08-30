@@ -1,0 +1,324 @@
+openapi: 3.2.0
+info:
+  title: Nexla GenAI (RAG + MCPaaS) V2 Skills API
+  description: Combined Nexla GenAI RAG API Service and MCPaaS
+  version: v0.2.3.3-combined
+tags:
+- name: v2-skills
+paths:
+  /v2/orgs/{org_id}/skills/{skill_id}:
+    put:
+      tags:
+      - v2-skills
+      summary: Upsert Skill
+      description: Create or replace a skill for an org (Nexla ops only).
+      operationId: upsert_skill_v2_orgs__org_id__skills__skill_id__put
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Org Id
+      - name: skill_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Skill Id
+      - name: token_type
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/TokenType'
+          default: service_key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillUpsertRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+      - v2-skills
+      summary: Patch Skill
+      description: 'Apply a partial update to a skill (Nexla ops only).
+
+
+        Unlike PUT (full replace), this writes only the supplied fields — so ops can
+
+        disable a skill or bump its version without re-sending the full markdown.'
+      operationId: patch_skill_v2_orgs__org_id__skills__skill_id__patch
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Org Id
+      - name: skill_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Skill Id
+      - name: token_type
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/TokenType'
+          default: service_key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillPatchRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - v2-skills
+      summary: Delete Skill
+      description: Delete a skill for an org (Nexla ops only).
+      operationId: delete_skill_v2_orgs__org_id__skills__skill_id__delete
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Org Id
+      - name: skill_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Skill Id
+      - name: token_type
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/TokenType'
+          default: service_key
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v2/orgs/{org_id}/skills:
+    get:
+      tags:
+      - v2-skills
+      summary: List Skills
+      description: List all skills for an org, including disabled (Nexla ops only).
+      operationId: list_skills_v2_orgs__org_id__skills_get
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Org Id
+      - name: token_type
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/TokenType'
+          default: service_key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v2/orgs/{org_id}/skills/refresh:
+    post:
+      tags:
+      - v2-skills
+      summary: Refresh Skills Cache
+      description: 'Schedule background invalidation of the skills cache for an org.
+
+
+        Returns immediately; the next query repopulates the cache from Supabase.'
+      operationId: refresh_skills_cache_v2_orgs__org_id__skills_refresh_post
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Org Id
+      - name: token_type
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/TokenType'
+          default: service_key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    SkillPatchRequest:
+      properties:
+        content:
+          anyOf:
+          - type: string
+            maxLength: 500000
+            minLength: 1
+          - type: 'null'
+          title: Content
+          description: Replacement skill markdown content.
+        version:
+          anyOf:
+          - type: string
+            maxLength: 64
+            minLength: 1
+          - type: 'null'
+          title: Version
+          description: Updated skill version (audit).
+        enabled:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enabled
+          description: Whether the skill is active.
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          description: Updated human-readable note.
+      type: object
+      title: SkillPatchRequest
+      description: 'Request body for ``PATCH /v2/orgs/{org_id}/skills/{skill_id}`` (Nexla ops).
+
+
+        Partial update: any subset of the fields below may be supplied; those left
+
+        ``None`` are not written. Lets ops disable a skill or bump ``version``
+
+        without re-sending the full ``content`` markdown. The handler rejects a
+
+        fully empty payload with 400.'
+    SkillUpsertRequest:
+      properties:
+        content:
+          type: string
+          maxLength: 500000
+          minLength: 1
+          title: Content
+          description: Skill markdown content.
+        version:
+          type: string
+          maxLength: 64
+          minLength: 1
+          title: Version
+          description: Human-readable skill version (audit).
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the skill is active.
+          default: true
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          description: Optional human-readable note.
+      type: object
+      required:
+      - content
+      - version
+      title: SkillUpsertRequest
+      description: 'Request body for ``PUT /v2/orgs/{org_id}/skills/{skill_id}`` (Nexla ops).
+
+
+        Full replace: ``content`` and ``version`` are required, so toggling
+
+        ``enabled`` or bumping ``version`` alone still means re-sending the whole
+
+        row. Use ``PATCH`` (``SkillPatchRequest``) for partial edits.'
+    TokenType:
+      type: string
+      enum:
+      - bearer
+      - service_key
+      title: TokenType
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError

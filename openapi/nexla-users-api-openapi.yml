@@ -1,0 +1,715 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Nexla Rest Users API
+  termsOfService: https://nexla.com/terms-of-service/
+  contact:
+    name: Nexla Support
+    url: https://docs.nexla.com
+    email: support@nexla.com
+  license:
+    name: Nexla
+    url: https://nexla.com
+  x-logo:
+    url: https://cdn.nexla.io/ui/assets/brand/v2/nexla-logo-color-portrait.svg
+    backgroundColor: '#ffffff'
+  description: '# Introduction
+
+
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
+
+
+    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
+
+
+    The API references in this document lists all API endpoints and the corresponding payloads.
+
+
+    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
+
+
+    # API Data Format and Versions
+
+
+    The API uses JSON for all data exchanges.
+
+
+    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
+
+    ```
+
+    Accept: application/vnd.nexla.api.v1+json
+
+    ```
+
+
+    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
+
+
+
+    ```
+
+    Accept: application/json
+
+    ```
+
+
+    # Authentication
+
+
+    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
+
+
+    <SecurityDefinitions />'
+servers:
+- url: https://{nexla-api-host}
+  variables:
+    nexla-api-host:
+      default: dataops.nexla.io/nexla-api
+      description: Nexla API URL your Nexla instance
+security:
+- NexlaSessionToken: []
+tags:
+- name: Users
+  description: Operations for managing user settings.
+paths:
+  /users:
+    post:
+      tags:
+      - Users
+      operationId: create_user
+      summary: Create a User
+      description: 'Create a new user in this environment.
+
+
+        > This requires admin access to the provided organization.
+
+        '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsersCreateRequired'
+      responses:
+        '200':
+          $ref: '#/components/responses/users_one'
+        '403':
+          description: Forbidden
+    get:
+      tags:
+      - Users
+      operationId: get_users
+      summary: Get All Users
+      description: 'Returns all users that can be viewed by authenticated user.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/users_many'
+        '403':
+          description: Forbidden
+  /users?expand=1:
+    get:
+      tags:
+      - Users
+      operationId: get_users_expand
+      summary: Get All Users with Expanded References
+      description: 'Returns all users that can be viewed by the authenticated user.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/users_many_expand'
+        '403':
+          description: Forbidden
+  /users/{user_id}:
+    put:
+      tags:
+      - Users
+      operationId: update_user
+      summary: Modify a User
+      description: 'Modifies a user''s information and settings if a valid ID and body are provided
+
+        '
+      parameters:
+      - name: user_id
+        in: path
+        description: The unique ID of the user.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsersUpdate'
+      responses:
+        '200':
+          $ref: '#/components/responses/users_one'
+        '403':
+          description: Forbidden
+    get:
+      tags:
+      - Users
+      operationId: get_user
+      summary: Get User by ID
+      description: 'Returns a user if a valid ID is provided.
+
+        '
+      parameters:
+      - name: user_id
+        in: path
+        description: The unique ID of the user.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/users_one'
+        '403':
+          description: Forbidden
+  /users/{user_id}?expand=1:
+    get:
+      tags:
+      - Users
+      operationId: get_user_expand
+      summary: Get User by ID with Expanded References
+      description: 'Returns a user if a valid ID is provided.
+
+        '
+      parameters:
+      - name: user_id
+        in: path
+        description: The unique ID of the user.
+        required: true
+        schema:
+          type: integer
+      - name: expand
+        in: query
+        description: Truthy parameter for requesting expanded references.
+        required: true
+        schema:
+          oneOf:
+          - type: integer
+          - type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/users_one_expand'
+        '403':
+          description: Forbidden
+  /users/current:
+    get:
+      tags:
+      - Users
+      operationId: get_current_user
+      summary: Get info on current user
+      description: "Returns the user information of the currently logged-in user, including org memberships and current org info.    \n"
+      responses:
+        '200':
+          $ref: '#/components/responses/users_transfer'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+components:
+  schemas:
+    UserTransferred:
+      allOf:
+      - $ref: '#/components/schemas/UserTransferable'
+      - type: object
+        properties:
+          transfer_user_resources:
+            type: object
+            properties:
+              previous_owner_id:
+                type: integer
+              new_owner_id:
+                type: integer
+              org_id:
+                type: integer
+    UserTransferable:
+      type: object
+      properties:
+        catalog_configs:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        code_containers:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        code_filters:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        custom_data_flows:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        dashboard_transforms:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        data_credentials:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        data_maps:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        data_schemas:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        data_sets:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        data_sets_api_keys:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        data_sinks:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        data_sinks_api_keys:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        data_sources:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        data_sources_api_keys:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        doc_containers:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        org_idp_mappings:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        projects:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        teams:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        users_api_keys:
+          type: array
+          format: nullable
+          items:
+            type: integer
+    UsersCreateRequired:
+      type: object
+      required:
+      - full_name
+      - email
+      properties:
+        full_name:
+          type: string
+        email:
+          type: string
+        default_org_id:
+          type: integer
+        status:
+          $ref: '#/components/schemas/UserStatus'
+        user_tier_id:
+          type: integer
+        user_tier:
+          type: string
+        password:
+          type: string
+        tos_signed_at:
+          type: string
+          format: date-time
+        admin:
+          $ref: '#/components/schemas/UserAdmin'
+    UserExpanded:
+      allOf:
+      - $ref: '#/components/schemas/User'
+      - type: object
+        properties:
+          account_summary:
+            $ref: '#/components/schemas/AccountSummary'
+    UserStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - DEACTIVATED
+      - SOURCE_COUNT_CAPPED
+      - SOURCE_DATA_CAPPED
+      - TRIAL_EXPIRED
+      description: 'Indicates the user''s account status across all organizations they are members of.
+
+        '
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+          format: email
+        full_name:
+          type: string
+        super_user:
+          type: boolean
+        impersonated:
+          type: boolean
+        default_org:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+          additionalProperties: false
+        user_tier:
+          $ref: '#/components/schemas/UserTier'
+        status:
+          $ref: '#/components/schemas/UserStatus'
+        account_locked:
+          type: boolean
+        org_memberships:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrgMembership'
+        email_verified_at:
+          type: string
+          format: date-time
+        tos_signed_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+      additionalProperties: false
+    AccountSummary:
+      type: object
+      properties:
+        data_sources:
+          type: object
+          properties:
+            counts:
+              type: object
+              properties:
+                total:
+                  type: integer
+                  format: int32
+                owner:
+                  type: integer
+                  format: int32
+                collaborator:
+                  type: integer
+                  format: int32
+                active:
+                  type: integer
+                  format: int32
+                paused:
+                  type: integer
+                  format: int32
+                draft:
+                  type: integer
+                  format: int32
+        data_sets:
+          type: object
+          properties:
+            counts:
+              type: object
+              properties:
+                total:
+                  type: integer
+                  format: int32
+                owner:
+                  type: integer
+                  format: int32
+                collaborator:
+                  type: integer
+                  format: int32
+                active:
+                  type: integer
+                  format: int32
+                paused:
+                  type: integer
+                  format: int32
+                draft:
+                  type: integer
+                  format: int32
+        data_sinks:
+          type: object
+          properties:
+            counts:
+              type: object
+              properties:
+                total:
+                  type: integer
+                  format: int32
+                owner:
+                  type: integer
+                  format: int32
+                collaborator:
+                  type: integer
+                  format: int32
+                active:
+                  type: integer
+                  format: int32
+                paused:
+                  type: integer
+                  format: int32
+                draft:
+                  type: integer
+                  format: int32
+        data_maps:
+          type: object
+          properties:
+            counts:
+              type: object
+              properties:
+                total:
+                  type: integer
+                  format: int32
+                owner:
+                  type: integer
+                  format: int32
+                collaborator:
+                  type: integer
+                  format: int32
+    OrgMembership:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        is_admin?:
+          type: boolean
+        org_membership_status:
+          $ref: '#/components/schemas/OrgMembershipStatus'
+    OrgMembershipStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - DEACTIVATED
+      description: 'Indicates whether the user''s membership in this organization is active or not.
+
+
+        If the membership is DEACTIVATED the user can no longer access the account but the resources owned by them will still be accessible by the organization administrators.
+
+        '
+    UserTier:
+      type: string
+      enum:
+      - FREE
+      - TRIAL
+      - PAID
+      - FREE_FOREVER
+      description: 'Indicates whether a user is on a paid, free, or trial account. Used to determine limits on records processed by the account.
+
+        '
+    UserAdmin:
+      oneOf:
+      - type: string
+        enum:
+        - '*'
+      - type: boolean
+      - type: array
+        items:
+          type: object
+          properties:
+            admin:
+              type: boolean
+            org_id:
+              type: integer
+    UsersUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        status:
+          $ref: '#/components/schemas/UserStatus'
+        user_tier_id:
+          type: integer
+        user_tier:
+          type: string
+        password:
+          type: string
+        password_confirmation:
+          type: string
+        password_current:
+          type: string
+        tos_signed_at:
+          type: string
+          format: date-time
+        admin:
+          $ref: '#/components/schemas/UserAdmin'
+  responses:
+    users_many_expand:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/UserExpanded'
+    users_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
+    users_one_expand:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserExpanded'
+    users_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+    users_transfer:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserTransferred'
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
+  securitySchemes:
+    NexlaSessionToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: "The first step in calling the Nexla API or Nexla CLI is to fetch a Session access token by logging on to your Nexla UI instance. This ensures that your authentication is performed through your organization's preferred Identity Provider.\n\nTo fetch an access token from the Nexla UI, simply go to your Nexla UI instance, and try the route `/token`. For example, if your Nexla UI instance is at `https://dataops.nexla.io`, open `https://dataops.nexla.io/token` in the browser. \n\nThis will automatically route you to a login page, ask you to authenticate using your preferred Identity Provider, and, upon successful authentication, route you to a page where you can copy the Access Token.\n\nUsage format: `Bearer <JWT>`.\n"
+    NexlaApiKeyQuery:
+      type: apiKey
+      name: api_key
+      in: query
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as a query parameter to authenticate this request.
+
+        Usage: `?api_key=<api-key>`
+
+        '
+    NexlaApiKeyHeader:
+      type: http
+      scheme: Basic
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as an authorization header to authenticate this request.
+
+        Usage format: `Basic <api-key>`
+
+        '
+    basicAuth:
+      type: http
+      scheme: basic
+    GoogleSSOToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: 'The token that is used when logging into Nexla via Google SSO.
+
+        '
+x-tagGroups:
+- name: Session
+  tags:
+  - Session Management
+- name: Integrate
+  tags:
+  - Flows
+  - Sources
+  - Destinations (Data Sinks)
+  - Nexsets (Data Sets)
+  - Credentials
+  - Data Maps
+  - Code Containers
+  - Transforms
+  - Projects
+- name: Monitor
+  tags:
+  - Notifications
+  - Metrics
+  - Audit Logs
+  - Quarantine Settings
+- name: Collaborate
+  tags:
+  - Access Control
+- name: Account Management
+  tags:
+  - Organizations
+  - Users
+  - User Settings
+  - Teams
+  - Gen AI Configs
+- name: Real-Time Events
+  tags:
+  - Webhooks
+- name: Rate Limiting
+  tags:
+  - Limits
+- name: Marketplace
+  tags:
+  - Marketplace
+- name: Self Sign-Up
+  tags:
+  - Self Sign-Up
+  - Self Sign-Up Admin
+- name: Async Tasks
+  tags:
+  - Async Tasks

@@ -1,0 +1,196 @@
+openapi: 3.2.0
+info:
+  title: Nexla GenAI (RAG + MCPaaS) Health API
+  description: Combined Nexla GenAI RAG API Service and MCPaaS
+  version: v0.2.3.3-combined
+tags:
+- name: health
+paths:
+  /health:
+    get:
+      tags:
+      - health
+      summary: Health Check
+      description: 'Basic liveness probe.
+
+
+        Returns 200 if the application is running.
+
+        Used by Kubernetes for liveness probes.'
+      operationId: health_check_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+                title: Response Health Check Health Get
+  /health/ready:
+    get:
+      tags:
+      - health
+      summary: Readiness Check
+      description: 'Readiness probe with dependency checks.
+
+
+        Checks connectivity to required services.
+
+        Used by Kubernetes for readiness probes.'
+      operationId: readiness_check_health_ready_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+  /v1/metrics:
+    get:
+      tags:
+      - health
+      summary: Metrics
+      description: 'Prometheus metrics endpoint.
+
+
+        Returns metrics in Prometheus text format.'
+      operationId: metrics_v1_metrics_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /health/deep:
+    get:
+      tags:
+      - health
+      summary: Deep Health Check
+      description: 'Deep health check with all components.
+
+
+        Performs thorough checks of all dependencies.
+
+        May take longer than the basic readiness check.'
+      operationId: deep_health_check_health_deep_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+  /v1/status:
+    get:
+      tags:
+      - health
+      summary: System Status
+      description: 'System status dashboard data.
+
+
+        Returns comprehensive status information for monitoring dashboards.
+
+        Queries real counts from the database when repositories are available.'
+      operationId: system_status_v1_status_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemStatus'
+components:
+  schemas:
+    ComponentHealth:
+      properties:
+        status:
+          type: string
+          title: Status
+        latency_ms:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Latency Ms
+        message:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Message
+      type: object
+      required:
+      - status
+      title: ComponentHealth
+      description: Health status of a single component.
+    SystemStatus:
+      properties:
+        status:
+          type: string
+          title: Status
+        version:
+          type: string
+          title: Version
+        environment:
+          type: string
+          title: Environment
+        uptime_seconds:
+          type: number
+          title: Uptime Seconds
+        active_sessions:
+          type: integer
+          title: Active Sessions
+        total_tool_sets:
+          type: integer
+          title: Total Tool Sets
+        total_tools:
+          type: integer
+          title: Total Tools
+        rate_limit_type:
+          type: string
+          title: Rate Limit Type
+        timestamp:
+          type: string
+          format: date-time
+          title: Timestamp
+      type: object
+      required:
+      - status
+      - version
+      - environment
+      - uptime_seconds
+      - active_sessions
+      - total_tool_sets
+      - total_tools
+      - rate_limit_type
+      - timestamp
+      title: SystemStatus
+      description: System status dashboard data.
+    HealthStatus:
+      properties:
+        status:
+          type: string
+          title: Status
+        version:
+          type: string
+          title: Version
+        environment:
+          type: string
+          title: Environment
+        components:
+          additionalProperties:
+            $ref: '#/components/schemas/ComponentHealth'
+          type: object
+          title: Components
+        timestamp:
+          type: string
+          format: date-time
+          title: Timestamp
+      type: object
+      required:
+      - status
+      - version
+      - environment
+      - timestamp
+      title: HealthStatus
+      description: System health check response.

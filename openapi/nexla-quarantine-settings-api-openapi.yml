@@ -1,0 +1,463 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Nexla Rest Quarantine Settings API
+  termsOfService: https://nexla.com/terms-of-service/
+  contact:
+    name: Nexla Support
+    url: https://docs.nexla.com
+    email: support@nexla.com
+  license:
+    name: Nexla
+    url: https://nexla.com
+  x-logo:
+    url: https://cdn.nexla.io/ui/assets/brand/v2/nexla-logo-color-portrait.svg
+    backgroundColor: '#ffffff'
+  description: '# Introduction
+
+
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
+
+
+    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
+
+
+    The API references in this document lists all API endpoints and the corresponding payloads.
+
+
+    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
+
+
+    # API Data Format and Versions
+
+
+    The API uses JSON for all data exchanges.
+
+
+    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
+
+    ```
+
+    Accept: application/vnd.nexla.api.v1+json
+
+    ```
+
+
+    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
+
+
+
+    ```
+
+    Accept: application/json
+
+    ```
+
+
+    # Authentication
+
+
+    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
+
+
+    <SecurityDefinitions />'
+servers:
+- url: https://{nexla-api-host}
+  variables:
+    nexla-api-host:
+      default: dataops.nexla.io/nexla-api
+      description: Nexla API URL your Nexla instance
+security:
+- NexlaSessionToken: []
+tags:
+- name: Quarantine Settings
+  description: Operations for managing quarantine settings.
+paths:
+  /users/{user_id}/quarantine_settings:
+    get:
+      tags:
+      - Quarantine Settings
+      operationId: get_user_quarantine_data_export_settings
+      summary: Get Quarantine Data Export Settings for A User
+      description: "Retrieve Quarantine Data Export Settings for all resources owned by a user. \n\nNexla detects errors during different stages of data flow such as ingestion, transformation, and output. Error records are quarantined and accessible to the user via APIs as well as files. With Quarantine Data Export Settings, you can configure Nexla to write files containing information about erroneous records across all resources owned by a user.\n\n> This endpoint returns a 404 status code if no Quarantine Data Export Settings have been configured for the user.\n"
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: user_id
+        in: path
+        description: The unique ID of the user whose quarantine settings you wish to retrieve.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/quarantine_settings_one'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+      - Quarantine Settings
+      operationId: create_quarantine_data_export_settings
+      summary: Set Quarantine Data Export Settings for A User
+      description: 'Sets Quarantine Data Export Settings for all resources owned by a user so that all erroneous records can be automatically exported by the platform to a file system regularly.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: user_id
+        in: path
+        description: The unique ID of the user.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/QuarantineSettingCreate'
+      responses:
+        '200':
+          $ref: '#/components/responses/quarantine_settings_one'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+      - Quarantine Settings
+      operationId: update_user_quarantine_data_export_settings
+      summary: Update Quarantine Data Export Settings for A User
+      description: 'Updates Quarantine Data Export Settings for all resources owned by a user so that all erroneous records can be automatically exported by the platform to a file system regularly.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      - name: user_id
+        in: path
+        description: The unique ID of the user.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              $ref: '#/components/schemas/QuarantineSettingMutable'
+      responses:
+        '200':
+          $ref: '#/components/responses/quarantine_settings_one'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+      - Quarantine Settings
+      operationId: delete_user_quarantine_data_export_settings
+      summary: Delete Quarantine Data Export Settings for A User
+      description: 'Deletes Updates Quarantine Data Export Settings for all resources owned by a user. Deleting this setting will ensure the platform stops exporting all erroneous records for resources owned by the user to a file storage.
+
+        '
+      parameters:
+      - name: user_id
+        in: path
+        description: The unique id of the user.
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+components:
+  schemas:
+    QuarantineSettingMutable:
+      type: object
+      properties:
+        data_credentials_id:
+          type: integer
+          description: 'Nexla data credential to a file storage system where all error data should be exported. Configure the base folder within the location accessible by this credential by setting an appropriate value for `configure["path"]`.
+
+            '
+        config:
+          type: object
+          required:
+          - start.cron
+          - path
+          properties:
+            start.cron:
+              type: string
+              description: 'The interval at which Nexla should scan all quarantined records in the user''s account and export them to the specified file storage.
+
+
+                This should be a valid cron expression.
+
+                '
+            path:
+              type: string
+              description: 'The base folder where all quarantined records will be exported. Nexla will automatically create subfolder tree in this base folder when exporting error data files. These subfolders will be of the pattern `<base-path>/<nexla-env-code>/<resource-type>/<resource-id>/<yyyy>/<MM>/<dd>/<unique-file-name>.json`
+
+                '
+          example:
+            start.cron: 0 50 18 1 1/1 ? *
+            path: /nexla_error_data/export
+    QuarantineResourceType:
+      type: string
+      enum:
+      - ORG
+      - USER
+      - FLOW
+      - PIPELINE
+      - DATA_FLOW
+      - CUSTOM_DATA_FLOW
+      - SOURCE
+      - DATASET
+      - SINK
+    OrgSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: string
+        client_identifier:
+          type: string
+        org_webhook_host:
+          type: string
+    QuarantineSetting:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        owner:
+          $ref: '#/components/schemas/UserSimplified'
+        org:
+          $ref: '#/components/schemas/OrgSimplified'
+        resource_type:
+          $ref: '#/components/schemas/QuarantineResourceType'
+        resource_id:
+          type: integer
+          format: int32
+        config:
+          type: object
+          properties:
+            start.cron:
+              type: string
+            path:
+              type: string
+          example:
+            start.cron: 0 50 18 1 1/1 ? *
+            path: /nexla_error_data/export
+        data_credentials_id:
+          type: integer
+          format: int32
+        credentials_type:
+          type: string
+          example: gdrive
+        data_credentials:
+          $ref: '#/components/schemas/DataCredential'
+    QuarantineSettingCreate:
+      allOf:
+      - $ref: '#/components/schemas/QuarantineSettingMutable'
+      - type: object
+        required:
+        - data_credentials_id
+        - config
+    DataCredential:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        owner:
+          $ref: '#/components/schemas/UserSimplified'
+        org:
+          $ref: '#/components/schemas/OrgSimplified'
+        access_roles:
+          type: array
+          items:
+            type: string
+        credentials_version:
+          type: string
+        managed:
+          type: boolean
+        credentials_type:
+          type: string
+        connector:
+          type: object
+          properties:
+            id:
+              type: integer
+            type:
+              type: string
+            connection_type:
+              type: string
+            name:
+              type: string
+            description:
+              type: string
+            nexset_api_compatible:
+              type: boolean
+        api_keys:
+          type: array
+        credentials_non_secure_data:
+          type: object
+          additionalProperties:
+            type:
+            - string
+            - object
+            - integer
+            x-additionalPropertiesName: credential_property
+        verified_status:
+          type: string
+        verified_at:
+          type: string
+          format: date-time
+        copied_from_id:
+          type: integer
+          format: nullable
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        tags:
+          type: array
+    UserSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+        email_verified_at:
+          type: string
+          format: date-time
+  responses:
+    quarantine_settings_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/QuarantineSetting'
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
+  securitySchemes:
+    NexlaSessionToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: "The first step in calling the Nexla API or Nexla CLI is to fetch a Session access token by logging on to your Nexla UI instance. This ensures that your authentication is performed through your organization's preferred Identity Provider.\n\nTo fetch an access token from the Nexla UI, simply go to your Nexla UI instance, and try the route `/token`. For example, if your Nexla UI instance is at `https://dataops.nexla.io`, open `https://dataops.nexla.io/token` in the browser. \n\nThis will automatically route you to a login page, ask you to authenticate using your preferred Identity Provider, and, upon successful authentication, route you to a page where you can copy the Access Token.\n\nUsage format: `Bearer <JWT>`.\n"
+    NexlaApiKeyQuery:
+      type: apiKey
+      name: api_key
+      in: query
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as a query parameter to authenticate this request.
+
+        Usage: `?api_key=<api-key>`
+
+        '
+    NexlaApiKeyHeader:
+      type: http
+      scheme: Basic
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as an authorization header to authenticate this request.
+
+        Usage format: `Basic <api-key>`
+
+        '
+    basicAuth:
+      type: http
+      scheme: basic
+    GoogleSSOToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: 'The token that is used when logging into Nexla via Google SSO.
+
+        '
+x-tagGroups:
+- name: Session
+  tags:
+  - Session Management
+- name: Integrate
+  tags:
+  - Flows
+  - Sources
+  - Destinations (Data Sinks)
+  - Nexsets (Data Sets)
+  - Credentials
+  - Data Maps
+  - Code Containers
+  - Transforms
+  - Projects
+- name: Monitor
+  tags:
+  - Notifications
+  - Metrics
+  - Audit Logs
+  - Quarantine Settings
+- name: Collaborate
+  tags:
+  - Access Control
+- name: Account Management
+  tags:
+  - Organizations
+  - Users
+  - User Settings
+  - Teams
+  - Gen AI Configs
+- name: Real-Time Events
+  tags:
+  - Webhooks
+- name: Rate Limiting
+  tags:
+  - Limits
+- name: Marketplace
+  tags:
+  - Marketplace
+- name: Self Sign-Up
+  tags:
+  - Self Sign-Up
+  - Self Sign-Up Admin
+- name: Async Tasks
+  tags:
+  - Async Tasks

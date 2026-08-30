@@ -1,0 +1,151 @@
+openapi: 3.2.0
+info:
+  title: Nexla GenAI (RAG + MCPaaS) Docs API
+  description: Combined Nexla GenAI RAG API Service and MCPaaS
+  version: v0.2.3.3-combined
+tags:
+- name: Docs
+paths:
+  /docs/recommendations:
+    post:
+      summary: Generate Recommendation
+      operationId: generate_recommendation_docs_recommendations_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestSerializer'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Docs
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    DataCredentialModel:
+      properties:
+        id:
+          type: integer
+          title: Id
+        connector:
+          $ref: '#/components/schemas/ConnectorModel'
+        credentials_enc_iv:
+          type: string
+          title: Credentials Enc Iv
+        credentials_enc:
+          type: string
+          title: Credentials Enc
+      additionalProperties: true
+      type: object
+      required:
+      - id
+      - connector
+      - credentials_enc_iv
+      - credentials_enc
+      title: DataCredentialModel
+    ConnectorModel:
+      properties:
+        id:
+          type: integer
+          title: Id
+        type:
+          type: string
+          enum:
+          - genai_googleai
+          - genai_openai
+          - genai_azure_openai
+          title: Type
+        connection_type:
+          type: string
+          title: Connection Type
+      additionalProperties: true
+      type: object
+      required:
+      - id
+      - type
+      - connection_type
+      title: ConnectorModel
+    RequestSerializer:
+      properties:
+        resource_type:
+          type: string
+          enum:
+          - data_set
+          - flows
+          title: Resource Type
+        resource_id:
+          type: integer
+          title: Resource Id
+        genai_integration_config:
+          $ref: '#/components/schemas/GenaiIntegrationConfig'
+        resource_data:
+          additionalProperties: true
+          type: object
+          title: Resource Data
+      additionalProperties: true
+      type: object
+      required:
+      - resource_type
+      - resource_id
+      - genai_integration_config
+      - resource_data
+      title: RequestSerializer
+    GenaiIntegrationConfig:
+      properties:
+        configs:
+          additionalProperties: true
+          type: object
+          title: Configs
+        data_credentials:
+          $ref: '#/components/schemas/DataCredentialModel'
+      additionalProperties: true
+      type: object
+      required:
+      - configs
+      - data_credentials
+      title: GenaiIntegrationConfig

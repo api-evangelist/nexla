@@ -1,0 +1,424 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Nexla Rest Session Management API
+  termsOfService: https://nexla.com/terms-of-service/
+  contact:
+    name: Nexla Support
+    url: https://docs.nexla.com
+    email: support@nexla.com
+  license:
+    name: Nexla
+    url: https://nexla.com
+  x-logo:
+    url: https://cdn.nexla.io/ui/assets/brand/v2/nexla-logo-color-portrait.svg
+    backgroundColor: '#ffffff'
+  description: '# Introduction
+
+
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
+
+
+    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
+
+
+    The API references in this document lists all API endpoints and the corresponding payloads.
+
+
+    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
+
+
+    # API Data Format and Versions
+
+
+    The API uses JSON for all data exchanges.
+
+
+    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
+
+    ```
+
+    Accept: application/vnd.nexla.api.v1+json
+
+    ```
+
+
+    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
+
+
+
+    ```
+
+    Accept: application/json
+
+    ```
+
+
+    # Authentication
+
+
+    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
+
+
+    <SecurityDefinitions />'
+servers:
+- url: https://{nexla-api-host}
+  variables:
+    nexla-api-host:
+      default: dataops.nexla.io/nexla-api
+      description: Nexla API URL your Nexla instance
+security:
+- NexlaSessionToken: []
+tags:
+- name: Session Management
+  description: "Operations for managing your Nexla session programmatically. \n\n> Note: Unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.\n"
+paths:
+  /users/current:
+    get:
+      tags:
+      - Session Management
+      operationId: get_current_user
+      summary: Get info on current user
+      description: "Returns the user information of the currently logged-in user, including org memberships and current org info.    \n"
+      responses:
+        '200':
+          $ref: '#/components/responses/users_transfer'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /token:
+    post:
+      operationId: login_with_basic_auth
+      summary: Login with Basic Authentication
+      description: 'Use this endpoint for authentication if your organization allows basic authentication. A successful authentication attempt will result in an `access_token` that can be used to make authenticated requests to other API endpoints. The `access_token` automatically expires after a fixed duration, but you can also call the `/logout` endpoint to invalidate the access token at the end of your session.
+
+
+        Nexla supports various methods of authentication, including Basic (email/password), Google SSO, and custom SAML- or OIDC-based SSO. One or more of these methods might be allowed in any organization, depending on the configuration chosen by the administrators. Instead of using this endpoint to start a session programmatically, we recommend performing authentication through the Nexla UI and using the Nexla Session Token (available in Tools >> Nexla Session Token) to connect to the API programmatically.
+
+
+        > Note: A user might belong to multiple organizations. This method initiates an authenticated session in their default organization.
+
+        '
+      security:
+      - basicAuth: []
+      tags:
+      - Session Management
+      responses:
+        '200':
+          $ref: '#/components/responses/token'
+        '401':
+          description: Unauthorized
+  /token/logout:
+    post:
+      operationId: logout
+      summary: Logout
+      description: 'Ends the current session and invalidates the `NexlaSessionToken` for future requests.
+
+        '
+      tags:
+      - Session Management
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+components:
+  schemas:
+    UserTransferred:
+      allOf:
+      - $ref: '#/components/schemas/UserTransferable'
+      - type: object
+        properties:
+          transfer_user_resources:
+            type: object
+            properties:
+              previous_owner_id:
+                type: integer
+              new_owner_id:
+                type: integer
+              org_id:
+                type: integer
+    Token:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          enum:
+          - Bearer
+        expires_in:
+          type: integer
+        user:
+          $ref: '#/components/schemas/UserBrief'
+        org_membership:
+          $ref: '#/components/schemas/OrgMembershipToken'
+        org:
+          $ref: '#/components/schemas/OrgSimplified'
+    OrgMembershipToken:
+      type: object
+      properties:
+        api_key:
+          type: string
+        status:
+          $ref: '#/components/schemas/OrgMembershipStatus'
+        is_admin?:
+          type: boolean
+    OrgSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: string
+        client_identifier:
+          type: string
+        org_webhook_host:
+          type: string
+    OrgMembershipStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - DEACTIVATED
+      description: 'Indicates whether the user''s membership in this organization is active or not.
+
+
+        If the membership is DEACTIVATED the user can no longer access the account but the resources owned by them will still be accessible by the organization administrators.
+
+        '
+    UserSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+        email_verified_at:
+          type: string
+          format: date-time
+    UserBrief:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+        org:
+          type: integer
+        impersonated:
+          type: boolean
+        impersonator:
+          allOf:
+          - $ref: '#/components/schemas/UserSimplified'
+          - type: object
+            properties:
+              org:
+                type: integer
+    UserTransferable:
+      type: object
+      properties:
+        catalog_configs:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        code_containers:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        code_filters:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        custom_data_flows:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        dashboard_transforms:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        data_credentials:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        data_maps:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        data_schemas:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        data_sets:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        data_sets_api_keys:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        data_sinks:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        data_sinks_api_keys:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        data_sources:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        data_sources_api_keys:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        doc_containers:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        org_idp_mappings:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        projects:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        teams:
+          type: array
+          format: nullable
+          items:
+            type: integer
+        users_api_keys:
+          type: array
+          format: nullable
+          items:
+            type: integer
+  responses:
+    token:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Token'
+    users_transfer:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserTransferred'
+  securitySchemes:
+    NexlaSessionToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: "The first step in calling the Nexla API or Nexla CLI is to fetch a Session access token by logging on to your Nexla UI instance. This ensures that your authentication is performed through your organization's preferred Identity Provider.\n\nTo fetch an access token from the Nexla UI, simply go to your Nexla UI instance, and try the route `/token`. For example, if your Nexla UI instance is at `https://dataops.nexla.io`, open `https://dataops.nexla.io/token` in the browser. \n\nThis will automatically route you to a login page, ask you to authenticate using your preferred Identity Provider, and, upon successful authentication, route you to a page where you can copy the Access Token.\n\nUsage format: `Bearer <JWT>`.\n"
+    NexlaApiKeyQuery:
+      type: apiKey
+      name: api_key
+      in: query
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as a query parameter to authenticate this request.
+
+        Usage: `?api_key=<api-key>`
+
+        '
+    NexlaApiKeyHeader:
+      type: http
+      scheme: Basic
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as an authorization header to authenticate this request.
+
+        Usage format: `Basic <api-key>`
+
+        '
+    basicAuth:
+      type: http
+      scheme: basic
+    GoogleSSOToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: 'The token that is used when logging into Nexla via Google SSO.
+
+        '
+x-tagGroups:
+- name: Session
+  tags:
+  - Session Management
+- name: Integrate
+  tags:
+  - Flows
+  - Sources
+  - Destinations (Data Sinks)
+  - Nexsets (Data Sets)
+  - Credentials
+  - Data Maps
+  - Code Containers
+  - Transforms
+  - Projects
+- name: Monitor
+  tags:
+  - Notifications
+  - Metrics
+  - Audit Logs
+  - Quarantine Settings
+- name: Collaborate
+  tags:
+  - Access Control
+- name: Account Management
+  tags:
+  - Organizations
+  - Users
+  - User Settings
+  - Teams
+  - Gen AI Configs
+- name: Real-Time Events
+  tags:
+  - Webhooks
+- name: Rate Limiting
+  tags:
+  - Limits
+- name: Marketplace
+  tags:
+  - Marketplace
+- name: Self Sign-Up
+  tags:
+  - Self Sign-Up
+  - Self Sign-Up Admin
+- name: Async Tasks
+  tags:
+  - Async Tasks

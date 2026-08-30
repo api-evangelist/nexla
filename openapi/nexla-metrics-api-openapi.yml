@@ -1,0 +1,1073 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Nexla Rest Metrics API
+  termsOfService: https://nexla.com/terms-of-service/
+  contact:
+    name: Nexla Support
+    url: https://docs.nexla.com
+    email: support@nexla.com
+  license:
+    name: Nexla
+    url: https://nexla.com
+  x-logo:
+    url: https://cdn.nexla.io/ui/assets/brand/v2/nexla-logo-color-portrait.svg
+    backgroundColor: '#ffffff'
+  description: '# Introduction
+
+
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
+
+
+    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
+
+
+    The API references in this document lists all API endpoints and the corresponding payloads.
+
+
+    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
+
+
+    # API Data Format and Versions
+
+
+    The API uses JSON for all data exchanges.
+
+
+    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
+
+    ```
+
+    Accept: application/vnd.nexla.api.v1+json
+
+    ```
+
+
+    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
+
+
+
+    ```
+
+    Accept: application/json
+
+    ```
+
+
+    # Authentication
+
+
+    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
+
+
+    <SecurityDefinitions />'
+servers:
+- url: https://{nexla-api-host}
+  variables:
+    nexla-api-host:
+      default: dataops.nexla.io/nexla-api
+      description: Nexla API URL your Nexla instance
+security:
+- NexlaSessionToken: []
+tags:
+- name: Metrics
+  description: Operations for retrieving metrics.
+paths:
+  /orgs/{org_id}/flows/account_metrics:
+    get:
+      tags:
+      - Metrics
+      operationId: org_account_metrics_total
+      summary: Get Total Account Metrics for An Organization
+      description: 'Retrieves total account utilization metrics for an organization. The result consists of aggregated information about records processed within the specified date range by all resources owned by users in the organization.
+
+        '
+      parameters:
+      - name: org_id
+        in: path
+        description: 'The unique ID of the organization. The result will be an aggregate of metrics for all resources owned by users in the organization.
+
+          '
+        required: true
+        schema:
+          type: integer
+      - name: from
+        in: query
+        description: The date that should be considered as the start of the metrics aggregation period.
+        required: true
+        schema:
+          type: string
+          format: date-time
+          example: '2023-01-10'
+      - name: to
+        in: query
+        description: 'The date that should be considered as the end of the metrics aggregation period. In the absence of this parameter, the API returns metrics aggregated up to the current date.
+
+          '
+        schema:
+          type: string
+          format: date-time
+          example: '2023-01-17T20:24:35Z'
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/flows_account_metrics'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found error
+  /users/{user_id}/flows/account_metrics:
+    get:
+      tags:
+      - Metrics
+      operationId: user_account_metrics_total
+      summary: Get Total Account Metrics for a User
+      description: 'Retrieves total account utilization metrics for a user in an organization. The result consists of aggregated information about records processed within the specified date range by all resources owned by the user.
+
+        '
+      parameters:
+      - name: user_id
+        in: path
+        description: 'The unique ID of the user. The result will be an aggregate of metrics for all resources owned by this user.
+
+          '
+        required: true
+        schema:
+          type: integer
+      - name: org_id
+        in: query
+        description: 'The ID of the organization this user belongs to. This parameter is relevant for users who belong to multiple organizations. In the absence of this parameter, the API returns an aggregate of metrics for all resources owned by the user in the user''s default organization. Set this query parameter to fetch metrics for a different organization.
+
+          '
+        schema:
+          type: integer
+      - name: from
+        in: query
+        description: The date that should be considered as the start of the metrics aggregation period.
+        required: true
+        schema:
+          type: string
+          format: date-time
+          example: '2023-01-10'
+      - name: to
+        in: query
+        description: 'The date that should be considered as the end of the metrics aggregation period. In the absence of this parameter, the API returns metrics aggregated up to the current date.
+
+          '
+        schema:
+          type: string
+          format: date-time
+          example: '2023-01-17'
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/flows_account_metrics'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found error
+  /users/{user_id}/flows/dashboard:
+    get:
+      tags:
+      - Metrics
+      operationId: user_24_hour_flow_stats
+      summary: Get 24 Hour Flow Stats for a User
+      description: "Retrieves the metrics and processing status of each flow that processed data in the last 24 hours. \n\nEach item reflects the total number of records processed by each stage of all flows accessible by the user that processed any data in the specified time window. \n"
+      parameters:
+      - name: user_id
+        in: path
+        description: 'The unique ID of the user whose flows are to be fetched.
+
+          '
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/access_roles'
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/flows_dashboard'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found error
+  /users/{user_id}/metrics:
+    get:
+      tags:
+      - Metrics
+      operationId: user_metrics_daily
+      summary: Get Daily Data Processing Metrics for a User
+      description: 'Retrieves daily data processing metrics of all sources or all destinations owned by a user.
+
+        '
+      parameters:
+      - name: user_id
+        in: path
+        description: 'The unique ID of the user. The result will be an aggregate of metrics for all resources owned by this user.
+
+          '
+        required: true
+        schema:
+          type: integer
+      - name: org_id
+        in: query
+        description: 'The ID of the organization this user belongs to. This parameter is relevant for users who belong to multiple organizations. In the absence of this parameter, the API returns an aggregate of metrics for all resources owned by the user in the user''s default organization. Set this query parameter to fetch metrics for a different organization.
+
+          '
+        schema:
+          type: integer
+      - name: resource_type
+        in: query
+        description: 'The type of resource that metrics should be fetched for. Select `SOURCE` for the total data ingested by all sources owned by the user. Select `SINK` for the total data written out by all sinks owned by the user.
+
+          '
+        required: true
+        schema:
+          type: string
+          enum:
+          - SOURCE
+          - SINK
+      - name: from
+        in: query
+        description: The date that should be considered as the start of the metrics reporting period.
+        required: true
+        schema:
+          type: string
+          format: date-time
+          example: '2023-01-10'
+      - name: to
+        in: query
+        description: 'The date that should be considered as the end of the metrics reporting period. In the absence of this parameter, the API returns metrics up to the current date.
+
+          '
+        schema:
+          type: string
+          format: date-time
+          example: '2023-01-17'
+      - name: aggregate
+        in: query
+        required: true
+        description: 'This should be set to 1 for fetching daily aggregated metrics over the specified time range.
+
+          '
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/user_metrics'
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found error
+  /{resource_type}/{resource_id}/metrics:
+    get:
+      tags:
+      - Metrics
+      operationId: get_resource_metrics_daily
+      summary: Get Daily Metrics for a Resource of a Flow
+      description: 'Retrieves daily data processing metrics of a `data_source`, `data_set`, or `data_sink`.
+
+        '
+      parameters:
+      - name: resource_type
+        in: path
+        description: 'The type of resource that metrics should be fetched for.
+
+          '
+        required: true
+        schema:
+          type: string
+          enum:
+          - data_sources
+          - data_sinks
+          - data_sets
+      - name: resource_id
+        in: path
+        description: 'The ID of resource that metrics should be fetched for.
+
+          '
+        required: true
+        schema:
+          type: integer
+      - name: from
+        in: query
+        description: The date that should be considered as the start of the metrics reporting period.
+        required: true
+        schema:
+          type: string
+          format: date-time
+          example: '2023-01-10'
+      - name: to
+        in: query
+        description: 'The date that should be considered as the end of the metrics reporting period. In the absence of this parameter, the API returns metrics up to the current date.
+
+          '
+        schema:
+          type: string
+          format: date-time
+          example: '2023-01-17'
+      - name: aggregate
+        in: query
+        required: true
+        description: 'This should be set to 1 for fetching daily aggregated metrics over the specified time range.
+
+          '
+        schema:
+          type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/ResourceMetricsDaily'
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found error
+  /{resource_type}/{resource_id}/metrics/run_summary:
+    get:
+      tags:
+      - Metrics
+      operationId: get_resource_metrics_by_run
+      summary: Get Metrics By Run ID for a Resource of a Flow
+      description: 'Retrieves data processing metrics of a `data_source`, `data_set`, or `data_sink`. The reported metrics are grouped by run id to indicate the number of records processed during each ingestion cycle of this flow.
+
+        '
+      parameters:
+      - name: resource_type
+        in: path
+        description: 'The type of resource that metrics should be fetched for.
+
+          '
+        required: true
+        schema:
+          type: string
+          enum:
+          - data_sources
+          - data_sinks
+          - data_sets
+      - name: resource_id
+        in: path
+        description: 'The unique id of the resource you wish to fetch metrics for.  For ex, set this to id of the `data_source` if you want to fetch metrics of a specific `data_source`.
+
+          '
+        required: true
+        schema:
+          type: integer
+      - name: groupby
+        in: path
+        schema:
+          type: string
+          enum:
+          - runId
+          - lastWritten
+        description: "Specify the rule based on which metrics should be grouped for aggregation. \n\nDefault API behavior is to group by `runId`. This choice is only applicable for data sinks where the run summary could be reported by `runId` ( for reporting number of records written out per ingestion cycle) or `lastWritten` (for reporting number of records written out in each destination write batch).\n"
+      - name: orderby
+        in: path
+        schema:
+          type: string
+          enum:
+          - runId
+          - lastWritten
+        description: 'Specify the order in which paginated results should be sorted. Default API behavior is to order by `runId`. This choice is only applicable for data sinks where the run summary could be reported by `runId` ( for reporting number of records written out per ingestion cycle) or `lastWritten` (for reporting number of records written out in each destination write batch).
+
+          '
+      - $ref: '#/components/parameters/page'
+      - $ref: '#/components/parameters/size'
+      responses:
+        '200':
+          $ref: '#/components/responses/ResourceMetricsByRuns'
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found error
+  /data_flows/{resource_type}/{resource_id}/metrics:
+    get:
+      tags:
+      - Metrics
+      operationId: get_flow_metrics
+      summary: Get Metrics for a Flow
+      description: 'Retrieves data processing metrics of a flow. Metrics are aggregated for each node of the flow for the specified time range. They can be be further grouped by run id to indicate the number of records processed during each ingestion cycle of this flow.
+
+
+        > Note: This is a variant of flow endpoints where the flow node can referenced not by its own ID, but by the ID of the unique resource that is linked to that flow node.
+
+        '
+      parameters:
+      - name: resource_type
+        in: path
+        description: 'The type of node linked to the flow you want to reference. For ex, set this to `data_sources` if you want to refer to the flow originating in a `data_source`.
+
+          '
+        required: true
+        schema:
+          type: string
+          enum:
+          - data_sources
+          - data_sinks
+          - data_sets
+      - name: resource_id
+        in: path
+        description: 'The unique id of the resource whose flow you want to reference.  For ex, set this to id of the `data_source` if you want to refer to the flow originating in a specific `data_source`.
+
+          '
+        required: true
+        schema:
+          type: integer
+      - name: from
+        in: query
+        description: 'The date that should be considered as the start of the metrics aggregation period.
+
+          '
+        required: true
+        schema:
+          type: string
+          format: date-time
+          example: '2023-01-10'
+      - name: to
+        in: query
+        description: 'The date that should be considered as the end of the metrics aggregation period. In the absence of this parameter, the API returns metrics aggregated up to the current date.
+
+          '
+        schema:
+          type: string
+          format: date-time
+          example: '2023-01-17'
+      - name: groupby
+        in: path
+        schema:
+          type: string
+          enum:
+          - runId
+        description: "Specify the rule based on which metrics should be grouped for aggregation. This is an optional property. \n\nIf present and set to `runId` the response will contain one entry per run id, with each entry containing metrics for all resources that processed data during that run.\n"
+      - name: orderby
+        in: path
+        schema:
+          type: string
+          enum:
+          - runId
+          - created_at
+        description: 'Specify the order in which paginated results should be sorted.
+
+          '
+      - $ref: '#/components/parameters/page'
+      - $ref: '#/components/parameters/per_page'
+      responses:
+        '200':
+          $ref: '#/components/responses/FlowMetricsResponse'
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found error
+  /data_flows/{resource_type}/{resource_id}/logs:
+    get:
+      tags:
+      - Metrics
+      operationId: get_flow_logs_for_run_id
+      summary: Get Flow Execution Logs for Run ID of a Flow
+      description: 'Retrieves flow execution logs for a specific run id of a flow.
+
+
+        > Note: This is a variant of flow endpoints where the flow node can referenced not by its own ID, but by the ID of the unique resource that is linked to that flow node.
+
+        '
+      parameters:
+      - name: resource_type
+        in: path
+        description: 'The type of node linked to the flow you want to reference. For ex, set this to `data_sources` if you want to refer to the flow originating in a `data_source`.
+
+          '
+        required: true
+        schema:
+          type: string
+          enum:
+          - data_sources
+          - data_sinks
+          - data_sets
+      - name: resource_id
+        in: path
+        description: 'The unique id of the resource whose flow you want to reference.  For ex, set this to id of the `data_source` if you want to refer to the flow originating in a specific `data_source`.
+
+          '
+        required: true
+        schema:
+          type: integer
+      - name: run_id
+        in: query
+        description: The run id (denoting the ingestion cycle) for which logs have to be fetched.
+        required: true
+        schema:
+          type: integer
+          example: 1695442864636
+      - name: from
+        in: query
+        description: The timestamp that should be considered as the start of the logs reporting period.
+        required: true
+        schema:
+          type: integer
+          format: unix epoch in milliseconds
+          example: 1695442864636
+      - name: to
+        in: query
+        description: 'The timestamp that should be considered as the end of the logs reporting period. In the absence of this parameter, the API returns metrics up to the current time.
+
+          '
+        schema:
+          type: integer
+          format: unix epoch in milliseconds
+          example: 1695442864636
+      - $ref: '#/components/parameters/page'
+      - $ref: '#/components/parameters/per_page'
+      responses:
+        '200':
+          $ref: '#/components/responses/FlowLogsResponse'
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found error
+components:
+  responses:
+    FlowLogsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                description: "Status of the report request. This must be 200 for the data object in the response to be considered valid.               \n"
+              message:
+                type: string
+                description: "Message signifying status of the report request. This must be `Ok` for the data object in the response to be considered valid.            \n"
+              logs:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FlowLogEntry'
+                  meta:
+                    type: object
+                    description: 'A special metadata object that indicates the relevant response Nexla metadata for the responses. This is useful for iterating through multiple pages of valid data.
+
+                      '
+                    properties:
+                      current_page:
+                        type: integer
+                        description: 'Current page that this response corresponds to.
+
+                          '
+                      pages_count:
+                        type: integer
+                        description: "Total number of valid pages of logs data given the current page size.  \n"
+                      total_count:
+                        type: integer
+                        description: 'Total number of log entries that are available for this resource.
+
+                          '
+                      org_id:
+                        type: integer
+                        description: "The id of the organization this flow belongs to.  \n"
+                      run_id:
+                        type: integer
+                        description: "The run id (denoting ingestion cycle) that these log were generated as part of.                      \n"
+    FlowMetricsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                description: "Status of the report request. This must be 200 for the data object in the response to be considered valid.               \n"
+              message:
+                type: string
+                description: "Message signifying status of the report request. This must be `Ok` for the data object in the response to be considered valid.       \n"
+              metrics:
+                type: object
+                properties:
+                  data:
+                    description: 'Flow metrics data aggregated by resource id for the time period specified. If the request includes `groupby=runId` then the metrics are further grouped by `runId` to separate number of records processed per run id per resource.
+
+                      '
+                    oneOf:
+                    - type: object
+                      additionalProperties:
+                        x-additionalPropertiesName: run_id
+                        description: 'Response format if request includes `groupby=runId`.
+
+                          '
+                        type: object
+                        properties:
+                          data_sources:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/FlowResourceMetric'
+                          data_sets:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/FlowResourceMetric'
+                          data_sinks:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/FlowResourceMetric'
+                    - type: object
+                      properties:
+                        data_sources:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/FlowResourceMetric'
+                        data_sets:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/FlowResourceMetric'
+                        data_sinks:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/FlowResourceMetric'
+                  meta:
+                    type: object
+                    description: 'A special metadata object that indicates the relevant response Nexla metadata for the metrics  responses. This is useful for iterating through multiple pages of valid data.
+
+                      '
+                    properties:
+                      currentPage:
+                        type: integer
+                        description: 'Current page that this response corresponds to.
+
+                          '
+                      pageCount:
+                        type: integer
+                        description: "Total number of valid pages of metrics data given the current page size.  \n"
+                      totalCount:
+                        type: integer
+                        description: "Total number of metrics entries that are available for this resource. \n"
+    flows_account_metrics:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                format: int32
+                description: 'Status of the report request. This must be `200` or `Ok` for the metrics object in the response to be considered valid.
+
+                  '
+              metrics:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        records:
+                          type: integer
+                          format: int32
+                          description: "The total number of records processed during the specified time range. \n"
+                        size:
+                          type: integer
+                          format: int32
+                          description: "The total volume of records processed (in bytes) during the specified time range.                     \n"
+                    start_time:
+                      type: string
+                      format: date-time
+                    end_time:
+                      type: string
+                      format: date-time
+    ResourceMetricsDaily:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metrics:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResourceMetricDaily'
+              status:
+                type: integer
+                format: int32
+                description: "Status of the report request. This must be `200` or `Ok` for the metrics object in the response to be considered valid.          \n"
+    ResourceMetricsByRuns:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metrics:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResourceMetricByRun'
+                  meta:
+                    type: object
+                    description: 'A special metadata object that indicates the relevant response Nexla metadata for the metrics  responses. This is useful for iterating through multiple pages of valid data.
+
+                      '
+                    properties:
+                      currentPage:
+                        type: integer
+                        description: 'Current page that this response corresponds to.
+
+                          '
+                      pageCount:
+                        type: integer
+                        description: "Total number of valid pages of metrics data given the current page size.  \n"
+                      totalCount:
+                        type: integer
+                        description: "Total number of metrics entries that are available for this resource.                                              \n"
+              status:
+                type: integer
+                format: int32
+                description: "Status of the report request. This must be `200` or `Ok` for the metrics object in the response to be considered valid. \n"
+    flows_dashboard:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                format: int32
+                description: "Status of the report request. This must be `200` or `Ok` for the metrics object in the response to be considered valid.          \n"
+              metrics:
+                type: object
+                properties:
+                  sources:
+                    type: object
+                    additionalProperties:
+                      $ref: '#/components/schemas/DashboardMetricSet'
+                      x-additionalPropertiesName: data_source_id
+                  sinks:
+                    type: object
+                    additionalProperties:
+                      $ref: '#/components/schemas/DashboardMetricSet'
+                      x-additionalPropertiesName: data_sink_id
+                  datasets:
+                    type: object
+                    additionalProperties:
+                      $ref: '#/components/schemas/DashboardMetricSet'
+                      x-additionalPropertiesName: data_set_id
+                  start_time:
+                    type: string
+                    format: date-time
+                  end_time:
+                    type: string
+                    format: date-time
+    user_metrics:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metrics:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    time:
+                      type: string
+                      format: date
+                      description: 'The date (in UTC) that the metrics in this entry are applicable for.
+
+                        '
+                    records:
+                      type: integer
+                      format: int32
+                      description: "The total number of records that were processed on the date indicated by the `time` property.                 \n"
+                    size:
+                      type: integer
+                      format: int32
+                      description: "The total volume (in bytes) of records that were processed on the date indicated by the `time` property.           \n"
+                    errors:
+                      type: integer
+                      format: int32
+                      description: "The total number of data processing errors that occurred on the date indicated by the `time` property. \n"
+              status:
+                type: integer
+                format: int32
+                description: "Status of the report request. This must be `200` or `Ok` for the metrics object in the response to be considered valid.          \n"
+  parameters:
+    access_roles:
+      name: access_role
+      in: query
+      schema:
+        type: string
+        enum:
+        - collaborator
+        - operator
+        - admin
+        - owner
+        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
+        externalDocs:
+          description: Nexla API access roles
+          url: https://developers.nexla.com/docs/access-modes
+    size:
+      name: size
+      in: query
+      schema:
+        type: integer
+        description: 'Add this parameter to a resource fetch request to set the number of items that should be returned in each request.
+
+          '
+    page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        description: 'Add this parameter to a resource fetch request to fetch a specific page of data.
+
+          '
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
+    per_page:
+      name: per_page
+      in: query
+      schema:
+        type: integer
+        description: 'Add this parameter to a resource fetch request to set the number of items that should be returned in each request.
+
+          '
+  schemas:
+    ResourceMetricDaily:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date
+          description: 'The date (in UTC) that the metrics in this entry are applicable for.
+
+            '
+        records:
+          type: integer
+          format: int32
+          description: "The total number of records that were processed on the date indicated by the `time` property.                 \n"
+        size:
+          type: integer
+          format: int32
+          description: "The total volume (in bytes) of records that were processed on the date indicated by the `time` property.           \n"
+        errors:
+          type: integer
+          format: int32
+          description: "The total number of data processing errors that occurred on the date indicated by the `time` property. \n"
+    FlowLogEntry:
+      type: object
+      properties:
+        timestamp:
+          type: integer
+          format: unix epoch in milliseconds
+          example: 1695442864636
+          description: 'Timestamp at which this log entry was generated.
+
+            '
+        resource_id:
+          type: integer
+          description: 'The ID of the resource that generated this log entry.
+
+            '
+        resource_type:
+          type: string
+          description: "The type of flow resource that generated this log entry.  \n"
+          enum:
+          - SOURCE
+          - DATASET
+          - SINK
+        log:
+          type: string
+          example: Processed records=100, errors=0, size=94162"
+          description: 'Detailed information about the data processing events on the flow resource.
+
+            '
+        log_type:
+          type: string
+          description: 'Indicates the type of event reflected by log entry.
+
+
+            * `SUMMARY`: Log entry describing high level summary of data processing event.
+
+            * `LOG`: Log entry describing details of data processing status.
+
+            '
+          enum:
+          - LOG
+          - SUMMARY
+        severity:
+          type: string
+          description: 'Indicates the severity of the event reflected by this log entry.
+
+            '
+          enum:
+          - INFO
+          - WARNING
+          - ERROR
+    DashboardMetricSet:
+      type: object
+      properties:
+        records:
+          type: integer
+          format: int32
+          description: "The total number of records that were processed for this resource during the past 24 hours.           \n"
+        size:
+          type: integer
+          format: int32
+          description: "The total volume (in bytes) of records that were processed for this resource during the past 24 hours.            \n"
+        errors:
+          type: integer
+          format: int32
+          description: "The total number of data processing errors that occurred on this resource during the past 24 hours.         \n"
+        status:
+          type: string
+          enum:
+          - OK
+          - WARNING
+          - ERROR
+          description: "Indicates whether the platform identified this resource's performance during the last 24 hours as something that might require attention or not. \n"
+    ResourceMetricByRun:
+      type: object
+      properties:
+        runId:
+          type: integer
+          description: 'The run ID / ingestion cycle the the metrics in this entry are applicable for.
+
+            '
+        lastWritten:
+          type: integer
+          description: "The destination write batch id the the metrics in this entry are applicable for. \n\n> *Note*: This entry is present and applicable only if the request was made for a destination *and* the request was for grouping by `lastWritten` instead of `runId`\n"
+        dataSetId:
+          type: integer
+          description: "The Nexset ID these records were applicable for. For a data source, this indicates the nexset that received the records these metrics correspond to. For a data sink, this indicates the nexset that had the records these metrics correspond to.        \n"
+        records:
+          type: integer
+          format: int32
+          description: "The total number of records that were processed during the ingestion cycle indicated by `runId`                \n"
+        size:
+          type: integer
+          format: int32
+          description: "The total volume (in bytes) of records that processed during the ingestion cycle indicated by `runId`            \n"
+        errors:
+          type: integer
+          format: int32
+          description: "The total number of data processing errors that occurred during the ingestion cycle indicated by `runId` \n"
+    FlowResourceMetric:
+      type: object
+      properties:
+        id:
+          type: integer
+        metric:
+          type: object
+          properties:
+            records:
+              type: integer
+            size:
+              type: integer
+            errors:
+              type: integer
+  securitySchemes:
+    NexlaSessionToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: "The first step in calling the Nexla API or Nexla CLI is to fetch a Session access token by logging on to your Nexla UI instance. This ensures that your authentication is performed through your organization's preferred Identity Provider.\n\nTo fetch an access token from the Nexla UI, simply go to your Nexla UI instance, and try the route `/token`. For example, if your Nexla UI instance is at `https://dataops.nexla.io`, open `https://dataops.nexla.io/token` in the browser. \n\nThis will automatically route you to a login page, ask you to authenticate using your preferred Identity Provider, and, upon successful authentication, route you to a page where you can copy the Access Token.\n\nUsage format: `Bearer <JWT>`.\n"
+    NexlaApiKeyQuery:
+      type: apiKey
+      name: api_key
+      in: query
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as a query parameter to authenticate this request.
+
+        Usage: `?api_key=<api-key>`
+
+        '
+    NexlaApiKeyHeader:
+      type: http
+      scheme: Basic
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as an authorization header to authenticate this request.
+
+        Usage format: `Basic <api-key>`
+
+        '
+    basicAuth:
+      type: http
+      scheme: basic
+    GoogleSSOToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: 'The token that is used when logging into Nexla via Google SSO.
+
+        '
+x-tagGroups:
+- name: Session
+  tags:
+  - Session Management
+- name: Integrate
+  tags:
+  - Flows
+  - Sources
+  - Destinations (Data Sinks)
+  - Nexsets (Data Sets)
+  - Credentials
+  - Data Maps
+  - Code Containers
+  - Transforms
+  - Projects
+- name: Monitor
+  tags:
+  - Notifications
+  - Metrics
+  - Audit Logs
+  - Quarantine Settings
+- name: Collaborate
+  tags:
+  - Access Control
+- name: Account Management
+  tags:
+  - Organizations
+  - Users
+  - User Settings
+  - Teams
+  - Gen AI Configs
+- name: Real-Time Events
+  tags:
+  - Webhooks
+- name: Rate Limiting
+  tags:
+  - Limits
+- name: Marketplace
+  tags:
+  - Marketplace
+- name: Self Sign-Up
+  tags:
+  - Self Sign-Up
+  - Self Sign-Up Admin
+- name: Async Tasks
+  tags:
+  - Async Tasks

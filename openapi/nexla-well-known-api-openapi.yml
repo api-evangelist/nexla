@@ -1,0 +1,96 @@
+openapi: 3.2.0
+info:
+  title: Nexla GenAI (RAG + MCPaaS) .well Known API
+  description: Combined Nexla GenAI RAG API Service and MCPaaS
+  version: v0.2.3.3-combined
+tags:
+- name: .well Known
+paths:
+  /.well-known/oauth-protected-resource/{resource_path}:
+    get:
+      summary: Oauth Protected Resource Metadata
+      operationId: oauth_protected_resource_metadata__well_known_oauth_protected_resource__resource_path__get
+      parameters:
+      - name: resource_path
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Resource Path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - .well Known
+  /.well-known/oauth-protected-resource:
+    get:
+      summary: Oauth Protected Resource Metadata
+      operationId: oauth_protected_resource_metadata__well_known_oauth_protected_resource_get
+      parameters:
+      - name: resource_path
+        in: query
+        required: false
+        schema:
+          type: string
+          default: ''
+          title: Resource Path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - .well Known
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError

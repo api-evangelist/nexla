@@ -1,0 +1,143 @@
+openapi: 3.2.0
+info:
+  title: Nexla GenAI (RAG + MCPaaS) Mcp Query API
+  description: Combined Nexla GenAI RAG API Service and MCPaaS
+  version: v0.2.3.3-combined
+tags:
+- name: Mcp Query
+paths:
+  /mcp_query:
+    post:
+      summary: Mcp Query
+      operationId: mcp_query_mcp_query_post
+      parameters:
+      - name: token_type
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/TokenType'
+          default: service_key
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          type: string
+          title: Authorization
+      - name: Credential-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          title: Credential-Id
+      - name: Model
+        in: header
+        required: false
+        schema:
+          type: string
+          title: Model
+      - name: Provider
+        in: header
+        required: false
+        schema:
+          type: string
+          title: Provider
+      - name: User-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          title: User-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MCPQueryRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Mcp Query
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    MCPQueryRequest:
+      properties:
+        user_query:
+          type: string
+          title: User Query
+          description: The initial query provided by the user.
+        nexsets:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Nexsets
+          description: The list of nexsets to include in the query.
+        pvt_flag:
+          type: boolean
+          title: Pvt Flag
+          description: Flag to indicate if this is a private query request. Default is False.
+          default: false
+        access_roles:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Access Roles
+          description: The list of access roles for the user for private query requests
+      type: object
+      required:
+      - user_query
+      title: MCPQueryRequest
+    TokenType:
+      type: string
+      enum:
+      - bearer
+      - service_key
+      title: TokenType

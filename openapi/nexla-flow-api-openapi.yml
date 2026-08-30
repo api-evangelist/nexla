@@ -1,0 +1,405 @@
+openapi: 3.2.0
+info:
+  title: Nexla GenAI (RAG + MCPaaS) Flow API
+  description: Combined Nexla GenAI RAG API Service and MCPaaS
+  version: v0.2.3.3-combined
+tags:
+- name: Flow
+paths:
+  /flow/rag/{flow_id}:
+    post:
+      summary: Rag Flow
+      description: Handle RAG flow requests.
+      operationId: rag_flow_flow_rag__flow_id__post
+      parameters:
+      - name: flow_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Flow Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          type: string
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RAGFlowRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Flow
+  /flow/update_cache/{flow_id}:
+    post:
+      summary: Update Flow Cache
+      description: Endpoint to update the RAG flow cache when Admin API notifies of a flow update.
+      operationId: update_flow_cache_flow_update_cache__flow_id__post
+      parameters:
+      - name: flow_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Flow Id
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          type: string
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Flow
+components:
+  schemas:
+    LLMConfig:
+      properties:
+        model:
+          type: string
+          title: Model
+          description: The identifier of the AI model to use for processing the query
+        provider:
+          type: string
+          title: Provider
+          description: The provider of the AI model (e.g., Azure, OpenAI)
+        credential_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Credential Id
+          description: An optional credential ID for accessing the LLM
+        credential_parameters:
+          anyOf:
+          - $ref: '#/components/schemas/LLMCredentialParameters'
+          - type: 'null'
+          description: Optional credential parameters for accessing the LLM
+        reasoning_effort:
+          anyOf:
+          - type: string
+            enum:
+            - none
+            - minimal
+            - low
+            - medium
+            - high
+            - xhigh
+          - type: 'null'
+          title: Reasoning Effort
+          description: Reasoning effort for OpenAI reasoning models (gpt-5*). Controls how much the model thinks. Defaults to 'low' when unset.
+        reasoning_summary:
+          anyOf:
+          - type: string
+            enum:
+            - concise
+            - detailed
+            - auto
+          - type: 'null'
+          title: Reasoning Summary
+          description: Reasoning summary verbosity for OpenAI reasoning models. Controls how much of the chain-of-thought is streamed back as thinking_delta events. 'detailed' produces visibly streaming multi-paragraph summaries. Defaults to 'concise' when unset.
+      type: object
+      required:
+      - model
+      - provider
+      title: LLMConfig
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    UserContext:
+      properties:
+        access_role:
+          items:
+            type: string
+          type: array
+          title: Access Role
+          description: The access roles for the requesting user.
+        user_id:
+          type: string
+          title: User Id
+          description: The unique identifier for the requesting user.
+        session_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Session Id
+          description: Session ID associated with user session. Useful for storing conversation history.
+        access_rules:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Access Rules
+          description: Policy-level gate. Keys and valid values configured at registration.
+        access_scope:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Access Scope
+          description: Data ownership scope. Values are always arrays (IN semantics).
+        filters:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Filters
+          description: Page/session context filters. String = EQ, array = IN.
+      additionalProperties: false
+      type: object
+      required:
+      - user_id
+      title: UserContext
+    RAGFlowRequest:
+      properties:
+        user_prompt:
+          type: string
+          title: User Prompt
+          description: User query for RAG flow
+        user_context:
+          $ref: '#/components/schemas/UserContext'
+          description: User context containing user ID, access roles, and session information
+        llm_config:
+          $ref: '#/components/schemas/LLMConfig'
+          description: LLM configuration details
+        rag_flow:
+          anyOf:
+          - $ref: '#/components/schemas/RAGFlow'
+          - type: 'null'
+          description: Optional RAG flow configuration for build-time processing
+        streaming:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Streaming
+          description: Indicate whether the final response should be streamed
+          default: true
+        debug:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Debug
+          description: Indicate whether the intermediate responses should be returned
+          default: false
+      type: object
+      required:
+      - user_prompt
+      - user_context
+      - llm_config
+      title: RAGFlowRequest
+    RAGFlow:
+      properties:
+        flows:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Flows
+        linked_flows:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Linked Flows
+        data_sources:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Data Sources
+        code_containers:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Code Containers
+        data_sets:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Data Sets
+        data_credentials:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Data Credentials
+        data_sinks:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Data Sinks
+        orgs:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Orgs
+          default: []
+        users:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Users
+          default: []
+        triggered_flows:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Triggered Flows
+        triggering_flows:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Triggering Flows
+        dependent_flow_nodes:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Dependent Flow Nodes
+        origin_data_sink_flow_nodes:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Origin Data Sink Flow Nodes
+        shared_data_sets:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Shared Data Sets
+        projects:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Projects
+      type: object
+      title: RAGFlow
+    LLMCredentialParameters:
+      properties:
+        model:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Model
+          description: The model to use for the credential
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+          description: The provider to use for the credential
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: The endpoint URL for the AI provider
+        api_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Api Key
+          description: The API key for the AI provider
+        api_version:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Api Version
+          description: The API version to use with the AI provider
+      type: object
+      title: LLMCredentialParameters
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError

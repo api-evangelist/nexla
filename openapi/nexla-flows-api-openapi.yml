@@ -1,0 +1,1185 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Nexla Rest Flows API
+  termsOfService: https://nexla.com/terms-of-service/
+  contact:
+    name: Nexla Support
+    url: https://docs.nexla.com
+    email: support@nexla.com
+  license:
+    name: Nexla
+    url: https://nexla.com
+  x-logo:
+    url: https://cdn.nexla.io/ui/assets/brand/v2/nexla-logo-color-portrait.svg
+    backgroundColor: '#ffffff'
+  description: '# Introduction
+
+
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
+
+
+    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
+
+
+    The API references in this document lists all API endpoints and the corresponding payloads.
+
+
+    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
+
+
+    # API Data Format and Versions
+
+
+    The API uses JSON for all data exchanges.
+
+
+    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
+
+    ```
+
+    Accept: application/vnd.nexla.api.v1+json
+
+    ```
+
+
+    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
+
+
+
+    ```
+
+    Accept: application/json
+
+    ```
+
+
+    # Authentication
+
+
+    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
+
+
+    <SecurityDefinitions />'
+servers:
+- url: https://{nexla-api-host}
+  variables:
+    nexla-api-host:
+      default: dataops.nexla.io/nexla-api
+      description: Nexla API URL your Nexla instance
+security:
+- NexlaSessionToken: []
+tags:
+- name: Flows
+  description: Operations for managing flows.
+paths:
+  /flows:
+    get:
+      tags:
+      - Flows
+      operationId: get_flows
+      summary: Get All Flows
+      description: 'Returns all flows accessible to the authenticated user.
+
+        '
+      parameters:
+      - name: flows_only
+        in: query
+        schema:
+          type: integer
+          enum:
+          - 1
+          description: 'By default, flows responses include sub-lists of the resources included in the `flows`, such as `data_sources`, `data_sets` and `data_sinks`. If you do not need resource details and just need flow chain, include the `flows_only` query parameter in your request. This option can improve request response time significantly.
+
+            '
+      - name: include_run_metrics
+        in: query
+        schema:
+          type: integer
+          enum:
+          - 1
+          description: 'By default, flows responses do not include run metrics. If you want to include run metrics in the response, include the `include_run_metrics` query parameter in your request.
+
+            '
+      - $ref: '#/components/parameters/page'
+      - $ref: '#/components/parameters/per_page'
+      - $ref: '#/components/parameters/access_roles'
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/FlowsManyWithMetric'
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+  /flows/{flow_id}:
+    get:
+      tags:
+      - Flows
+      summary: Get Flow by ID
+      description: 'Returns a flow object if a valid flow ID is provided.
+
+        '
+      operationId: get_flow_by_id
+      parameters:
+      - name: flow_id
+        in: path
+        description: The unique ID of the flow that needs to be fetched.
+        required: true
+        schema:
+          type: integer
+      - name: flows_only
+        in: query
+        schema:
+          type: integer
+          enum:
+          - 1
+          description: "By default, flows responses include sub-lists of the resources included in the `flows`, such as `data_sources`, `data_sets` and `data_sinks`. If you do not need resource details and just need flow chain, include the `flows_only` query parameter in your request. This option can improve request response time significantly.\n        \n"
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/FlowsOne'
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+    delete:
+      tags:
+      - Flows
+      summary: Delete a Flow
+      description: Deletes a flow from your Nexla account.
+      operationId: delete_flow
+      parameters:
+      - name: flow_id
+        in: path
+        description: The unique ID of the flow that needs to be deleted.
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: string
+                    description: Response status code
+                  message:
+                    type: string
+                    description: Response status text
+        '404':
+          description: Not found error
+  /flows/{flow_id}/activate:
+    put:
+      tags:
+      - Flows
+      operationId: flow_activate_with_flow_id
+      summary: Activate a Flow
+      description: "To activate the entire flow, use either the `origin_node_id` from any data source, set or sink in the flow, or include the ?all=1 or ?full_tree=1 query parameter.\n  \n>**Note**: \n> 1. All endpoints for activating or pausing a flow operate on the specific resource given and all of the flow nodes downstream from that resource. This allows for pausing and activating sub-flows while leaving the rest of the flow state unchanged.\n> \n>  2. You can also activate a flow by using the id of the `data_source`/ `data_set` / `data_sink` that the flow node is linked to. See relevant endpoints in the API references for those resources.  \n"
+      parameters:
+      - name: flow_id
+        in: path
+        description: The unique ID of the flow that needs to be activated.
+        required: true
+        schema:
+          type: integer
+      - name: all
+        in: path
+        description: 'Set this query parameter if the flow node ID you are making a call with is not an origin flow node but you want to activate the full flow chain.
+
+          Not necessary if the flow node is an origin flow node.
+
+          '
+        schema:
+          type: integer
+          enum:
+          - 1
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/FlowsOne'
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+  /flows/{flow_id}/pause:
+    put:
+      tags:
+      - Flows
+      operationId: flow_pause_with_flow_id
+      summary: Pause a Flow
+      description: "To pause the entire flow, use either the `origin_node_id` from any data source, set or sink in the flow, or include the ?all=1 or ?full_tree=1 query parameter.\n  \n>**Note**: \n> 1. All endpoints for activating or pausing a flow operate on the specific resource given and all of the flow nodes  downstream from that resource. This allows for pausing and activating sub-flows while leaving the rest of the flow state unchanged.\n> \n>  2. You can also pause a flow by using the id of the `data_source`/ `data_set` / `data_sink` that the flow node is linked to. See relevant endpoints in the API references for those resources.    \n"
+      parameters:
+      - name: flow_id
+        in: path
+        description: The unique ID of the flow that needs to be paused.
+        required: true
+        schema:
+          type: integer
+      - name: all
+        in: path
+        description: 'Set this query parameter if the flow node ID you are making a call with is not an origin flow node but you want to pause the full flow chain.
+
+          Not necessary if the flow node is an origin flow node.
+
+          '
+        schema:
+          type: integer
+          enum:
+          - 1
+      - name: async
+        in: query
+        description: 'If set to ''true'', request will be executed in a deferred way, and results will be provided later. Notice: only works with all=1 or full_tree=1.'
+        required: false
+        schema:
+          type: boolean
+      - name: request_id
+        in: query
+        description: The unique ID of the asynchronous request. In case it's provided, returns info about the deferred request.
+        required: false
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/flow_one_with_async'
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+  /flows/{flow_id}/copy:
+    post:
+      tags:
+      - Flows
+      operationId: flow_copy_with_flow_id
+      summary: Copy a Flow
+      description: "Use this endpoint to create a copy of an existing flow. \n"
+      parameters:
+      - name: flow_id
+        in: path
+        description: The unique ID of the flow that needs to be paused.
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/vnd.nexla.api.v1+json:
+            schema:
+              type: object
+              properties:
+                reuse_data_credentials:
+                  type: boolean
+                  description: 'Set this to `true` if you do want to reuse the credentials of this flow instead of creating a clone of the credentials also.
+
+                    '
+                copy_access_controls:
+                  type: boolean
+                  description: "Set this to `true` if you want the new flow to be accessible by all users who have access to the this flow. \n"
+                copy_dependent_data_flows:
+                  type: boolean
+                  description: "This is relevant for flows where one or more destinations have sources as their children. Set this to `true` if you want to create a clone of the flows that originate from those sources also. \n"
+                owner_id:
+                  type: integer
+                  description: 'The default API behavior is to create the new flow in the account of the authenticated user making this call. Set this property if you want a different user to be the owner of the new flow.
+
+                    '
+                org_id:
+                  type: integer
+                  description: 'The default API behavior is to create the new flow in the org that the authenticated user making this call belongs to. Set this property if you want the flow to be created in a different org.
+
+                    '
+      responses:
+        '200':
+          $ref: '#/components/responses/FlowsOne'
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+  /flows/{flow_id}/docs/recommendation:
+    post:
+      tags:
+      - Flows
+      operationId: flow_docs_recommendation
+      summary: Generate an AI suggestion for flow documentation
+      description: 'Request a suggestion for Flow documentation. GenAI has to be configured properly for this request, or else you get a message with an error.
+
+        '
+      parameters:
+      - name: flow_id
+        in: path
+        description: The unique ID of the flow
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/genai_recommendation_response'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /{resource_type}/{resource_id}/flow:
+    get:
+      tags:
+      - Flows
+      operationId: get_flow_by_resource_id
+      summary: Get Flow (by Resource ID)
+      description: "Returns a flow object if a valid resource type and resource ID is provided.\n\n> Note: This is a variant of flow endpoints where the flow node can referenced not by its own ID, but by the ID of the unique resource that is linked to that flow node.      \n"
+      parameters:
+      - name: resource_type
+        in: path
+        description: 'The type of node linked to the flow you want to reference. For ex, set this to `data_sources` if you want to refer to the flow originating in a `data_source`.
+
+          '
+        required: true
+        schema:
+          type: string
+          enum:
+          - data_sources
+          - data_sinks
+          - data_sets
+      - name: resource_id
+        in: path
+        description: The unique id of the resource whose flow you want to reference.  For ex, set this to id of the `data_source` if you want to refer to the flow originating in a specific `data_source`.
+        required: true
+        schema:
+          type: integer
+      - name: flows_only
+        in: query
+        schema:
+          type: integer
+          enum:
+          - 1
+          description: "By default, flows responses include sub-lists of the resources included in the `flows`, such as `data_sources`, `data_sets` and `data_sinks`. If you do not need resource details and just need flow chain, include the `flows_only` query parameter in your request. This option can improve request response time significantly.\n        \n"
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/FlowsOne'
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+    delete:
+      tags:
+      - Flows
+      operationId: delete_flow_by_resource_id
+      summary: Delete a Flow (by Resource ID)
+      description: 'Deletes a flow from your Nexla account.
+
+
+        > Note: This is a variant of flow endpoints where the flow node can referenced not by its own ID, but by the ID of the unique resource that is linked to that flow node.
+
+        '
+      parameters:
+      - name: resource_type
+        in: path
+        description: 'The type of node linked to the flow you want to reference. For ex, set this to `data_sources` if you want to refer to the flow originating in a `data_source`.
+
+          '
+        required: true
+        schema:
+          type: string
+          enum:
+          - data_sources
+          - data_sinks
+          - data_sets
+      - name: resource_id
+        in: path
+        description: The unique id of the resource whose flow you want to reference.  For ex, set this to id of the `data_source` if you want to refer to the flow originating in a specific `data_source`.
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: string
+                    description: Response status code
+                  message:
+                    type: string
+                    description: Response status text
+        '404':
+          description: Not found error
+  /{resource_type}/{resource_id}/activate:
+    put:
+      tags:
+      - Flows
+      operationId: flow_activate_with_resource_id
+      summary: Activate a Flow (with Resource ID)
+      description: "To activate the entire flow include the ?all=1 or ?full_tree=1 query parameter.\n  \n>**Note**: \n> 1. All endpoints for activating or pausing a flow operate on the specific resource given and all of the flow nodes downstream from that resource. This allows for pausing and activating sub-flows while leaving the rest of the flow state unchanged.\n> 2. This is a variant of flow endpoints where the flow node can referenced not by its own ID, but by the ID of the unique resource that is linked to that flow node.\n"
+      parameters:
+      - name: resource_type
+        in: path
+        description: 'The type of node linked to the flow you want to reference. For ex, set this to `data_sources` if you want to refer to the flow originating in a `data_source`.
+
+          '
+        required: true
+        schema:
+          type: string
+          enum:
+          - data_sources
+          - data_sinks
+          - data_sets
+      - name: resource_id
+        in: path
+        description: 'The unique id of the resource whose flow you want to reference.  For ex, set this to id of the `data_source` if you want to refer to the flow originating in a specific `data_source`.
+
+          '
+        required: true
+        schema:
+          type: integer
+      - name: all
+        in: path
+        description: 'Set this query parameter if the resource ID you are making a call with is not an origin flow node but you want to activate the full flow chain.
+
+          Not necessary if the flow node is an origin flow node.
+
+          '
+        schema:
+          type: integer
+          enum:
+          - 1
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/FlowsOne'
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+  /{resource_type}/{resource_id}/pause:
+    put:
+      tags:
+      - Flows
+      operationId: flow_pause_with_resource_id
+      summary: Pause a Flow (with Resource ID)
+      description: "To pause the entire flow include the entire flow include the ?all=1 or ?full_tree=1 query parameter.\n  \n>**Note**: \n> 1. All endpoints for activating or pausing a flow operate on the specific resource given and all of the flow nodes  downstream from that resource. This allows for pausing and activating sub-flows while leaving the rest of the flow state unchanged.\n> \n> 2. This is a variant of flow endpoints where the flow node can referenced not by its own ID, but by the ID of the unique resource that is linked to that flow node.    \n"
+      parameters:
+      - name: resource_type
+        in: path
+        description: 'The type of node linked to the flow you want to reference. For ex, set this to `data_sources` if you want to refer to the flow originating in a `data_source`.
+
+          '
+        required: true
+        schema:
+          type: string
+          enum:
+          - data_sources
+          - data_sinks
+          - data_sets
+      - name: resource_id
+        in: path
+        description: The unique id of the resource whose flow you want to reference.  For ex, set this to id of the `data_source` if you want to refer to the flow originating in a specific `data_source`.
+        required: true
+        schema:
+          type: integer
+      - name: all
+        in: path
+        description: 'Set this query parameter if the flow node ID you are making a call with is not an origin flow node but you want to pause the full flow chain.
+
+          Not necessary if the flow node is an origin flow node.
+
+          '
+        schema:
+          type: integer
+          enum:
+          - 1
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/FlowsOne'
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+components:
+  schemas:
+    org:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: 'null'
+        client_identifier:
+          type: 'null'
+    flow_one_with_async:
+      oneOf:
+      - allOf:
+        - type: object
+          properties:
+            flows:
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                $ref: '#/components/schemas/FlowOriginNode'
+        - $ref: '#/components/schemas/FlowElements'
+      - $ref: '#/components/schemas/AsyncResponse'
+    AsyncResponse:
+      type: object
+      description: 'This object represents the response of an asynchronous operation. The response can be a dictionary or an array of dictionaries. The format of the response depends on the operation that was executed.
+
+        '
+      properties:
+        request_id:
+          type: integer
+          description: 'The unique ID of the request that was executed. This ID can be used to track the status of the request.
+
+            '
+        status:
+          type: string
+          enum:
+          - pending
+          - running
+          - completed
+          - failed
+          - cancelled
+        request_started_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was started.
+
+            '
+        progress:
+          type: integer
+          description: 'The progress of the request (value from 0 to 100). This value is a percentage of the total progress of the request. Applicable only to certain types of async operations.
+
+            '
+        result:
+          type: object
+          description: 'The result of the async operation. Format depends on the task type.
+
+            '
+          additionalProperties: true
+        request_stopped_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was stopped. This field is only present if the request has been stopped (due to cancellation or error).
+
+            '
+        request_completed_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was completed. This field is only present if the request has been completed successfully.
+
+            '
+    owner:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+          format: email
+    FlowChildNode:
+      type: object
+      properties:
+        id:
+          type: integer
+        parent_node_id:
+          type: integer
+          description: 'The flow id of the flow node this node is a direct descendant of.
+
+            '
+        origin_node_id:
+          type: integer
+          description: "The flow id of the flow node at the root of this flow chain.      \n"
+        data_source_id:
+          type: integer
+          format: nullable
+          description: 'The ID of the data source this flow node is linked to if this is a flow node for a data source.
+
+            '
+        data_set_id:
+          type: integer
+          format: nullable
+          description: "The ID of the Nexset this flow node is linked to if this is flow node for a Nexset. \n"
+        data_sink_id:
+          type: integer
+          format: nullable
+          description: "The ID of the data sink this flow node is linked to if this is a flow node for a data sink.         \n"
+        children:
+          type: array
+          description: 'Each element is a flow node that is directly linked to this node.
+
+            '
+    FlowNodes:
+      type: array
+      items:
+        $ref: '#/components/schemas/FlowOriginNode'
+    FlowElements:
+      type: object
+      properties:
+        code_containers:
+          type: array
+          description: 'All code containers that are linked to flow nodes in this response.
+
+            '
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              owner_id:
+                type: integer
+              org_id:
+                type: integer
+              name:
+                type: string
+              description:
+                type:
+                - 'null'
+              data_credentials_id:
+                type:
+                - 'null'
+              public:
+                type: boolean
+              managed:
+                type: boolean
+              reusable:
+                type: boolean
+              resource_type:
+                type: string
+              output_type:
+                type: string
+              code_type:
+                type: string
+              code_encoding:
+                type: string
+              access_roles:
+                type: array
+              tags:
+                type: array
+              copied_from_id:
+                type: integer
+              created_at:
+                type: string
+                format: date-time
+              updated_at:
+                type: string
+                format: date-time
+            additionalProperties: false
+        data_sources:
+          type: array
+          description: "All data sources that are linked to flow nodes in this response.      \n"
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              owner_id:
+                type: integer
+              org_id:
+                type: integer
+              flow_node_id:
+                type: integer
+              origin_node_id:
+                type: integer
+              name:
+                type: string
+              description:
+                type:
+                - 'null'
+              status:
+                type: string
+              data_credentials_id:
+                type:
+                - integer
+                - 'null'
+              data_sink_id:
+                type:
+                - integer
+                - 'null'
+              auto_generated:
+                type: boolean
+              managed:
+                type: boolean
+              source_type:
+                type: string
+              connector_type:
+                type: string
+              connection_type:
+                type: string
+              template_config:
+                type: object
+              vendor:
+                type:
+                - 'null'
+              access_roles:
+                type: array
+              tags:
+                type: array
+              copied_from_id:
+                type:
+                - integer
+                - 'null'
+              created_at:
+                type: string
+                format: date-time
+              updated_at:
+                type: string
+                format: date-time
+            additionalProperties: false
+        data_sets:
+          type: array
+          description: "All Nexsets that are linked to flow nodes in this response.            \n"
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              owner_id:
+                type: integer
+              org_id:
+                type: integer
+              flow_node_id:
+                type: integer
+              origin_node_id:
+                type: integer
+              name:
+                type: string
+              description:
+                type: string
+              status:
+                type: string
+              data_source_id:
+                type:
+                - integer
+                - 'null'
+              parent_data_set_id:
+                type:
+                - integer
+                - 'null'
+              code_container_id:
+                type:
+                - integer
+                - 'null'
+              data_sink_ids:
+                type: array
+              public:
+                type: boolean
+              managed:
+                type: boolean
+              access_roles:
+                type: array
+              tags:
+                type: array
+              copied_from_id:
+                type:
+                - integer
+                - 'null'
+              created_at:
+                type: string
+                format: date-time
+              updated_at:
+                type: string
+                format: date-time
+            additionalProperties: false
+        data_sinks:
+          type: array
+          description: "All data sinks that are linked to flow nodes in this response.      \n"
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              owner_id:
+                type: integer
+              org_id:
+                type: integer
+              flow_node_id:
+                type: integer
+              origin_node_id:
+                type: integer
+              name:
+                type: string
+              description:
+                type:
+                - 'null'
+              status:
+                type: string
+              data_credentials_id:
+                type: integer
+              data_set_id:
+                type: integer
+              data_source_id:
+                type:
+                - integer
+                - 'null'
+              managed:
+                type: boolean
+              sink_type:
+                type: string
+              connector_type:
+                type: string
+              connection_type:
+                type: string
+              template_config:
+                type: object
+              vendor:
+                type:
+                - 'null'
+              access_roles:
+                type: array
+              tags:
+                type: array
+              copied_from_id:
+                type:
+                - 'null'
+              created_at:
+                type: string
+                format: date-time
+              updated_at:
+                type: string
+                format: date-time
+            additionalProperties: false
+        data_credentials:
+          type: array
+          description: 'All credentials that are referenced by flow nodes in this response.
+
+            '
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              owner_id:
+                type: integer
+              org_id:
+                type: integer
+              name:
+                type: string
+              description:
+                type:
+                - 'null'
+              credentials_type:
+                type: string
+              verified_status:
+                type: string
+              managed:
+                type: boolean
+              template_config:
+                type: object
+              vendor:
+                type:
+                - 'null'
+              access_roles:
+                type: array
+              tags:
+                type: array
+              copied_from_id:
+                type:
+                - 'null'
+              created_at:
+                type: string
+                format: date-time
+              updated_at:
+                type: string
+                format: date-time
+            additionalProperties: false
+        shared_data_sets:
+          type: array
+          description: 'Metadata about the parent Nexset any relevant origin flow node is a descendant of. This is only relevant for flow nodes that originate in a shared Nexset instead of a data source.
+
+            '
+        orgs:
+          type: array
+          items:
+            $ref: '#/components/schemas/org'
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/owner'
+        projects:
+          type: array
+          description: 'All projects that any of the flows in this flow response are linked to.
+
+            '
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              owner_id:
+                type: integer
+              org_id:
+                type: integer
+              name:
+                type: string
+              description:
+                type: string
+              access_roles:
+                type: array
+    FlowOriginNode:
+      type: object
+      properties:
+        id:
+          type: integer
+        parent_node_id:
+          type: integer
+          format: nullable
+          description: "Flow id of the parent flow node if this node is not the root node in the flow chain. This will usually be `null` as most flow definitions will originate in the node for `data_source`. \n"
+        origin_node_id:
+          type: integer
+          description: "Flow id of the root node in the flow chain.           \n"
+        data_source_id:
+          type: integer
+          format: nullable
+          description: 'The ID of the data source this flow node is linked to if this is a flow node for a data source.
+
+            '
+        data_set_id:
+          type: integer
+          format: nullable
+          description: "The ID of the Nexset this flow node is linked to if this is flow node for a Nexset. \n"
+        data_sink_id:
+          type: integer
+          format: nullable
+          description: "The ID of the data sink this flow node is linked to if this is a flow node for a data sink.                             \n"
+        shared_origin_node_id:
+          type: integer
+          format: nullable
+        status:
+          type: string
+        project_id:
+          type: integer
+          format: nullable
+        flow_type:
+          type: string
+        ingestion_mode:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        children:
+          type: array
+          description: 'Each element of this array is a flow node that is directly linked to this flow node.
+
+            '
+          items:
+            $ref: '#/components/schemas/FlowChildNode'
+  responses:
+    FlowsManyWithMetric:
+      description: Success
+      content:
+        application/json:
+          schema:
+            allOf:
+            - type: object
+              properties:
+                flows:
+                  $ref: '#/components/schemas/FlowNodes'
+            - $ref: '#/components/schemas/FlowElements'
+            - type: object
+              properties:
+                metrics:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      origin_node_id:
+                        type: integer
+                      records:
+                        type: integer
+                      size:
+                        type: integer
+                      errors:
+                        type: integer
+                      reporting_date:
+                        type: string
+                        format: date-time
+                      run_id:
+                        type: integer
+    genai_recommendation_response:
+      description: Either success or failure
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            properties:
+              status:
+                type: string
+                description: Should be 200 or "ok" for normal response. If GenAI service is not available, you will get another status code.
+                example: ok
+              output:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    description: The response message from GenAI service. Contains Markdown text.  If there is an error, this field will not be present.
+                  statusCode:
+                    type: integer
+                    description: The status code from external GenAI service.
+                    example: 200
+                  errorMessage:
+                    type: string
+                    description: If there is an error, this field will contain the error message, and 'response' field will not be present.
+                    example: GenAI Integration has not been enabled for your Nexla organization. Please contact your organization admin or Nexla support for enabling the integration.
+    FlowsOne:
+      description: Success
+      content:
+        application/json:
+          schema:
+            allOf:
+            - type: object
+              properties:
+                flows:
+                  type: array
+                  minItems: 1
+                  maxItems: 1
+                  items:
+                    $ref: '#/components/schemas/FlowOriginNode'
+            - $ref: '#/components/schemas/FlowElements'
+  parameters:
+    access_roles:
+      name: access_role
+      in: query
+      schema:
+        type: string
+        enum:
+        - collaborator
+        - operator
+        - admin
+        - owner
+        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
+        externalDocs:
+          description: Nexla API access roles
+          url: https://developers.nexla.com/docs/access-modes
+    page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        description: 'Add this parameter to a resource fetch request to fetch a specific page of data.
+
+          '
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
+    per_page:
+      name: per_page
+      in: query
+      schema:
+        type: integer
+        description: 'Add this parameter to a resource fetch request to set the number of items that should be returned in each request.
+
+          '
+  securitySchemes:
+    NexlaSessionToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: "The first step in calling the Nexla API or Nexla CLI is to fetch a Session access token by logging on to your Nexla UI instance. This ensures that your authentication is performed through your organization's preferred Identity Provider.\n\nTo fetch an access token from the Nexla UI, simply go to your Nexla UI instance, and try the route `/token`. For example, if your Nexla UI instance is at `https://dataops.nexla.io`, open `https://dataops.nexla.io/token` in the browser. \n\nThis will automatically route you to a login page, ask you to authenticate using your preferred Identity Provider, and, upon successful authentication, route you to a page where you can copy the Access Token.\n\nUsage format: `Bearer <JWT>`.\n"
+    NexlaApiKeyQuery:
+      type: apiKey
+      name: api_key
+      in: query
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as a query parameter to authenticate this request.
+
+        Usage: `?api_key=<api-key>`
+
+        '
+    NexlaApiKeyHeader:
+      type: http
+      scheme: Basic
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as an authorization header to authenticate this request.
+
+        Usage format: `Basic <api-key>`
+
+        '
+    basicAuth:
+      type: http
+      scheme: basic
+    GoogleSSOToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: 'The token that is used when logging into Nexla via Google SSO.
+
+        '
+x-tagGroups:
+- name: Session
+  tags:
+  - Session Management
+- name: Integrate
+  tags:
+  - Flows
+  - Sources
+  - Destinations (Data Sinks)
+  - Nexsets (Data Sets)
+  - Credentials
+  - Data Maps
+  - Code Containers
+  - Transforms
+  - Projects
+- name: Monitor
+  tags:
+  - Notifications
+  - Metrics
+  - Audit Logs
+  - Quarantine Settings
+- name: Collaborate
+  tags:
+  - Access Control
+- name: Account Management
+  tags:
+  - Organizations
+  - Users
+  - User Settings
+  - Teams
+  - Gen AI Configs
+- name: Real-Time Events
+  tags:
+  - Webhooks
+- name: Rate Limiting
+  tags:
+  - Limits
+- name: Marketplace
+  tags:
+  - Marketplace
+- name: Self Sign-Up
+  tags:
+  - Self Sign-Up
+  - Self Sign-Up Admin
+- name: Async Tasks
+  tags:
+  - Async Tasks

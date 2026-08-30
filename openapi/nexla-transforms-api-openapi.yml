@@ -1,0 +1,1074 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Nexla Rest Transforms API
+  termsOfService: https://nexla.com/terms-of-service/
+  contact:
+    name: Nexla Support
+    url: https://docs.nexla.com
+    email: support@nexla.com
+  license:
+    name: Nexla
+    url: https://nexla.com
+  x-logo:
+    url: https://cdn.nexla.io/ui/assets/brand/v2/nexla-logo-color-portrait.svg
+    backgroundColor: '#ffffff'
+  description: '# Introduction
+
+
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
+
+
+    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
+
+
+    The API references in this document lists all API endpoints and the corresponding payloads.
+
+
+    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
+
+
+    # API Data Format and Versions
+
+
+    The API uses JSON for all data exchanges.
+
+
+    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
+
+    ```
+
+    Accept: application/vnd.nexla.api.v1+json
+
+    ```
+
+
+    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
+
+
+
+    ```
+
+    Accept: application/json
+
+    ```
+
+
+    # Authentication
+
+
+    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
+
+
+    <SecurityDefinitions />'
+servers:
+- url: https://{nexla-api-host}
+  variables:
+    nexla-api-host:
+      default: dataops.nexla.io/nexla-api
+      description: Nexla API URL your Nexla instance
+security:
+- NexlaSessionToken: []
+tags:
+- name: Transforms
+  description: Operations for managing reusable attribute and record transforms.
+paths:
+  /transforms:
+    get:
+      tags:
+      - Transforms
+      operationId: get_reusable_record_transforms
+      summary: Get all Reusable Record Transforms
+      description: 'Reusable record transforms are reusable code blocks that can be used to modify an input record of a Nexset into an output record of that Nexset.
+
+        Use this endpoint to fetch all reusable record transforms.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/Transform'
+        '403':
+          description: Forbidden
+    post:
+      tags:
+      - Transforms
+      operationId: create_reusable_record_transform
+      summary: Create a Reusable Record Transform
+      description: "Create a new reusable record transform. \n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransformMutable'
+      responses:
+        '200':
+          $ref: '#/components/responses/code_containers_one_Transform'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+  /transforms/{transform_id}:
+    get:
+      tags:
+      - Transforms
+      operationId: get_reusable_record_transform
+      summary: Get A Reusable Record Transform
+      description: 'Returns a reusable record transform object if a valid ID is provided.
+
+        '
+      parameters:
+      - name: transform_id
+        in: path
+        description: The unique ID of the transform that needs to be fetched.
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/code_containers_one_Transform'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+    put:
+      tags:
+      - Transforms
+      operationId: update_reusable_record_transform
+      summary: Update Reusable Record Transform
+      description: 'Updates a transform in the authenticated user''s account.
+
+        '
+      parameters:
+      - name: transform_id
+        in: path
+        description: The unique ID of the transform that needs to be updated.
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/accept'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CodeContainerMutable'
+      responses:
+        '200':
+          $ref: '#/components/responses/CodeContainer'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+    delete:
+      tags:
+      - Transforms
+      operationId: delete_reusable_record_transform
+      summary: Delete a Reusable Record Transform
+      description: 'Use this endpoint to delete a reusable record transform.
+
+        '
+      parameters:
+      - name: transform_id
+        in: path
+        description: The unique ID of the transform that needs to be deleted.
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: string
+                    description: Response status code
+                  message:
+                    type: string
+                    description: Response status text
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+  /transforms/{transform_id}/copy:
+    post:
+      tags:
+      - Transforms
+      operationId: copy_transform
+      summary: Copy a Reusable Record Transform
+      description: "Use this endpoint to create a copy of an existing reusable record transform. \n"
+      parameters:
+      - name: transform_id
+        in: path
+        description: The unique ID of the transform to be copied.
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/code_containers_one_Transform'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /transforms/public:
+    get:
+      tags:
+      - Transforms
+      operationId: get_public_reusable_record_transforms
+      summary: Get all Public Reusable Record Transforms
+      description: "The Nexla team regularly adds common reusable record transforms that are made available to all Nexla accounts. \n\nUse this endpoint to fetch all such \"publicly\" available reusable record transforms.\n"
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/Transform'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+  /attribute_transforms:
+    get:
+      tags:
+      - Transforms
+      operationId: get_attribute_transforms
+      summary: Get all Attribute Transforms
+      description: 'Reusable attribute transforms are reusable code blocks that can be used to define the value of an output attribute in a Nexset. These code blocks can be used to enhance the set of transforms available to end users when using the Nexset Designer.
+
+
+        Use this endpoint to fetch all attribute transforms accessible to the authenticated user.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/AttributeTransform'
+        '403':
+          description: Forbidden
+    post:
+      tags:
+      - Transforms
+      operationId: create_attribute_transform
+      summary: Create an Attribute Transform
+      description: 'Create a new attribute transform.
+
+        '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttributeTransformMutable'
+      responses:
+        '200':
+          $ref: '#/components/responses/code_containers_one_AttributeTransform'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+  /attribute_transforms/{attribute_transform_id}:
+    get:
+      tags:
+      - Transforms
+      operationId: get_attribute_transform
+      summary: Get Attribute Transform by ID
+      description: 'Returns an attribute transform object if a valid ID is provided.
+
+        '
+      parameters:
+      - name: attribute_transform_id
+        in: path
+        description: The unique ID of the attribute transform that needs to be fetched.
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/code_containers_one_AttributeTransform'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+    put:
+      tags:
+      - Transforms
+      operationId: update_attribute_transform
+      summary: Update Attribute Transform
+      description: 'Updates an attribute transform in the authenticated user''s account.
+
+        '
+      parameters:
+      - name: attribute_transform_id
+        in: path
+        description: The unique ID of the attribute transform.
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/accept'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttributeTransformMutable'
+      responses:
+        '200':
+          $ref: '#/components/responses/code_containers_one_AttributeTransform'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+    delete:
+      tags:
+      - Transforms
+      operationId: delete_attribute_transform
+      summary: Delete an Attribute Transform
+      description: Deletes an attribute transform from your Nexla account.
+      parameters:
+      - name: attribute_transform_id
+        in: path
+        description: The unique ID of the attribute transform that needs to be deleted.
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+  /attribute_transforms/public:
+    get:
+      tags:
+      - Transforms
+      operationId: get_public_attribute_transforms
+      summary: Get all Public Attribute Transforms
+      description: "The Nexla team regularly adds common reusable attribute transforms that are made available to all Nexla accounts. \n\nUse this endpoint to fetch all such \"publicly\" available reusable attribute transforms.    \n"
+      parameters:
+      - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          $ref: '#/components/responses/AttributeTransform'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+components:
+  schemas:
+    code_containers_ResourceType:
+      type: string
+      enum:
+      - transform
+      - ai_function
+      - source
+      - sink
+      - error
+      - validator
+      description: "The type of resource that this code container is to be used for. \n- `transform`: For user defined code that is used in a Nexset transform.\n- `ai_function`: For user defined code that is used in an AI function. See `ai_function_type` for the scenarios where this is used.\n- `source`: For user defined code in a source.\n- `sink`: For user defined code in a sink.\n- `error`: For user defined code that acts as an error handler.\n- `validator`: For user defined code that acts as a validator.\n"
+    CodeContainer:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        name:
+          type: string
+          example: test
+        resource_type:
+          $ref: '#/components/schemas/code_containers_ResourceType'
+        ai_function_type:
+          type: string
+          enum:
+          - chunker
+          - context_enricher
+          - query_rewriter
+          - reranker
+          description: 'The type of AI function that this code container is used for.
+
+            - `chunker`:  Used to chunk parsed file content into smaller chunks in a Document Ingestion flow.
+
+            - `context_enricher`: Used to enrich the context of a query in a RAG flow.
+
+            - `query_rewriter`: Used to rewrite a query in a RAG flow.
+
+            - `reranker`: Used to rerank a list of results in a RAG flow.
+
+            '
+        reusable:
+          type: boolean
+        public:
+          type: boolean
+        owner:
+          $ref: '#/components/schemas/UserSimplified'
+        org:
+          $ref: '#/components/schemas/OrgSimplified'
+        access_roles:
+          $ref: '#/components/schemas/AccessRoles'
+        data_credentials:
+          allOf:
+          - $ref: '#/components/schemas/DataCredentialBrief'
+          - format: nullable
+        runtime_data_credentials:
+          allOf:
+          - $ref: '#/components/schemas/DataCredentialBrief'
+          - format: nullable
+        description:
+          type: string
+          example: test
+        code_type:
+          $ref: '#/components/schemas/code_containers_CodeType'
+        output_type:
+          $ref: '#/components/schemas/code_containers_OutputType'
+        code_config:
+          type: object
+        custom_config:
+          type: object
+          format: nullable
+        code_encoding:
+          type: string
+          example: none
+        code:
+          type: array
+          items:
+            type: object
+            properties:
+              operation:
+                type: string
+                example: nexla.custom
+              spec:
+                type: object
+                properties:
+                  language:
+                    type: string
+                    example: python
+                  encoding:
+                    type: string
+                    example: base64
+                  script:
+                    type: string
+                    example: ZGVmIHRyYW5zZm9ybShpbnB1dCwgbWV0YWRhdGEsIGFyZ3MpOgogICMgU2FtcGxlIHB5dGhvbiB0cmFuc2Zvcm0gdG8gcGFzcyBhbGwgYXR0cmlidXRlcyB0aHJvdWdoCiAgcmV0dXJuIGlucHV0
+        managed:
+          type: boolean
+        data_sets:
+          type: array
+          items:
+            type: integer
+        copied_from_id:
+          type: integer
+          format: nullable
+        updated_at:
+          type: string
+          format: date-time
+          example: '2023-01-24T03:26:43.000Z'
+        created_at:
+          type: string
+          format: date-time
+          example: '2023-01-24T03:26:43.000Z'
+        tags:
+          type: array
+          items:
+            type: string
+    TransformMutable:
+      type: object
+      required:
+      - name
+      - output_type
+      - reusable
+      - code
+      - code_type
+      - code_encoding
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        output_type:
+          type: string
+          enum:
+          - record
+          description: 'Type of code container. This must be set to `record` to signify that this code container is to be used to convert an input record of a Nexset into an output record for that Nexset.
+
+            '
+        reusable:
+          type: boolean
+          description: "Whether or not this transform can be referenced by multiple Nexsets. This should always be `true` for reusable record transforms.     \n"
+        code_type:
+          type: string
+          enum:
+          - jolt_custom
+          - jolt_standard
+          description: Type of code in the `code` block. Use `jolt_custom` if the code in the code block is a `python`, `python3` or `javascript` transform code block wrapped inside a Jolt operation block.
+        code_encoding:
+          type: string
+          enum:
+          - none
+          description: 'Whether or not the code in the `code` block is encoded. Set this to `none` for reusable record transforms.
+
+            '
+        code:
+          description: "Code to be executed for transforming records. \nIf you wish to execute a Python or Javascript code snippet during transformation, you'll need to `base64`-encode that code snippet and wrap it inside the following Jolt operation object.\n\nFor example, if you want to execute this Python code as a reusable record transform \n```python\ndef transform(input, metadata, args):\n  # Sample python transform to pass all attributes through\nreturn input\n```\nthe corresponding `code` object would be\n```json\n[\n  {\n    \"operation\": \"nexla.custom\",\n    \"spec\": {\n      \"language\": \"python\",\n      \"encoding\": \"base64\",\n      \"script\": \"ZGVmIHRyYW5zZm9ybShpbnB1dCwgbWV0YWRhdGEsIGFyZ3MpOgogICMgU2FtcGxlIHB5dGhvbiB0cmFuc2Zvcm0gdG8gcGFzcyBhbGwgYXR0cmlidXRlcyB0aHJvdWdoCiAgcmV0dXJuIGlucHV0\"\n    }\n  }\n]\n```  \n"
+          oneOf:
+          - type: array
+            items:
+              type: object
+              properties:
+                operation:
+                  type: string
+                  enum:
+                  - nexla.custom
+                  description: 'Jolt operation for this code block. For `python`, `python3` and `javascript`, it must be `nexla.custom`.
+
+                    '
+                spec:
+                  type: object
+                  description: 'Jolt specification for this block. See the Python example above for sample specs.
+
+                    '
+                  properties:
+                    language:
+                      type: string
+                      enum:
+                      - python
+                      - python3
+                      - javascript
+                      description: 'Code language of the encoded script.
+
+                        '
+                    encoding:
+                      type: string
+                      enum:
+                      - base64
+                      description: 'Python or Javascript code snippets must always be Base64-encoded.
+
+                        '
+                    script:
+                      type: string
+                      description: 'Base64-encoded Python or Javascript code snippet that must be executed for transforming records.
+
+                        '
+          - type: array
+            items:
+              type: object
+              additionalProperties:
+                type: object
+                x-additionalPropertiesName: Jolt operation block
+                description: "Standard Jolt operation blocks to be executed for transforming records.                  \n"
+        custom_config:
+          type: object
+          description: "Configuration block useful for converting code into Nexla UI's Nexset Designer Rule blocks. \n\nThis should not be sent in the payload unless the transform is being created using the Nexla UI's Nexset Designer screen.\n"
+        tags:
+          type: array
+          items:
+            type: string
+    AttributeTransform:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        name:
+          type: string
+          example: test
+        resource_type:
+          $ref: '#/components/schemas/ResourceType'
+        reusable:
+          type: boolean
+        owner:
+          $ref: '#/components/schemas/UserSimplified'
+        org:
+          $ref: '#/components/schemas/OrgSimplified'
+        access_roles:
+          $ref: '#/components/schemas/AccessRoles'
+        data_credentials:
+          allOf:
+          - $ref: '#/components/schemas/DataCredentialBrief'
+          - format: nullable
+        runtime_data_credentials:
+          allOf:
+          - $ref: '#/components/schemas/DataCredentialBrief'
+          - format: nullable
+        description:
+          type: string
+          example: test
+        code_type:
+          $ref: '#/components/schemas/attribute_transforms_CodeType'
+        output_type:
+          $ref: '#/components/schemas/attribute_transforms_OutputType'
+        code_config:
+          type: object
+        custom_config:
+          type: object
+          format: nullable
+        code_encoding:
+          type: string
+          example: none
+        code:
+          type: string
+        managed:
+          type: boolean
+        data_sets:
+          type: array
+          items:
+            type: integer
+        copied_from_id:
+          type: integer
+          format: nullable
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            type: string
+    UserSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+        email_verified_at:
+          type: string
+          format: date-time
+    CodeType:
+      type: string
+      enum:
+      - jolt_standard
+      - jolt_custom
+    AttributeTransformMutable:
+      type: object
+      required:
+      - name
+      - output_type
+      - reusable
+      - code
+      - code_type
+      - code_encoding
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        output_type:
+          type: string
+          enum:
+          - attribute
+          description: 'Type of code container. This must be set to `attribute` to signify that this code container is to be used for generating the value of an output attribute.
+
+            '
+        reusable:
+          type: boolean
+          description: "Whether or not this transform can be referenced by multiple Nexsets. This should always be `true` for reusable transforms.     \n"
+        code_type:
+          type: string
+          enum:
+          - python
+          - python3
+          - javascript
+          description: Type of code in the code block.
+        code_encoding:
+          type: string
+          enum:
+          - base64
+          description: 'Whether or not the code in the `code` block is encoded. Set this to `base64` for reusable attribute transforms.
+
+            '
+        code:
+          type: string
+          description: "Code to be executed for transforming records. \nIf you wish to execute a Python or Javascript code snippet during transformation, you'll need to `base64`-encode that code snippet.\n\nFor example, if you want to execute this Python code as a reusable record transform \n```python\ndef transformAttribute(input, metadata, args):\n  return input.get(args[0])\n```\nthe corresponding `code` value would be\n```\nZGVmIHRyYW5zZm9ybUF0dHJpYnV0ZShpbnB1dCwgbWV0YWRhdGEsIGFyZ3MpOgogIHJldHVybiBpbnB1dC5nZXQoYXJnc1swXSk=\n```                  \n"
+        custom_config:
+          type: object
+          description: "Configuration block useful for converting code into Nexla UI's Nexset Designer Rule blocks. \n\nThis should not be sent in the payload unless the transform is being created using the Nexla UI's Nexset Designer screen.\n"
+        tags:
+          type: array
+          items:
+            type: string
+    code_containers_CodeType:
+      type: string
+      enum:
+      - jolt_standard
+      - jolt_custom
+      - python
+      - python3
+      - javascript
+    CodeContainerMutable:
+      type: object
+      required:
+      - name
+      - output_type
+      - reusable
+      - code
+      - code_type
+      - code_encoding
+      properties:
+        name:
+          type: string
+          example: test
+        description:
+          type: string
+          example: test
+        data_credentials_id:
+          type: integer
+          format: nullable
+          description: 'Credential ID for accessing the code repository (e.g., Github). This is for code containers in which the code is saved in a remote repository.
+
+
+            Note that this is not required for script connectors in which the script is hosted in a Nexla Github repository.
+
+            '
+        resource_type:
+          $ref: '#/components/schemas/code_containers_ResourceType'
+        ai_function_type:
+          type: string
+          enum:
+          - chunker
+          - context_enricher
+          - query_rewriter
+          - reranker
+          description: "The type of AI function that this code container is used for.\n- `chunker`:  Used to chunk parsed file content into smaller chunks in a Document Ingestion flow.\n- `context_enricher`: Used to enrich the context of a query in a RAG flow.\n- `query_rewriter`: Used to rewrite a query in a RAG flow.\n- `reranker`: Used to rerank a list of results in a RAG flow.        \n"
+        output_type:
+          $ref: '#/components/schemas/code_containers_OutputType'
+        code_type:
+          $ref: '#/components/schemas/code_containers_CodeType'
+        code_encoding:
+          type: string
+          enum:
+          - none
+          - base64
+          description: "Whether or not the code in the `code` block is encoded. Set this to `none` for reusable record transforms.      \n"
+        code:
+          description: 'Code to be executed in this code container.
+
+
+            Please refer to the endpoints for `transforms`, `attribute_transforms` and `validators` for respective `code` block requirements.
+
+            '
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              type: object
+              properties:
+                operation:
+                  type: string
+                  example: nexla.custom
+                spec:
+                  type: object
+                  properties:
+                    language:
+                      type: string
+                      example: python
+                    encoding:
+                      type: string
+                      example: base64
+                    script:
+                      type: string
+        reusable:
+          type: boolean
+          description: "Whether or not this transform can be referenced by multiple resources. This should always be `true` for reusable record and attribute transforms.       \n"
+        tags:
+          type: array
+          items:
+            type: string
+        custom_config:
+          type: object
+    Transform:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        name:
+          type: string
+          example: test
+        resource_type:
+          $ref: '#/components/schemas/ResourceType'
+        reusable:
+          type: boolean
+        owner:
+          $ref: '#/components/schemas/UserSimplified'
+        org:
+          $ref: '#/components/schemas/OrgSimplified'
+        access_roles:
+          $ref: '#/components/schemas/AccessRoles'
+        data_credentials:
+          allOf:
+          - $ref: '#/components/schemas/DataCredentialBrief'
+          - format: nullable
+        runtime_data_credentials:
+          allOf:
+          - $ref: '#/components/schemas/DataCredentialBrief'
+          - format: nullable
+        description:
+          type: string
+          example: test
+        code_type:
+          $ref: '#/components/schemas/CodeType'
+        output_type:
+          $ref: '#/components/schemas/OutputType'
+        code_config:
+          type: object
+        custom_config:
+          type: object
+          format: nullable
+        code_encoding:
+          type: string
+          example: none
+        code:
+          type: array
+          items:
+            type: object
+        managed:
+          type: boolean
+        data_sets:
+          type: array
+          items:
+            type: integer
+        copied_from_id:
+          type: integer
+          format: nullable
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            type: string
+    ResourceType:
+      type: string
+      enum:
+      - transform
+    attribute_transforms_CodeType:
+      type: string
+      enum:
+      - python
+      - javascript
+    OutputType:
+      type: string
+      enum:
+      - record
+    code_containers_OutputType:
+      type: string
+      enum:
+      - record
+      - attribute
+      - custom
+      description: 'The type of output that this code container produces.
+
+
+        - `record`: Produces a full Nexset record. Used only when the code container is used to modify a Nexset, i.e output_type: `transform`
+
+        - `attribute`: Produces value for an attribute inside a Nexset record. Used only when the code container is used to modify a value inside a Nexset, i.e output_type: `transform`
+
+        - `custom`: Produces custom output. Used as a catch-all output format when a code container is used in any context other than for Nexset modification.
+
+        '
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
+    OrgSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: string
+        client_identifier:
+          type: string
+        org_webhook_host:
+          type: string
+    DataCredentialBrief:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+    attribute_transforms_OutputType:
+      type: string
+      enum:
+      - attribute
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
+  responses:
+    code_containers_one_AttributeTransform:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AttributeTransform'
+    CodeContainer:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CodeContainer'
+    AttributeTransform:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AttributeTransform'
+    Transform:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Transform'
+    code_containers_one_Transform:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Transform'
+  securitySchemes:
+    NexlaSessionToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: "The first step in calling the Nexla API or Nexla CLI is to fetch a Session access token by logging on to your Nexla UI instance. This ensures that your authentication is performed through your organization's preferred Identity Provider.\n\nTo fetch an access token from the Nexla UI, simply go to your Nexla UI instance, and try the route `/token`. For example, if your Nexla UI instance is at `https://dataops.nexla.io`, open `https://dataops.nexla.io/token` in the browser. \n\nThis will automatically route you to a login page, ask you to authenticate using your preferred Identity Provider, and, upon successful authentication, route you to a page where you can copy the Access Token.\n\nUsage format: `Bearer <JWT>`.\n"
+    NexlaApiKeyQuery:
+      type: apiKey
+      name: api_key
+      in: query
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as a query parameter to authenticate this request.
+
+        Usage: `?api_key=<api-key>`
+
+        '
+    NexlaApiKeyHeader:
+      type: http
+      scheme: Basic
+      description: '> **Important:** Never share your API keys. Keep them guarded and secure. If you think the key has been compromised, you can rotate the API key by calling relevant API Key management endpoints.
+
+
+        The platform generates a unique API key for this resource. Add the API key as an authorization header to authenticate this request.
+
+        Usage format: `Basic <api-key>`
+
+        '
+    basicAuth:
+      type: http
+      scheme: basic
+    GoogleSSOToken:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+      description: 'The token that is used when logging into Nexla via Google SSO.
+
+        '
+x-tagGroups:
+- name: Session
+  tags:
+  - Session Management
+- name: Integrate
+  tags:
+  - Flows
+  - Sources
+  - Destinations (Data Sinks)
+  - Nexsets (Data Sets)
+  - Credentials
+  - Data Maps
+  - Code Containers
+  - Transforms
+  - Projects
+- name: Monitor
+  tags:
+  - Notifications
+  - Metrics
+  - Audit Logs
+  - Quarantine Settings
+- name: Collaborate
+  tags:
+  - Access Control
+- name: Account Management
+  tags:
+  - Organizations
+  - Users
+  - User Settings
+  - Teams
+  - Gen AI Configs
+- name: Real-Time Events
+  tags:
+  - Webhooks
+- name: Rate Limiting
+  tags:
+  - Limits
+- name: Marketplace
+  tags:
+  - Marketplace
+- name: Self Sign-Up
+  tags:
+  - Self Sign-Up
+  - Self Sign-Up Admin
+- name: Async Tasks
+  tags:
+  - Async Tasks

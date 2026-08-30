@@ -1,0 +1,490 @@
+openapi: 3.2.0
+info:
+  title: Nexla GenAI (RAG + MCPaaS) Private Query API
+  description: Combined Nexla GenAI RAG API Service and MCPaaS
+  version: v0.2.3.3-combined
+tags:
+- name: Private Query
+paths:
+  /private_query:
+    post:
+      summary: Private Query
+      description: Handle private query requests.
+      operationId: private_query_private_query_post
+      parameters:
+      - name: token_type
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/TokenType'
+          default: service_key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrivateQueryRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Private Query
+components:
+  schemas:
+    RerankingConfig:
+      properties:
+        model:
+          type: string
+          title: Model
+          description: The identifier of the reranking model to use
+        provider:
+          type: string
+          title: Provider
+          description: The provider of the reranking model (e.g., Azure, OpenAI)
+        credential_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Credential Id
+          description: An optional credential ID for accessing the reranking model
+        credential_parameters:
+          anyOf:
+          - $ref: '#/components/schemas/LLMCredentialParameters'
+          - type: 'null'
+          description: Optional credential parameters for accessing the reranking model
+      type: object
+      required:
+      - model
+      - provider
+      title: RerankingConfig
+    LLMConfig:
+      properties:
+        model:
+          type: string
+          title: Model
+          description: The identifier of the AI model to use for processing the query
+        provider:
+          type: string
+          title: Provider
+          description: The provider of the AI model (e.g., Azure, OpenAI)
+        credential_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Credential Id
+          description: An optional credential ID for accessing the LLM
+        credential_parameters:
+          anyOf:
+          - $ref: '#/components/schemas/LLMCredentialParameters'
+          - type: 'null'
+          description: Optional credential parameters for accessing the LLM
+        reasoning_effort:
+          anyOf:
+          - type: string
+            enum:
+            - none
+            - minimal
+            - low
+            - medium
+            - high
+            - xhigh
+          - type: 'null'
+          title: Reasoning Effort
+          description: Reasoning effort for OpenAI reasoning models (gpt-5*). Controls how much the model thinks. Defaults to 'low' when unset.
+        reasoning_summary:
+          anyOf:
+          - type: string
+            enum:
+            - concise
+            - detailed
+            - auto
+          - type: 'null'
+          title: Reasoning Summary
+          description: Reasoning summary verbosity for OpenAI reasoning models. Controls how much of the chain-of-thought is streamed back as thinking_delta events. 'detailed' produces visibly streaming multi-paragraph summaries. Defaults to 'concise' when unset.
+      type: object
+      required:
+      - model
+      - provider
+      title: LLMConfig
+    EmbeddingConfig:
+      properties:
+        model:
+          type: string
+          title: Model
+          description: The identifier of the embedding model to use for vector retrieval
+        provider:
+          type: string
+          title: Provider
+          description: The provider of the embedding model (e.g., Azure, OpenAI)
+        credential_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Credential Id
+          description: An optional credential ID for accessing the embedding model
+        credential_parameters:
+          anyOf:
+          - $ref: '#/components/schemas/LLMCredentialParameters'
+          - type: 'null'
+          description: Optional credential parameters for accessing the embedding model
+      type: object
+      required:
+      - model
+      - provider
+      title: EmbeddingConfig
+    FilterCondition:
+      properties:
+        key:
+          type: string
+          title: Key
+          description: The metadata field name to filter on (e.g., 'access_role', 'tenant_id', 'document_id').
+        operator:
+          $ref: '#/components/schemas/FilterOperator'
+          description: The comparison operator to apply.
+        value:
+          title: Value
+          description: 'The value(s) to compare against. Type depends on operator: single value for EQ/NEQ/GT/GTE/LT/LTE/CONTAINS/NOT_CONTAINS, list for IN/NOT_IN, two-element list [min, max] for BETWEEN, ignored for EXISTS/NOT_EXISTS.'
+      additionalProperties: false
+      type: object
+      required:
+      - key
+      - operator
+      title: FilterCondition
+      description: A single filter predicate on a metadata key.
+    NexsetFilters:
+      properties:
+        acl_filter:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/FilterCondition'
+            type: array
+          - type: 'null'
+          title: Acl Filter
+          description: Access control filters. Restrict results based on authorization rules. Multiple conditions are combined with AND logic.
+        pre_filter:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/FilterCondition'
+            type: array
+          - type: 'null'
+          title: Pre Filter
+          description: Pre-retrieval metadata filters. Narrow the search space before vector/semantic retrieval. Multiple conditions are combined with AND logic.
+        strict_metadata_filter:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Strict Metadata Filter
+          description: When True, agent-supplied metadata_filter keys not in the allowed list cause the entire agent filter to be rejected. When None, falls back to the V2_PINECONE_STRICT_METADATA_FILTER env var.
+      additionalProperties: false
+      type: object
+      title: NexsetFilters
+      description: Filters applied to a specific nexset during retrieval.
+    UserContext:
+      properties:
+        access_role:
+          items:
+            type: string
+          type: array
+          title: Access Role
+          description: The access roles for the requesting user.
+        user_id:
+          type: string
+          title: User Id
+          description: The unique identifier for the requesting user.
+        session_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Session Id
+          description: Session ID associated with user session. Useful for storing conversation history.
+        access_rules:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Access Rules
+          description: Policy-level gate. Keys and valid values configured at registration.
+        access_scope:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Access Scope
+          description: Data ownership scope. Values are always arrays (IN semantics).
+        filters:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Filters
+          description: Page/session context filters. String = EQ, array = IN.
+      additionalProperties: false
+      type: object
+      required:
+      - user_id
+      title: UserContext
+    PromptOverrides:
+      properties:
+        system_prompt:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: System Prompt
+          description: Optional system prompt to override the default behavior.
+        prompt_hints:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Prompt Hints
+          description: Optional hints to guide the prompt generation.
+      type: object
+      title: PromptOverrides
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    LLMCredentialParameters:
+      properties:
+        model:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Model
+          description: The model to use for the credential
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+          description: The provider to use for the credential
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: The endpoint URL for the AI provider
+        api_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Api Key
+          description: The API key for the AI provider
+        api_version:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Api Version
+          description: The API version to use with the AI provider
+      type: object
+      title: LLMCredentialParameters
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    RetrievalParams:
+      properties:
+        topk:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Topk
+          description: Number of top-k results to retrieve
+        rerank:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Rerank
+          description: Optional reranking object
+      type: object
+      title: RetrievalParams
+    NexsetSpec:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: The unique identifier for the nexset.
+        filters:
+          anyOf:
+          - $ref: '#/components/schemas/NexsetFilters'
+          - type: 'null'
+          description: Optional per-nexset filters for ACL and pre-retrieval filtering.
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      title: NexsetSpec
+      description: Specification for a nexset to include in a query, with optional per-nexset filters.
+    PrivateQueryRequest:
+      properties:
+        user_prompt:
+          type: string
+          title: User Prompt
+          description: The initial query provided by the user. This query undergoes processing to optimize its submission.
+        llm_config:
+          $ref: '#/components/schemas/LLMConfig'
+          description: LLM configuration details, including model and provider information
+        embedding_config:
+          anyOf:
+          - $ref: '#/components/schemas/EmbeddingConfig'
+          - type: 'null'
+          description: Optional embedding model configuration for vector retrieval
+        reranking_config:
+          anyOf:
+          - $ref: '#/components/schemas/RerankingConfig'
+          - type: 'null'
+          description: Optional reranking model configuration
+        streaming:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Streaming
+          description: 'A flag to indicate whether the response should be streamed. Default: true'
+          default: true
+        stream_format:
+          anyOf:
+          - $ref: '#/components/schemas/StreamFormat'
+          - type: 'null'
+          description: Streaming response format. 'sse' for Anthropic-style Server-Sent Events, 'text' or None for legacy text/plain chunked streaming. Only applicable when streaming=True.
+        nexsets:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/NexsetSpec'
+            type: array
+          - type: 'null'
+          title: Nexsets
+          description: List of nexsets to query. Each entry can be a simple {id} object for backward compatibility, or include per-nexset filters.
+        retrieval_params:
+          anyOf:
+          - $ref: '#/components/schemas/RetrievalParams'
+          - type: 'null'
+          description: Optional retrieval parameters
+        llm_model_params:
+          anyOf:
+          - $ref: '#/components/schemas/LLMModelParams'
+          - type: 'null'
+          description: Optional LLM model parameters
+        user_context:
+          anyOf:
+          - $ref: '#/components/schemas/UserContext'
+          - type: 'null'
+          description: Optional user context for authorization or conversation history
+        prompt_overrides:
+          anyOf:
+          - $ref: '#/components/schemas/PromptOverrides'
+          - type: 'null'
+          description: 'Optional overrides for the system prompt and prompt hints. Format: {"system_prompt": "", "prompt_hints": ""}. Default is None.'
+        disable_conversation_history:
+          type: boolean
+          title: Disable Conversation History
+          description: Flag to disable saving user conversation history. If set to True, the conversation will be not be saved. Default is False.
+          default: false
+        debug:
+          type: boolean
+          title: Debug
+          description: Flag to send intermediate logs to the frontend.
+          default: false
+        pvt_query_flag:
+          type: boolean
+          title: Pvt Query Flag
+          description: Flag to indicate if its a private query request.
+          default: true
+      additionalProperties: false
+      type: object
+      required:
+      - user_prompt
+      - llm_config
+      title: PrivateQueryRequest
+    TokenType:
+      type: string
+      enum:
+      - bearer
+      - service_key
+      title: TokenType
+    FilterOperator:
+      type: string
+      enum:
+      - EQ
+      - NEQ
+      - IN
+      - NOT_IN
+      - GT
+      - GTE
+      - LT
+      - LTE
+      - CONTAINS
+      - NOT_CONTAINS
+      - EXISTS
+      - NOT_EXISTS
+      - BETWEEN
+      title: FilterOperator
+      description: Supported operators for nexset metadata filtering.
+    LLMModelParams:
+      properties:
+        temperature:
+          anyOf:
+          - type: number
+            maximum: 1.0
+            minimum: 0.0
+          - type: 'null'
+          title: Temperature
+          description: Temperature parameter for the LLM
+        top_p:
+          anyOf:
+          - type: number
+            maximum: 1.0
+            minimum: 0.0
+          - type: 'null'
+          title: Top P
+          description: Top-p parameter for the LLM
+        budget_tokens:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Budget Tokens
+          description: Token budget for extended thinking (Anthropic). Defaults to 4096 for Anthropic models.
+      type: object
+      title: LLMModelParams
+    StreamFormat:
+      type: string
+      enum:
+      - text
+      - sse
+      title: StreamFormat
+      description: Supported streaming response formats.
