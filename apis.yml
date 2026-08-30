@@ -45,6 +45,22 @@ tags:
 - Retrieval Augmented Generation
 - MCP
 - Agent Tools
+- Data Pipeline
+- Connectors
+tags_raw:
+- Company
+- Data Integration
+- Data Engineering
+- ETL
+- ELT
+- Data Products
+- Streaming
+- Change Data Capture
+- Data Governance
+- Artificial Intelligence
+- Retrieval Augmented Generation
+- MCP
+- Agent Tools
 - Data Pipelines
 - Connectors
 maintainers:
@@ -486,6 +502,8 @@ apis:
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
+  - Datasets
+  tags_raw:
   - Data Sets
   properties:
   - type: OpenAPI
@@ -639,6 +657,8 @@ apis:
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
+  - Gateway
+  tags_raw:
   - gateway
   properties:
   - type: OpenAPI
@@ -909,6 +929,8 @@ apis:
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
+  - Health
+  tags_raw:
   - health
   properties:
   - type: OpenAPI
@@ -1179,6 +1201,8 @@ apis:
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
+  - MCP
+  tags_raw:
   - Mcp
   properties:
   - type: OpenAPI
@@ -1391,6 +1415,8 @@ apis:
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
+  - Notification
+  tags_raw:
   - Notifications
   properties:
   - type: OpenAPI
@@ -1451,6 +1477,8 @@ apis:
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
+  - Organization
+  tags_raw:
   - Organizations
   properties:
   - type: OpenAPI
@@ -1511,6 +1539,8 @@ apis:
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
+  - Project
+  tags_raw:
   - Projects
   properties:
   - type: OpenAPI
@@ -1601,6 +1631,8 @@ apis:
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
+  - Receipts
+  tags_raw:
   - receipts
   properties:
   - type: OpenAPI
@@ -1753,6 +1785,8 @@ apis:
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
+  - Sessions
+  tags_raw:
   - sessions
   properties:
   - type: OpenAPI
@@ -1843,6 +1877,8 @@ apis:
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
+  - Team
+  tags_raw:
   - Teams
   properties:
   - type: OpenAPI
@@ -1873,6 +1909,8 @@ apis:
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
+  - Tools
+  tags_raw:
   - tools
   properties:
   - type: OpenAPI
@@ -1903,6 +1941,8 @@ apis:
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
+  - ToolSets
+  tags_raw:
   - toolsets
   properties:
   - type: OpenAPI
@@ -1963,6 +2003,8 @@ apis:
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
+  - Usage
+  tags_raw:
   - usage
   properties:
   - type: OpenAPI
@@ -2023,6 +2065,8 @@ apis:
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
+  - User
+  tags_raw:
   - Users
   properties:
   - type: OpenAPI
@@ -2173,6 +2217,8 @@ apis:
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI
