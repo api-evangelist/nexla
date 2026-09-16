@@ -1,17 +1,16 @@
 aid: nexla
 name: Nexla
-description: >-
-  Nexla is an enterprise data integration and AI-data platform, founded in 2016 and headquartered in
-  San Mateo, California. Its core abstraction is the Nexset — a logical, schema-aware, bi-directionally
+description: 'Nexla is an enterprise data integration and AI-data platform, founded in 2016 and headquartered
+  in San Mateo, California. Its core abstraction is the Nexset — a logical, schema-aware, bi-directionally
   usable data product that Nexla generates automatically from any connected system. The platform spans
   ETL/ELT, streaming and CDC, API ingestion and delivery, RAG pipelines and, since 2026, an MCP Tools
-  layer (MCP Studio, MCP Gateway, Agentic Probe) that turns governed Nexsets into task-scoped MCP
-  servers for AI agents. Nexla exposes two public machine-readable contracts: a 274-operation OpenAPI
-  3.1 REST API covering flows, sources, Nexsets, sinks, credentials, transforms, projects, teams,
-  organizations, access control, notifications, audit logs and metrics; and a 131-operation OpenAPI 3.1
-  GenAI (RAG + MCPaaS) API covering agentic RAG, nexset filters, skills, tools, toolsets, MCP gateway
-  and audit receipts. First-party clients ship as a Python SDK, a TypeScript/JS SDK, a React embedding
-  SDK and a Python CLI. Nexla is SOC 2 Type II, HIPAA, GDPR and CCPA compliant.
+  layer (MCP Studio, MCP Gateway, Agentic Probe) that turns governed Nexsets into task-scoped MCP servers
+  for AI agents. Nexla exposes two public machine-readable contracts: a 274-operation OpenAPI 3.1 REST
+  API covering flows, sources, Nexsets, sinks, credentials, transforms, projects, teams, organizations,
+  access control, notifications, audit logs and metrics; and a 131-operation OpenAPI 3.1 GenAI (RAG +
+  MCPaaS) API covering agentic RAG, nexset filters, skills, tools, toolsets, MCP gateway and audit receipts.
+  First-party clients ship as a Python SDK, a TypeScript/JS SDK, a React embedding SDK and a Python CLI.
+  Nexla is SOC 2 Type II, HIPAA, GDPR and CCPA compliant.'
 deliveryModel:
   model: saas
   open_source: false
@@ -45,7 +44,7 @@ x-type: company
 x-source: harvest:secondary-market
 specificationVersion: '0.20'
 created: '2026-08-26'
-modified: '2026-08-26'
+modified: '2026-09-16'
 tags:
 - Company
 - Data Integration
@@ -545,10 +544,9 @@ apis:
     url: mcp/nexla-tool-crosswalk.yml
 - aid: nexla:nexla-destinations-data-sinks-api
   name: Nexla Destinations (Data Sinks) API
-  description: >-
-    Operations for managing data sinks. Note that Destinations on the Nexla UI are aliased as `data_sinks`
-    in the Nexla API reference model, so all endpoints and responses use the term `data_sinks` instead
-    of `destinations`.
+  description: Operations for managing data sinks. Note that Destinations on the Nexla UI are aliased
+    as `data_sinks` in the Nexla API reference model, so all endpoints and responses use the term `data_sinks`
+    instead of `destinations`.
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
@@ -1363,7 +1361,7 @@ apis:
   - type: ToolCrosswalk
     url: mcp/nexla-tool-crosswalk.yml
 - aid: nexla:nexla-nexla-admin-api-api
-  name: Nexla Nexla Admin API
+  name: Nexla Admin API
   description: The Nexla Admin Api API from Nexla — 1 operation(s) for nexla admin api.
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
@@ -1394,9 +1392,9 @@ apis:
     url: mcp/nexla-tool-crosswalk.yml
 - aid: nexla:nexla-nexsets-data-sets-api
   name: Nexla Nexsets (Data Sets) API
-  description: >-
-    Operations for managing Nexsets. Note that Nexsets on the Nexla UI are aliased as `data_sets` in the
-    Nexla API reference model, so all endpoints and responses use the term `data_sets` instead of `nexsets`.
+  description: Operations for managing Nexsets. Note that Nexsets on the Nexla UI are aliased as `data_sets`
+    in the Nexla API reference model, so all endpoints and responses use the term `data_sets` instead
+    of `nexsets`.
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
