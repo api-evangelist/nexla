@@ -510,43 +510,12 @@ apis:
     url: https://docs.nexla.com/dev-guides/mcp-tools/tools-api
   - type: ToolCrosswalk
     url: mcp/nexla-tool-crosswalk.yml
-- aid: nexla:nexla-data-sets-api
-  name: Nexla Data Sets API
-  description: The Data Sets API from Nexla — 1 operation(s) for data sets.
-  humanURL: https://docs.nexla.com/reference/nexla-api
-  baseURL: https://dataops.nexla.io/nexla-api
-  tags:
-  - Datasets
-  tags_raw:
-  - Data Sets
-  properties:
-  - type: OpenAPI
-    url: openapi/nexla-data-sets-api-openapi.yml
-  - type: Documentation
-    url: https://docs.nexla.com/dev-guides/nexla-api
-  - type: APIReference
-    url: https://docs.nexla.com/reference/nexla-api
-  - type: Authentication
-    url: authentication/nexla-authentication.yml
-  - type: Conventions
-    url: conventions/nexla-conventions.yml
-  - type: ErrorCatalog
-    url: errors/nexla-problem-types.yml
-  - type: DataModel
-    url: data-model/nexla-data-model.yml
-  - type: Webhooks
-    url: asyncapi/nexla-webhooks.yml
-  - type: Documentation
-    url: https://docs.nexla.com/genai-rag/
-  - type: APIReference
-    url: https://docs.nexla.com/dev-guides/mcp-tools/tools-api
-  - type: ToolCrosswalk
-    url: mcp/nexla-tool-crosswalk.yml
 - aid: nexla:nexla-destinations-data-sinks-api
   name: Nexla Destinations (Data Sinks) API
-  description: Operations for managing data sinks. Note that Destinations on the Nexla UI are aliased
-    as `data_sinks` in the Nexla API reference model, so all endpoints and responses use the term `data_sinks`
-    instead of `destinations`.
+  description: >-
+    Operations for managing data sinks. Note that Destinations on the Nexla UI are aliased as `data_sinks`
+    in the Nexla API reference model, so all endpoints and responses use the term `data_sinks` instead
+    of `destinations`.
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
@@ -1392,9 +1361,9 @@ apis:
     url: mcp/nexla-tool-crosswalk.yml
 - aid: nexla:nexla-nexsets-data-sets-api
   name: Nexla Nexsets (Data Sets) API
-  description: Operations for managing Nexsets. Note that Nexsets on the Nexla UI are aliased as `data_sets`
-    in the Nexla API reference model, so all endpoints and responses use the term `data_sets` instead
-    of `nexsets`.
+  description: >-
+    Operations for managing Nexsets. Note that Nexsets on the Nexla UI are aliased as `data_sets` in the
+    Nexla API reference model, so all endpoints and responses use the term `data_sets` instead of `nexsets`.
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
@@ -1948,38 +1917,6 @@ apis:
     url: https://docs.nexla.com/dev-guides/mcp-tools/tools-api
   - type: ToolCrosswalk
     url: mcp/nexla-tool-crosswalk.yml
-- aid: nexla:nexla-toolsets-api
-  name: Nexla Toolsets API
-  description: The toolsets API from Nexla — 19 operation(s) for toolsets.
-  humanURL: https://docs.nexla.com/reference/nexla-api
-  baseURL: https://dataops.nexla.io/nexla-api
-  tags:
-  - ToolSets
-  tags_raw:
-  - toolsets
-  properties:
-  - type: OpenAPI
-    url: openapi/nexla-toolsets-api-openapi.yml
-  - type: Documentation
-    url: https://docs.nexla.com/dev-guides/nexla-api
-  - type: APIReference
-    url: https://docs.nexla.com/reference/nexla-api
-  - type: Authentication
-    url: authentication/nexla-authentication.yml
-  - type: Conventions
-    url: conventions/nexla-conventions.yml
-  - type: ErrorCatalog
-    url: errors/nexla-problem-types.yml
-  - type: DataModel
-    url: data-model/nexla-data-model.yml
-  - type: Webhooks
-    url: asyncapi/nexla-webhooks.yml
-  - type: Documentation
-    url: https://docs.nexla.com/genai-rag/
-  - type: APIReference
-    url: https://docs.nexla.com/dev-guides/mcp-tools/tools-api
-  - type: ToolCrosswalk
-    url: mcp/nexla-tool-crosswalk.yml
 - aid: nexla:nexla-transforms-api
   name: Nexla Transforms API
   description: Operations for managing reusable attribute and record transforms.
@@ -2266,6 +2203,66 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/nexla-well-known-api-openapi.yml
+  - type: Documentation
+    url: https://docs.nexla.com/dev-guides/nexla-api
+  - type: APIReference
+    url: https://docs.nexla.com/reference/nexla-api
+  - type: Authentication
+    url: authentication/nexla-authentication.yml
+  - type: Conventions
+    url: conventions/nexla-conventions.yml
+  - type: ErrorCatalog
+    url: errors/nexla-problem-types.yml
+  - type: DataModel
+    url: data-model/nexla-data-model.yml
+  - type: Webhooks
+    url: asyncapi/nexla-webhooks.yml
+  - type: Documentation
+    url: https://docs.nexla.com/genai-rag/
+  - type: APIReference
+    url: https://docs.nexla.com/dev-guides/mcp-tools/tools-api
+  - type: ToolCrosswalk
+    url: mcp/nexla-tool-crosswalk.yml
+- aid: nexla:nexla-datasets-api
+  name: Nexla Datasets API
+  description: The Datasets API from Nexla — 1 operation(s) for datasets.
+  humanURL: https://docs.nexla.com/reference/nexla-api
+  baseURL: https://dataops.nexla.io/nexla-api
+  tags:
+  - Datasets
+  properties:
+  - type: OpenAPI
+    url: openapi/nexla-datasets-api-openapi.yml
+  - type: Documentation
+    url: https://docs.nexla.com/dev-guides/nexla-api
+  - type: APIReference
+    url: https://docs.nexla.com/reference/nexla-api
+  - type: Authentication
+    url: authentication/nexla-authentication.yml
+  - type: Conventions
+    url: conventions/nexla-conventions.yml
+  - type: ErrorCatalog
+    url: errors/nexla-problem-types.yml
+  - type: DataModel
+    url: data-model/nexla-data-model.yml
+  - type: Webhooks
+    url: asyncapi/nexla-webhooks.yml
+  - type: Documentation
+    url: https://docs.nexla.com/genai-rag/
+  - type: APIReference
+    url: https://docs.nexla.com/dev-guides/mcp-tools/tools-api
+  - type: ToolCrosswalk
+    url: mcp/nexla-tool-crosswalk.yml
+- aid: nexla:nexla-tool-sets-api
+  name: Nexla Tool Sets API
+  description: The Tool Sets API from Nexla — 19 operation(s) for tool sets.
+  humanURL: https://docs.nexla.com/reference/nexla-api
+  baseURL: https://dataops.nexla.io/nexla-api
+  tags:
+  - Tool Sets
+  properties:
+  - type: OpenAPI
+    url: openapi/nexla-tool-sets-api-openapi.yml
   - type: Documentation
     url: https://docs.nexla.com/dev-guides/nexla-api
   - type: APIReference
