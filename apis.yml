@@ -56,7 +56,7 @@ tags:
 - Change Data Capture
 - Data Governance
 - Artificial Intelligence
-- Retrieval Augmented Generation
+- RAG
 - MCP
 - Agent Tools
 - Data Pipeline
@@ -609,6 +609,8 @@ apis:
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
+  - Flow
+  tags_raw:
   - Flows
   properties:
   - type: OpenAPI
@@ -639,7 +641,7 @@ apis:
   humanURL: https://docs.nexla.com/reference/nexla-api
   baseURL: https://dataops.nexla.io/nexla-api
   tags:
-  - Gateway
+  - Gateways
   tags_raw:
   - gateway
   properties:
