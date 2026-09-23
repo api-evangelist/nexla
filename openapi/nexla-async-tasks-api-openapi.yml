@@ -16,51 +16,7 @@ info:
   description: '# Introduction
 
 
-    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
-
-
-    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
-
-
-    The API references in this document lists all API endpoints and the corresponding payloads.
-
-
-    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
-
-
-    # API Data Format and Versions
-
-
-    The API uses JSON for all data exchanges.
-
-
-    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
-
-    ```
-
-    Accept: application/vnd.nexla.api.v1+json
-
-    ```
-
-
-    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
-
-
-
-    ```
-
-    Accept: application/json
-
-    ```
-
-
-    # Authentication
-
-
-    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
-
-
-    <SecurityDefinitions />'
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case.'
 servers:
 - url: https://{nexla-api-host}
   variables:
@@ -78,7 +34,7 @@ paths:
       tags:
       - Async Tasks
       operationId: get_async_tasks
-      summary: Get async operations list for current user.
+      summary: Get async operations list for current user
       description: Get a list of async operations for current user. Returns type, arguments, status, results etc.
       parameters:
       - $ref: '#/components/parameters/accept'
@@ -91,7 +47,7 @@ paths:
       tags:
       - Async Tasks
       operationId: create_async_task
-      summary: Create an async operation.
+      summary: Create an async operation
       description: Create an async operation. Returns the task id and other related data. Checks if the user has permission to create the task with all entities, and other preconditions.
       requestBody:
         content:
@@ -112,7 +68,7 @@ paths:
       operationId: get_async_tasks_of_type
       tags:
       - Async Tasks
-      summary: Get async operations list for current user of a specific type.
+      summary: Get async operations list for current user of a specific type
       description: Get a list of async operations for current user of a specific type. Returns type, arguments, status, results etc.
       parameters:
       - $ref: '#/components/parameters/accept'
@@ -341,15 +297,26 @@ paths:
           description: Not Found
 components:
   schemas:
-    async_task_statuses:
+    async_task_types:
       type: string
       enum:
-      - pending
-      - running
-      - completed
-      - failed
-      - cancelled
-      description: The status of the task.
+      - BulkDeleteNotifications
+      - BulkMarkAsReadNotifications
+      - BulkPauseFlows
+      - CallProbe
+      - ChownUserResources
+      - DeactivateUser
+      - GetAuditLogs
+    owner:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+          format: email
     org:
       type: object
       properties:
@@ -363,6 +330,28 @@ components:
           type: 'null'
         client_identifier:
           type: 'null'
+    AsyncTaskPayload:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          description: The type of the task.
+          enum:
+          - BulkDeleteNotifications
+          - BulkMarkAsReadNotifications
+          - BulkPauseFlows
+          - CallProbe
+          - ChownUserResources
+          - DeactivateUser
+          - GetAuditLogs
+        priority:
+          type: integer
+          description: The priority of the task. At the moment doesn't have any effect.
+        arguments:
+          type: object
+          additionalProperties: true
+          description: The arguments for the task. Use `GET /async_tasks/explain_arguments/{task_type}` to get the list of possible arguments for task.
     AsyncTask:
       description: Success
       type: object
@@ -402,60 +391,15 @@ components:
           $ref: '#/components/schemas/owner'
         org:
           $ref: '#/components/schemas/org'
-    owner:
-      type: object
-      properties:
-        id:
-          type: integer
-        full_name:
-          type: string
-        email:
-          type: string
-          format: email
-    async_task_types:
+    async_task_statuses:
       type: string
       enum:
-      - BulkDeleteNotifications
-      - BulkMarkAsReadNotifications
-      - BulkPauseFlows
-      - CallProbe
-      - ChownUserResources
-      - DeactivateUser
-      - GetAuditLogs
-    AsyncTaskPayload:
-      type: object
-      additionalProperties: false
-      properties:
-        type:
-          type: string
-          description: The type of the task.
-          enum:
-          - BulkDeleteNotifications
-          - BulkMarkAsReadNotifications
-          - BulkPauseFlows
-          - CallProbe
-          - ChownUserResources
-          - DeactivateUser
-          - GetAuditLogs
-        priority:
-          type: integer
-          description: The priority of the task. At the moment doesn't have any effect.
-        arguments:
-          type: object
-          additionalProperties: true
-          description: The arguments for the task. Use `GET /async_tasks/explain_arguments/{task_type}` to get the list of possible arguments for task.
-  parameters:
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
-
-          '
+      - pending
+      - running
+      - completed
+      - failed
+      - cancelled
+      description: The status of the task.
   responses:
     async_task_one:
       description: Success
@@ -471,6 +415,18 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/AsyncTask'
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
   securitySchemes:
     NexlaSessionToken:
       type: http

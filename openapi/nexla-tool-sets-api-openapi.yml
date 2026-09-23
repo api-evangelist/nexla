@@ -4,12 +4,12 @@ info:
   description: Combined Nexla GenAI RAG API Service and MCPaaS
   version: v0.2.3.3-combined
 tags:
-- name: toolsets
+- name: Tool Sets
 paths:
   /v1/toolsets:from_nexsets:
     post:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Create Toolset From Nexsets
       description: Create a tool set by selecting Nexsets (auto-generates tools + MCP export).
       operationId: create_toolset_from_nexsets_v1_toolsets_from_nexsets_post
@@ -110,7 +110,7 @@ paths:
   /v1/toolsets:
     post:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Create Toolset
       description: Create a new tool set with optional initial tools.
       operationId: create_toolset_v1_toolsets_post
@@ -210,7 +210,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     get:
       tags:
-      - toolsets
+      - Tool Sets
       summary: List Toolsets
       description: 'List all tool sets with tools and export details.
 
@@ -406,7 +406,7 @@ paths:
   /v1/toolsets/{tool_set_id}:
     get:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Get Toolset
       description: 'Get a tool set with its tools and exports.
 
@@ -509,7 +509,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     patch:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Update Toolset
       description: 'Update tool set metadata.
 
@@ -618,7 +618,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     delete:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Delete Toolset
       description: 'Delete a tool set.
 
@@ -722,7 +722,7 @@ paths:
   /v1/toolsets/{tool_set_id}/tools:
     post:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Add Tools To Toolset
       description: Add tools to a tool set.
       operationId: add_tools_to_toolset_v1_toolsets__tool_set_id__tools_post
@@ -828,7 +828,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     delete:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Remove Tools From Toolset
       description: Remove tools from a tool set.
       operationId: remove_tools_from_toolset_v1_toolsets__tool_set_id__tools_delete
@@ -934,7 +934,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     get:
       tags:
-      - toolsets
+      - Tool Sets
       summary: List Toolset Tools
       description: List tools in a tool set.
       operationId: list_toolset_tools_v1_toolsets__tool_set_id__tools_get
@@ -1037,7 +1037,7 @@ paths:
   /v1/toolsets/{tool_set_id}:activate:
     post:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Activate Toolset
       description: 'Activate a tool set (init -> active).
 
@@ -1141,7 +1141,7 @@ paths:
   /v1/toolsets/{tool_set_id}:activate_all:
     post:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Activate Toolset And Exports
       description: 'Activate a tool set and all its exports in one call.
 
@@ -1247,7 +1247,7 @@ paths:
   /v1/toolsets/{tool_set_id}:pause:
     post:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Pause Toolset
       description: 'Pause a tool set (active -> paused).
 
@@ -1351,7 +1351,7 @@ paths:
   /v1/toolsets/{tool_set_id}:clone:
     post:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Clone Toolset
       description: 'Clone an existing tool set.
 
@@ -1463,7 +1463,7 @@ paths:
   /v1/toolsets/{tool_set_id}:sync:
     post:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Sync Toolset
       description: Re-sync all tools in a toolset by re-fetching nexset metadata.
       operationId: sync_toolset_v1_toolsets__tool_set_id__sync_post
@@ -1564,7 +1564,7 @@ paths:
   /v1/toolsets/{tool_set_id}/changelogs:
     get:
       tags:
-      - toolsets
+      - Tool Sets
       summary: List Toolset Changelogs
       description: 'List changelogs for a tool set.
 
@@ -1682,7 +1682,7 @@ paths:
   /v1/exports:
     get:
       tags:
-      - toolsets
+      - Tool Sets
       summary: List All Exports
       description: List exports across tool sets with optional filters and search.
       operationId: list_all_exports_v1_exports_get
@@ -1833,7 +1833,7 @@ paths:
   /v1/exports/{export_id}:
     get:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Get Export By Id
       description: Get a specific export by ID.
       operationId: get_export_by_id_v1_exports__export_id__get
@@ -1934,7 +1934,7 @@ paths:
   /v1/toolsets/{tool_set_id}/exports:
     post:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Create Export
       description: Create an export for a tool set.
       operationId: create_export_v1_toolsets__tool_set_id__exports_post
@@ -2040,7 +2040,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     get:
       tags:
-      - toolsets
+      - Tool Sets
       summary: List Exports
       description: List exports for a tool set.
       operationId: list_exports_v1_toolsets__tool_set_id__exports_get
@@ -2165,7 +2165,7 @@ paths:
   /v1/toolsets/{tool_set_id}/exports/{export_id}:
     get:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Get Export
       description: Get a specific export by ID.
       operationId: get_export_v1_toolsets__tool_set_id__exports__export_id__get
@@ -2271,7 +2271,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     patch:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Update Export
       description: 'Update export metadata.
 
@@ -2387,7 +2387,7 @@ paths:
   /v1/toolsets/{tool_set_id}/exports/{export_id}:refresh_cache:
     post:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Refresh Export Cache
       description: 'Manually refresh the tools cache for an export.
 
@@ -2499,7 +2499,7 @@ paths:
   /v1/toolsets/{tool_set_id}/exports/{export_id}:activate:
     post:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Activate Export
       description: Activate an export.
       operationId: activate_export_v1_toolsets__tool_set_id__exports__export_id__activate_post
@@ -2606,7 +2606,7 @@ paths:
   /v1/toolsets/{tool_set_id}/exports/{export_id}:pause:
     post:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Pause Export
       description: Pause an export.
       operationId: pause_export_v1_toolsets__tool_set_id__exports__export_id__pause_post
@@ -2713,7 +2713,7 @@ paths:
   /v1/toolsets/{tool_set_id}/exports/{export_id}:retire:
     post:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Retire Export
       description: Retire an export.
       operationId: retire_export_v1_toolsets__tool_set_id__exports__export_id__retire_post
@@ -2820,7 +2820,7 @@ paths:
   /v1/exports/{export_id}:refresh_cache:
     post:
       tags:
-      - toolsets
+      - Tool Sets
       summary: Refresh Export Cache Flat
       description: 'Refresh the tools cache for an export by export ID only.
 
@@ -2925,32 +2925,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     ToolSetUpdateIn:
       properties:
         name:
@@ -2986,20 +2960,6 @@ components:
       type: object
       title: ToolSetUpdateIn
       description: Input for updating a tool set.
-    ToolsUpdateIn:
-      properties:
-        tool_ids:
-          items:
-            type: integer
-          type: array
-          minItems: 1
-          title: Tool Ids
-      additionalProperties: false
-      type: object
-      required:
-      - tool_ids
-      title: ToolsUpdateIn
-      description: Input for adding/removing tools from a toolset.
     ExportEnvironment:
       type: string
       enum:
@@ -3008,34 +2968,32 @@ components:
       - prod
       title: ExportEnvironment
       description: Deployment environment for an export.
-    ToolSetFromNexsetsIn:
+    ValidationError:
       properties:
-        name:
-          type: string
-          maxLength: 512
-          minLength: 1
-          title: Name
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        nexset_ids:
+        loc:
           items:
-            type: integer
+            anyOf:
+            - type: string
+            - type: integer
           type: array
-          minItems: 1
-          title: Nexset Ids
-        mcp_gateway_enabled:
-          type: boolean
-          title: Mcp Gateway Enabled
-          default: false
-      additionalProperties: false
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
       type: object
       required:
-      - name
-      - nexset_ids
-      title: ToolSetFromNexsetsIn
+      - loc
+      - msg
+      - type
+      title: ValidationError
     ToolSetCreateIn:
       properties:
         name:
@@ -3092,16 +3050,7 @@ components:
       - name
       title: ToolSetCreateIn
       description: Input for creating a tool set.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ToolSetCloneIn:
+    ToolSetFromNexsetsIn:
       properties:
         name:
           type: string
@@ -3111,15 +3060,50 @@ components:
         description:
           anyOf:
           - type: string
-            maxLength: 1024
           - type: 'null'
           title: Description
+        nexset_ids:
+          items:
+            type: integer
+          type: array
+          minItems: 1
+          title: Nexset Ids
+        mcp_gateway_enabled:
+          type: boolean
+          title: Mcp Gateway Enabled
+          default: false
       additionalProperties: false
       type: object
       required:
       - name
-      title: ToolSetCloneIn
-      description: Input for cloning a toolset.
+      - nexset_ids
+      title: ToolSetFromNexsetsIn
+    AccessScope:
+      type: string
+      enum:
+      - private
+      - organization
+      - public
+      title: AccessScope
+      description: 'Who may invoke a toolset''s tools.
+
+
+        Unlike the other enums here this one is *enforced*: the MCP request gate
+
+        reads it before resolving tools, and it is the first owner-aware predicate
+
+        in MCPaaS (``owner_id`` was previously stamped but never gated on).
+
+
+        This governs *access*, not identity. Every permitted caller runs as themselves:
+
+        ``runtime_config.credential`` auto-resolution fetches credentials with the caller''s
+
+        own session token and picks their latest match for the connector, so a shared
+
+        toolset needs no per-user setup. A caller with no credential for the connector gets
+
+        an actionable ``credential_required`` result instead.'
     ExportUpdateIn:
       properties:
         public_name:
@@ -3149,41 +3133,6 @@ components:
       type: object
       title: ExportUpdateIn
       description: Input for updating an export.
-    AccessScope:
-      type: string
-      enum:
-      - private
-      - organization
-      - public
-      title: AccessScope
-      description: 'Who may invoke a toolset''s tools.
-
-
-        Unlike the other enums here this one is *enforced*: the MCP request gate
-
-        reads it before resolving tools, and it is the first owner-aware predicate
-
-        in MCPaaS (``owner_id`` was previously stamped but never gated on).
-
-
-        This governs *access*, not identity. Every permitted caller runs as themselves:
-
-        ``runtime_config.credential`` auto-resolution fetches credentials with the caller''s
-
-        own session token and picks their latest match for the connector, so a shared
-
-        toolset needs no per-user setup. A caller with no credential for the connector gets
-
-        an actionable ``credential_required`` result instead.'
-    ExportType:
-      type: string
-      enum:
-      - mcp_server
-      - copilot_connector
-      - sdk_bundle
-      - http_catalog
-      title: ExportType
-      description: Type of export for a tool set.
     ExportCreateIn:
       properties:
         export_type:
@@ -3218,3 +3167,54 @@ components:
       additionalProperties: false
       type: object
       title: ExportCreateIn
+    ToolSetCloneIn:
+      properties:
+        name:
+          type: string
+          maxLength: 512
+          minLength: 1
+          title: Name
+        description:
+          anyOf:
+          - type: string
+            maxLength: 1024
+          - type: 'null'
+          title: Description
+      additionalProperties: false
+      type: object
+      required:
+      - name
+      title: ToolSetCloneIn
+      description: Input for cloning a toolset.
+    ToolsUpdateIn:
+      properties:
+        tool_ids:
+          items:
+            type: integer
+          type: array
+          minItems: 1
+          title: Tool Ids
+      additionalProperties: false
+      type: object
+      required:
+      - tool_ids
+      title: ToolsUpdateIn
+      description: Input for adding/removing tools from a toolset.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ExportType:
+      type: string
+      enum:
+      - mcp_server
+      - copilot_connector
+      - sdk_bundle
+      - http_catalog
+      title: ExportType
+      description: Type of export for a tool set.

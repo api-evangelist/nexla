@@ -16,51 +16,7 @@ info:
   description: '# Introduction
 
 
-    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
-
-
-    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
-
-
-    The API references in this document lists all API endpoints and the corresponding payloads.
-
-
-    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
-
-
-    # API Data Format and Versions
-
-
-    The API uses JSON for all data exchanges.
-
-
-    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
-
-    ```
-
-    Accept: application/vnd.nexla.api.v1+json
-
-    ```
-
-
-    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
-
-
-
-    ```
-
-    Accept: application/json
-
-    ```
-
-
-    # Authentication
-
-
-    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
-
-
-    <SecurityDefinitions />'
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case.'
 servers:
 - url: https://{nexla-api-host}
   variables:
@@ -79,9 +35,7 @@ paths:
       - Flows
       operationId: get_flows
       summary: Get All Flows
-      description: 'Returns all flows accessible to the authenticated user.
-
-        '
+      description: Returns all flows accessible to the authenticated user.
       parameters:
       - name: flows_only
         in: query
@@ -117,9 +71,7 @@ paths:
       tags:
       - Flows
       summary: Get Flow by ID
-      description: 'Returns a flow object if a valid flow ID is provided.
-
-        '
+      description: Returns a flow object if a valid flow ID is provided.
       operationId: get_flow_by_id
       parameters:
       - name: flow_id
@@ -178,7 +130,16 @@ paths:
       - Flows
       operationId: flow_activate_with_flow_id
       summary: Activate a Flow
-      description: "To activate the entire flow, use either the `origin_node_id` from any data source, set or sink in the flow, or include the ?all=1 or ?full_tree=1 query parameter.\n  \n>**Note**: \n> 1. All endpoints for activating or pausing a flow operate on the specific resource given and all of the flow nodes downstream from that resource. This allows for pausing and activating sub-flows while leaving the rest of the flow state unchanged.\n> \n>  2. You can also activate a flow by using the id of the `data_source`/ `data_set` / `data_sink` that the flow node is linked to. See relevant endpoints in the API references for those resources.  \n"
+      description: 'To activate the entire flow, use either the `origin_node_id` from any data source, set or sink in the flow, or include the ?all=1 or ?full_tree=1 query parameter.
+
+
+        >**Note**:
+
+        > 1. All endpoints for activating or pausing a flow operate on the specific resource given and all of the flow nodes downstream from that resource. This allows for pausing and activating sub-flows while leaving the rest of the flow state unchanged.
+
+        >
+
+        > 2. You can also activate a flow by using the id of the `data_source`/ `data_set` / `data_sink` that the flow node is linked to. See relevant endpoints in the API references for those resources.'
       parameters:
       - name: flow_id
         in: path
@@ -211,7 +172,16 @@ paths:
       - Flows
       operationId: flow_pause_with_flow_id
       summary: Pause a Flow
-      description: "To pause the entire flow, use either the `origin_node_id` from any data source, set or sink in the flow, or include the ?all=1 or ?full_tree=1 query parameter.\n  \n>**Note**: \n> 1. All endpoints for activating or pausing a flow operate on the specific resource given and all of the flow nodes  downstream from that resource. This allows for pausing and activating sub-flows while leaving the rest of the flow state unchanged.\n> \n>  2. You can also pause a flow by using the id of the `data_source`/ `data_set` / `data_sink` that the flow node is linked to. See relevant endpoints in the API references for those resources.    \n"
+      description: 'To pause the entire flow, use either the `origin_node_id` from any data source, set or sink in the flow, or include the ?all=1 or ?full_tree=1 query parameter.
+
+
+        >**Note**:
+
+        > 1. All endpoints for activating or pausing a flow operate on the specific resource given and all of the flow nodes downstream from that resource. This allows for pausing and activating sub-flows while leaving the rest of the flow state unchanged.
+
+        >
+
+        > 2. You can also pause a flow by using the id of the `data_source`/ `data_set` / `data_sink` that the flow node is linked to. See relevant endpoints in the API references for those resources.'
       parameters:
       - name: flow_id
         in: path
@@ -260,7 +230,7 @@ paths:
       - Flows
       operationId: flow_copy_with_flow_id
       summary: Copy a Flow
-      description: "Use this endpoint to create a copy of an existing flow. \n"
+      description: Use this endpoint to create a copy of an existing flow.
       parameters:
       - name: flow_id
         in: path
@@ -308,9 +278,7 @@ paths:
       - Flows
       operationId: flow_docs_recommendation
       summary: Generate an AI suggestion for flow documentation
-      description: 'Request a suggestion for Flow documentation. GenAI has to be configured properly for this request, or else you get a message with an error.
-
-        '
+      description: Request a suggestion for Flow documentation. GenAI has to be configured properly for this request, or else you get a message with an error.
       parameters:
       - name: flow_id
         in: path
@@ -334,7 +302,10 @@ paths:
       - Flows
       operationId: get_flow_by_resource_id
       summary: Get Flow (by Resource ID)
-      description: "Returns a flow object if a valid resource type and resource ID is provided.\n\n> Note: This is a variant of flow endpoints where the flow node can referenced not by its own ID, but by the ID of the unique resource that is linked to that flow node.      \n"
+      description: 'Returns a flow object if a valid resource type and resource ID is provided.
+
+
+        > Note: This is a variant of flow endpoints where the flow node can referenced not by its own ID, but by the ID of the unique resource that is linked to that flow node.'
       parameters:
       - name: resource_type
         in: path
@@ -377,9 +348,7 @@ paths:
       description: 'Deletes a flow from your Nexla account.
 
 
-        > Note: This is a variant of flow endpoints where the flow node can referenced not by its own ID, but by the ID of the unique resource that is linked to that flow node.
-
-        '
+        > Note: This is a variant of flow endpoints where the flow node can referenced not by its own ID, but by the ID of the unique resource that is linked to that flow node.'
       parameters:
       - name: resource_type
         in: path
@@ -421,7 +390,14 @@ paths:
       - Flows
       operationId: flow_activate_with_resource_id
       summary: Activate a Flow (with Resource ID)
-      description: "To activate the entire flow include the ?all=1 or ?full_tree=1 query parameter.\n  \n>**Note**: \n> 1. All endpoints for activating or pausing a flow operate on the specific resource given and all of the flow nodes downstream from that resource. This allows for pausing and activating sub-flows while leaving the rest of the flow state unchanged.\n> 2. This is a variant of flow endpoints where the flow node can referenced not by its own ID, but by the ID of the unique resource that is linked to that flow node.\n"
+      description: 'To activate the entire flow include the ?all=1 or ?full_tree=1 query parameter.
+
+
+        >**Note**:
+
+        > 1. All endpoints for activating or pausing a flow operate on the specific resource given and all of the flow nodes downstream from that resource. This allows for pausing and activating sub-flows while leaving the rest of the flow state unchanged.
+
+        > 2. This is a variant of flow endpoints where the flow node can referenced not by its own ID, but by the ID of the unique resource that is linked to that flow node.'
       parameters:
       - name: resource_type
         in: path
@@ -468,7 +444,16 @@ paths:
       - Flows
       operationId: flow_pause_with_resource_id
       summary: Pause a Flow (with Resource ID)
-      description: "To pause the entire flow include the entire flow include the ?all=1 or ?full_tree=1 query parameter.\n  \n>**Note**: \n> 1. All endpoints for activating or pausing a flow operate on the specific resource given and all of the flow nodes  downstream from that resource. This allows for pausing and activating sub-flows while leaving the rest of the flow state unchanged.\n> \n> 2. This is a variant of flow endpoints where the flow node can referenced not by its own ID, but by the ID of the unique resource that is linked to that flow node.    \n"
+      description: 'To pause the entire flow include the entire flow include the ?all=1 or ?full_tree=1 query parameter.
+
+
+        >**Note**:
+
+        > 1. All endpoints for activating or pausing a flow operate on the specific resource given and all of the flow nodes downstream from that resource. This allows for pausing and activating sub-flows while leaving the rest of the flow state unchanged.
+
+        >
+
+        > 2. This is a variant of flow endpoints where the flow node can referenced not by its own ID, but by the ID of the unique resource that is linked to that flow node.'
       parameters:
       - name: resource_type
         in: path
@@ -508,81 +493,49 @@ paths:
         '404':
           description: Not found
 components:
+  parameters:
+    page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        description: 'Add this parameter to a resource fetch request to fetch a specific page of data.
+
+          '
+    per_page:
+      name: per_page
+      in: query
+      schema:
+        type: integer
+        description: 'Add this parameter to a resource fetch request to set the number of items that should be returned in each request.
+
+          '
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
+    access_roles:
+      name: access_role
+      in: query
+      schema:
+        type: string
+        enum:
+        - collaborator
+        - operator
+        - admin
+        - owner
+        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
+        externalDocs:
+          description: Nexla API access roles
+          url: https://developers.nexla.com/docs/access-modes
   schemas:
-    org:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email_domain:
-          type: string
-        email:
-          type: 'null'
-        client_identifier:
-          type: 'null'
-    flow_one_with_async:
-      oneOf:
-      - allOf:
-        - type: object
-          properties:
-            flows:
-              type: array
-              minItems: 1
-              maxItems: 1
-              items:
-                $ref: '#/components/schemas/FlowOriginNode'
-        - $ref: '#/components/schemas/FlowElements'
-      - $ref: '#/components/schemas/AsyncResponse'
-    AsyncResponse:
-      type: object
-      description: 'This object represents the response of an asynchronous operation. The response can be a dictionary or an array of dictionaries. The format of the response depends on the operation that was executed.
-
-        '
-      properties:
-        request_id:
-          type: integer
-          description: 'The unique ID of the request that was executed. This ID can be used to track the status of the request.
-
-            '
-        status:
-          type: string
-          enum:
-          - pending
-          - running
-          - completed
-          - failed
-          - cancelled
-        request_started_at:
-          type: string
-          format: date-time
-          description: 'The date and time when the request was started.
-
-            '
-        progress:
-          type: integer
-          description: 'The progress of the request (value from 0 to 100). This value is a percentage of the total progress of the request. Applicable only to certain types of async operations.
-
-            '
-        result:
-          type: object
-          description: 'The result of the async operation. Format depends on the task type.
-
-            '
-          additionalProperties: true
-        request_stopped_at:
-          type: string
-          format: date-time
-          description: 'The date and time when the request was stopped. This field is only present if the request has been stopped (due to cancellation or error).
-
-            '
-        request_completed_at:
-          type: string
-          format: date-time
-          description: 'The date and time when the request was completed. This field is only present if the request has been completed successfully.
-
-            '
     owner:
       type: object
       properties:
@@ -593,42 +546,6 @@ components:
         email:
           type: string
           format: email
-    FlowChildNode:
-      type: object
-      properties:
-        id:
-          type: integer
-        parent_node_id:
-          type: integer
-          description: 'The flow id of the flow node this node is a direct descendant of.
-
-            '
-        origin_node_id:
-          type: integer
-          description: "The flow id of the flow node at the root of this flow chain.      \n"
-        data_source_id:
-          type: integer
-          format: nullable
-          description: 'The ID of the data source this flow node is linked to if this is a flow node for a data source.
-
-            '
-        data_set_id:
-          type: integer
-          format: nullable
-          description: "The ID of the Nexset this flow node is linked to if this is flow node for a Nexset. \n"
-        data_sink_id:
-          type: integer
-          format: nullable
-          description: "The ID of the data sink this flow node is linked to if this is a flow node for a data sink.         \n"
-        children:
-          type: array
-          description: 'Each element is a flow node that is directly linked to this node.
-
-            '
-    FlowNodes:
-      type: array
-      items:
-        $ref: '#/components/schemas/FlowOriginNode'
     FlowElements:
       type: object
       properties:
@@ -932,6 +849,84 @@ components:
                 type: string
               access_roles:
                 type: array
+    flow_one_with_async:
+      oneOf:
+      - allOf:
+        - type: object
+          properties:
+            flows:
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                $ref: '#/components/schemas/FlowOriginNode'
+        - $ref: '#/components/schemas/FlowElements'
+      - $ref: '#/components/schemas/AsyncResponse'
+    AsyncResponse:
+      type: object
+      description: 'This object represents the response of an asynchronous operation. The response can be a dictionary or an array of dictionaries. The format of the response depends on the operation that was executed.
+
+        '
+      properties:
+        request_id:
+          type: integer
+          description: 'The unique ID of the request that was executed. This ID can be used to track the status of the request.
+
+            '
+        status:
+          type: string
+          enum:
+          - pending
+          - running
+          - completed
+          - failed
+          - cancelled
+        request_started_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was started.
+
+            '
+        progress:
+          type: integer
+          description: 'The progress of the request (value from 0 to 100). This value is a percentage of the total progress of the request. Applicable only to certain types of async operations.
+
+            '
+        result:
+          type: object
+          description: 'The result of the async operation. Format depends on the task type.
+
+            '
+          additionalProperties: true
+        request_stopped_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was stopped. This field is only present if the request has been stopped (due to cancellation or error).
+
+            '
+        request_completed_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was completed. This field is only present if the request has been completed successfully.
+
+            '
+    FlowNodes:
+      type: array
+      items:
+        $ref: '#/components/schemas/FlowOriginNode'
+    org:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: 'null'
+        client_identifier:
+          type: 'null'
     FlowOriginNode:
       type: object
       properties:
@@ -981,7 +976,66 @@ components:
             '
           items:
             $ref: '#/components/schemas/FlowChildNode'
+    FlowChildNode:
+      type: object
+      properties:
+        id:
+          type: integer
+        parent_node_id:
+          type: integer
+          description: 'The flow id of the flow node this node is a direct descendant of.
+
+            '
+        origin_node_id:
+          type: integer
+          description: "The flow id of the flow node at the root of this flow chain.      \n"
+        data_source_id:
+          type: integer
+          format: nullable
+          description: 'The ID of the data source this flow node is linked to if this is a flow node for a data source.
+
+            '
+        data_set_id:
+          type: integer
+          format: nullable
+          description: "The ID of the Nexset this flow node is linked to if this is flow node for a Nexset. \n"
+        data_sink_id:
+          type: integer
+          format: nullable
+          description: "The ID of the data sink this flow node is linked to if this is a flow node for a data sink.         \n"
+        children:
+          type: array
+          description: 'Each element is a flow node that is directly linked to this node.
+
+            '
   responses:
+    genai_recommendation_response:
+      description: Either success or failure
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            properties:
+              status:
+                type: string
+                description: Should be 200 or "ok" for normal response. If GenAI service is not available, you will get another status code.
+                example: ok
+              output:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    description: The response message from GenAI service. Contains Markdown text.  If there is an error, this field will not be present.
+                  statusCode:
+                    type: integer
+                    description: The status code from external GenAI service.
+                    example: 200
+                  errorMessage:
+                    type: string
+                    description: If there is an error, this field will contain the error message, and 'response' field will not be present.
+                    example: GenAI Integration has not been enabled for your Nexla organization. Please contact your organization admin or Nexla support for enabling the integration.
     FlowsManyWithMetric:
       description: Success
       content:
@@ -1013,33 +1067,6 @@ components:
                         format: date-time
                       run_id:
                         type: integer
-    genai_recommendation_response:
-      description: Either success or failure
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            properties:
-              status:
-                type: string
-                description: Should be 200 or "ok" for normal response. If GenAI service is not available, you will get another status code.
-                example: ok
-              output:
-                type: object
-                properties:
-                  response:
-                    type: string
-                    description: The response message from GenAI service. Contains Markdown text.  If there is an error, this field will not be present.
-                  statusCode:
-                    type: integer
-                    description: The status code from external GenAI service.
-                    example: 200
-                  errorMessage:
-                    type: string
-                    description: If there is an error, this field will contain the error message, and 'response' field will not be present.
-                    example: GenAI Integration has not been enabled for your Nexla organization. Please contact your organization admin or Nexla support for enabling the integration.
     FlowsOne:
       description: Success
       content:
@@ -1055,48 +1082,6 @@ components:
                   items:
                     $ref: '#/components/schemas/FlowOriginNode'
             - $ref: '#/components/schemas/FlowElements'
-  parameters:
-    access_roles:
-      name: access_role
-      in: query
-      schema:
-        type: string
-        enum:
-        - collaborator
-        - operator
-        - admin
-        - owner
-        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
-        externalDocs:
-          description: Nexla API access roles
-          url: https://developers.nexla.com/docs/access-modes
-    page:
-      name: page
-      in: query
-      schema:
-        type: integer
-        description: 'Add this parameter to a resource fetch request to fetch a specific page of data.
-
-          '
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
-
-          '
-    per_page:
-      name: per_page
-      in: query
-      schema:
-        type: integer
-        description: 'Add this parameter to a resource fetch request to set the number of items that should be returned in each request.
-
-          '
   securitySchemes:
     NexlaSessionToken:
       type: http

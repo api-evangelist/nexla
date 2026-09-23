@@ -16,51 +16,7 @@ info:
   description: '# Introduction
 
 
-    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
-
-
-    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
-
-
-    The API references in this document lists all API endpoints and the corresponding payloads.
-
-
-    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
-
-
-    # API Data Format and Versions
-
-
-    The API uses JSON for all data exchanges.
-
-
-    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
-
-    ```
-
-    Accept: application/vnd.nexla.api.v1+json
-
-    ```
-
-
-    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
-
-
-
-    ```
-
-    Accept: application/json
-
-    ```
-
-
-    # Authentication
-
-
-    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
-
-
-    <SecurityDefinitions />'
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case.'
 servers:
 - url: https://{nexla-api-host}
   variables:
@@ -79,9 +35,7 @@ paths:
       - Organizations
       operationId: get_orgs
       summary: Get all Organizations
-      description: 'Returns all organizations accessible to the authenticated user.
-
-        '
+      description: Returns all organizations accessible to the authenticated user.
       parameters:
       - $ref: '#/components/parameters/accept'
       responses:
@@ -95,9 +49,7 @@ paths:
       - Organizations
       operationId: get_org
       summary: Get Organization by ID
-      description: 'Returns an organization if a valid ID is provided.
-
-        '
+      description: Returns an organization if a valid ID is provided.
       parameters:
       - name: org_id
         in: path
@@ -116,9 +68,7 @@ paths:
       - Organizations
       operationId: update_org
       summary: Update an Organization
-      description: 'Updates properties of an organization.
-
-        '
+      description: Updates properties of an organization.
       parameters:
       - name: org_id
         in: path
@@ -142,9 +92,7 @@ paths:
       - Organizations
       operationId: get_org_members
       summary: Get All Members in Organization
-      description: 'Retrieves a list of all users in an organization.
-
-        '
+      description: Retrieves a list of all users in an organization.
       parameters:
       - name: org_id
         in: path
@@ -170,9 +118,7 @@ paths:
       description: 'Add or update members in an organization. This endpoint can also be used to modify an existing member''s role in the organization.
 
 
-        When adding a new member using their email id, if a user account for that email id does not exist on the platform then a new user account will be created. If the user already exists on the platform as a member of a different organization then their membership will get updated to include this organization also.
-
-        '
+        When adding a new member using their email id, if a user account for that email id does not exist on the platform then a new user account will be created. If the user already exists on the platform as a member of a different organization then their membership will get updated to include this organization also.'
       parameters:
       - name: org_id
         in: path
@@ -198,10 +144,8 @@ paths:
       tags:
       - Organizations
       operationId: delete_org_members
-      summary: Remove Members from an Organization.
-      description: 'Removes one or more members from the organization. Note that this will not delete the user account from the platform, but will remove the user''s ability to access this organization''s resources.
-
-        '
+      summary: Remove Members from an Organization
+      description: Removes one or more members from the organization. Note that this will not delete the user account from the platform, but will remove the user's ability to access this organization's resources.
       parameters:
       - name: org_id
         in: path
@@ -238,10 +182,8 @@ paths:
       tags:
       - Organizations
       operationId: get_org_custodians
-      summary: Get organization custodians.
-      description: 'Use this endpoint to fetch custodians of organization. Org read permission is required to access this endpoint.
-
-        '
+      summary: Get organization custodians
+      description: Use this endpoint to fetch custodians of organization. Org read permission is required to access this endpoint.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: org_id
@@ -259,10 +201,8 @@ paths:
       tags:
       - Organizations
       operationId: update_org_custodians
-      summary: Update organization custodians.
-      description: 'Users listed within the request body will be updated as custodians for the organization. Users can be identified by their email or id.
-
-        '
+      summary: Update organization custodians
+      description: Users listed within the request body will be updated as custodians for the organization. Users can be identified by their email or id.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: org_id
@@ -287,10 +227,8 @@ paths:
       tags:
       - Organizations
       operationId: add_org_custodians
-      summary: Add organization custodians.
-      description: 'Users listed within the request body will be added as custodians to the organization. Users can be identified by their email or id.
-
-        '
+      summary: Add organization custodians
+      description: Users listed within the request body will be added as custodians to the organization. Users can be identified by their email or id.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: org_id
@@ -315,10 +253,8 @@ paths:
       tags:
       - Organizations
       operationId: remove_org_custodians
-      summary: Remove organization custodians.
-      description: 'Users listed within the request body will be deleted as custodians from the organization. Users can be identified by their email or id.
-
-        '
+      summary: Remove organization custodians
+      description: Users listed within the request body will be deleted as custodians from the organization. Users can be identified by their email or id.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: org_id
@@ -341,49 +277,17 @@ paths:
           description: Forbidden
 components:
   schemas:
-    OrgMemberMutable:
-      oneOf:
-      - type: object
-        required:
-        - id
+    CustodiansResponse:
+      type: array
+      items:
+        type: object
         properties:
           id:
             type: integer
-            description: Nexla User ID of the user to be added or updated.
-          access_role:
-            $ref: '#/components/schemas/AccessRoles'
-      - type: object
-        required:
-        - email
-        properties:
           email:
             type: string
-            description: 'Email ID of the user to be added or updated. If a user with this Email ID already exists on the platform then the API will update that account with this membership rule.
-
-              '
-          access_role:
-            $ref: '#/components/schemas/AccessRoles'
-    AccessRoles:
-      type: array
-      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
-      items:
-        type: string
-        enum:
-        - owner
-        - collaborator
-        - operator
-        - admin
-    UserStatus:
-      type: string
-      enum:
-      - ACTIVE
-      - DEACTIVATED
-      - SOURCE_COUNT_CAPPED
-      - SOURCE_DATA_CAPPED
-      - TRIAL_EXPIRED
-      description: 'Indicates the user''s account status across all organizations they are members of.
-
-        '
+          full_name:
+            type: string
     OrgMemberList:
       type: object
       properties:
@@ -391,6 +295,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OrgMemberMutable'
+    CustodiansPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          email:
+            type: string
     OrgsUpdate:
       type: object
       properties:
@@ -415,15 +328,28 @@ components:
             '
         custodians:
           $ref: '#/components/schemas/CustodiansPayload'
-    CustodiansPayload:
-      type: array
-      items:
-        type: object
+    OrgMemberMutable:
+      oneOf:
+      - type: object
+        required:
+        - id
         properties:
           id:
             type: integer
+            description: Nexla User ID of the user to be added or updated.
+          access_role:
+            $ref: '#/components/schemas/AccessRoles'
+      - type: object
+        required:
+        - email
+        properties:
           email:
             type: string
+            description: 'Email ID of the user to be added or updated. If a user with this Email ID already exists on the platform then the API will update that account with this membership rule.
+
+              '
+          access_role:
+            $ref: '#/components/schemas/AccessRoles'
     OrgMember:
       type: object
       properties:
@@ -445,6 +371,38 @@ components:
           $ref: '#/components/schemas/OrgMembershipStatus'
         user_status:
           $ref: '#/components/schemas/UserStatus'
+    UserStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - DEACTIVATED
+      - SOURCE_COUNT_CAPPED
+      - SOURCE_DATA_CAPPED
+      - TRIAL_EXPIRED
+      description: 'Indicates the user''s account status across all organizations they are members of.
+
+        '
+    OrgMembershipStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - DEACTIVATED
+      description: 'Indicates whether the user''s membership in this organization is active or not.
+
+
+        If the membership is DEACTIVATED the user can no longer access the account but the resources owned by them will still be accessible by the organization administrators.
+
+        '
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
     OrgMemberDelete:
       type: object
       properties:
@@ -466,28 +424,6 @@ components:
                 email:
                   type: string
                   description: "Email ID of the user who should be removed.      \n"
-    OrgMembershipStatus:
-      type: string
-      enum:
-      - ACTIVE
-      - DEACTIVATED
-      description: 'Indicates whether the user''s membership in this organization is active or not.
-
-
-        If the membership is DEACTIVATED the user can no longer access the account but the resources owned by them will still be accessible by the organization administrators.
-
-        '
-    CustodiansResponse:
-      type: array
-      items:
-        type: object
-        properties:
-          id:
-            type: integer
-          email:
-            type: string
-          full_name:
-            type: string
   responses:
     org_members:
       description: Success
@@ -497,12 +433,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/OrgMember'
-    custodians_many:
-      description: List of custodians
-      content:
-        application/vnd.nexla.api.v1+json:
-          schema:
-            $ref: '#/components/schemas/CustodiansResponse'
     orgs_one:
       description: Success
       content:
@@ -854,6 +784,12 @@ components:
                 created_at:
                   type: string
                   format: date-time
+    custodians_many:
+      description: List of custodians
+      content:
+        application/vnd.nexla.api.v1+json:
+          schema:
+            $ref: '#/components/schemas/CustodiansResponse'
   parameters:
     accept:
       name: Accept

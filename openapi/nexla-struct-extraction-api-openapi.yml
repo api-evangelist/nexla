@@ -41,6 +41,31 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    StructuredExtractionRequest:
+      properties:
+        mode:
+          type: string
+          title: Mode
+          description: 'Mode of structured extraction: ''image'' or ''text'''
+        input:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Input
+          description: Input JSON object with base64-encoded image (if mode='image') or JSON object containing text (if mode='text'), Endpoint can also allow for a string input
+        output_structure:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Output Structure
+          description: Expected structured output format. If not provided, a best-guess structure will be generated.
+      type: object
+      required:
+      - mode
+      - input
+      title: StructuredExtractionRequest
     ValidationError:
       properties:
         loc:
@@ -67,28 +92,3 @@ components:
       - msg
       - type
       title: ValidationError
-    StructuredExtractionRequest:
-      properties:
-        mode:
-          type: string
-          title: Mode
-          description: 'Mode of structured extraction: ''image'' or ''text'''
-        input:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          title: Input
-          description: Input JSON object with base64-encoded image (if mode='image') or JSON object containing text (if mode='text'), Endpoint can also allow for a string input
-        output_structure:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Output Structure
-          description: Expected structured output format. If not provided, a best-guess structure will be generated.
-      type: object
-      required:
-      - mode
-      - input
-      title: StructuredExtractionRequest

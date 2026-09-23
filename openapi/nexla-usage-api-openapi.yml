@@ -4,12 +4,12 @@ info:
   description: Combined Nexla GenAI RAG API Service and MCPaaS
   version: v0.2.3.3-combined
 tags:
-- name: usage
+- name: Usage
 paths:
   /v1/mcpaas/admin/metrics/refresh:
     post:
       tags:
-      - usage
+      - Usage
       summary: Refresh Tool Metrics
       description: 'Run the tool_metrics periodic rollup for the given lookback window.
 
@@ -126,7 +126,7 @@ paths:
   /v1/mcpaas/servers/{server_key}/activity:
     get:
       tags:
-      - usage
+      - Usage
       summary: Get Server Activity
       description: 'Who has hit this MCP server, and what happened on each call.
 
@@ -330,7 +330,7 @@ paths:
   /v1/mcpaas/clients/{client_id}/activity:
     get:
       tags:
-      - usage
+      - Usage
       summary: Get Client Activity
       description: 'What this client has done, across servers and sessions.
 
@@ -475,7 +475,7 @@ paths:
   /v1/mcpaas/subjects/{subject_id}/activity:
     get:
       tags:
-      - usage
+      - Usage
       summary: Get Subject Activity
       description: 'What this subject has done, across servers and sessions.
 

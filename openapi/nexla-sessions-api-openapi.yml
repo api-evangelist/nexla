@@ -4,12 +4,12 @@ info:
   description: Combined Nexla GenAI RAG API Service and MCPaaS
   version: v0.2.3.3-combined
 tags:
-- name: sessions
+- name: Sessions
 paths:
   /v1/sessions:
     get:
       tags:
-      - sessions
+      - Sessions
       summary: List Sessions
       description: 'List all MCP sessions for the organization.
 
@@ -151,7 +151,7 @@ paths:
   /v1/sessions/{session_id}:
     get:
       tags:
-      - sessions
+      - Sessions
       summary: Get Session
       description: Get a specific MCP session by ID.
       operationId: get_session_v1_sessions__session_id__get
@@ -252,7 +252,7 @@ paths:
   /v1/sessions/{session_id}:terminate:
     post:
       tags:
-      - sessions
+      - Sessions
       summary: Terminate Session
       description: 'Terminate an MCP session.
 
@@ -364,7 +364,7 @@ paths:
   /v1/sessions:cleanup:
     post:
       tags:
-      - sessions
+      - Sessions
       summary: Cleanup Sessions
       description: 'Bulk cleanup of stale sessions.
 
@@ -468,7 +468,7 @@ paths:
   /v1/toolsets/{tool_set_id}/sessions:
     get:
       tags:
-      - sessions
+      - Sessions
       summary: List Toolset Sessions
       description: 'List MCP sessions for a specific toolset.
 
@@ -595,25 +595,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    SessionCleanupIn:
-      properties:
-        inactive_seconds:
-          type: integer
-          title: Inactive Seconds
-          default: 3600
-      additionalProperties: false
-      type: object
-      title: SessionCleanupIn
-      description: Input for bulk cleanup of stale sessions.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     SessionTerminateIn:
       properties:
         reason:
@@ -625,6 +606,25 @@ components:
       type: object
       title: SessionTerminateIn
       description: Input for terminating a session.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    SessionCleanupIn:
+      properties:
+        inactive_seconds:
+          type: integer
+          title: Inactive Seconds
+          default: 3600
+      additionalProperties: false
+      type: object
+      title: SessionCleanupIn
+      description: Input for bulk cleanup of stale sessions.
     ValidationError:
       properties:
         loc:

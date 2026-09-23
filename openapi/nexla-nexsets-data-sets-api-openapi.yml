@@ -16,51 +16,7 @@ info:
   description: '# Introduction
 
 
-    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
-
-
-    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
-
-
-    The API references in this document lists all API endpoints and the corresponding payloads.
-
-
-    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
-
-
-    # API Data Format and Versions
-
-
-    The API uses JSON for all data exchanges.
-
-
-    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
-
-    ```
-
-    Accept: application/vnd.nexla.api.v1+json
-
-    ```
-
-
-    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
-
-
-
-    ```
-
-    Accept: application/json
-
-    ```
-
-
-    # Authentication
-
-
-    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
-
-
-    <SecurityDefinitions />'
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case.'
 servers:
 - url: https://{nexla-api-host}
   variables:
@@ -71,9 +27,7 @@ security:
 - NexlaSessionToken: []
 tags:
 - name: Nexsets (Data Sets)
-  description: 'Operations for managing Nexsets. Note that Nexsets on the Nexla UI are aliased as `data_sets` in the Nexla API reference model, so all endpoints and responses use the term `data_sets` instead of `nexsets`.
-
-    '
+  description: Operations for managing Nexsets. Note that Nexsets on the Nexla UI are aliased as `data_sets` in the Nexla API reference model, so all endpoints and responses use the term `data_sets` instead of `nexsets`.
 paths:
   /data_sets:
     get:
@@ -81,9 +35,7 @@ paths:
       - Nexsets (Data Sets)
       operationId: get_nexsets
       summary: Get All Nexsets
-      description: 'Retrieves all Nexsets accessible to the authenticated user.
-
-        '
+      description: Retrieves all Nexsets accessible to the authenticated user.
       parameters:
       - $ref: '#/components/parameters/access_roles'
       - $ref: '#/components/parameters/accept'
@@ -97,7 +49,17 @@ paths:
       - Nexsets (Data Sets)
       operationId: create_nexset
       summary: Create a Nexset
-      description: "Creates a Nexset from another Nexset.\n\nThe endpoint accepts a parent Nexset ID along with all transform and validation rules that should be applied to the parent Nexset. \n\nThe two payload variants reflect the following two ways of specifying transform rules: \n1. Attach the transform code that should be applied: Set `has_custom_transform: false`, and attach a `transform` code snippet. \n2. Use the ID of a reusable record transform: Set `has_custom_transform: false`, and attach the `transform_id` of the record transform to be applied.\n"
+      description: 'Creates a Nexset from another Nexset.
+
+
+        The endpoint accepts a parent Nexset ID along with all transform and validation rules that should be applied to the parent Nexset.
+
+
+        The two payload variants reflect the following two ways of specifying transform rules:
+
+        1. Attach the transform code that should be applied: Set `has_custom_transform: false`, and attach a `transform` code snippet.
+
+        2. Use the ID of a reusable record transform: Set `has_custom_transform: false`, and attach the `transform_id` of the record transform to be applied.'
       requestBody:
         content:
           application/vnd.nexla.api.v1+json:
@@ -118,9 +80,7 @@ paths:
       - Nexsets (Data Sets)
       operationId: get_nexset
       summary: Get a Nexset
-      description: 'Returns a Nexset object if a valid ID is provided.
-
-        '
+      description: Returns a Nexset object if a valid ID is provided.
       parameters:
       - name: set_id
         in: path
@@ -142,9 +102,7 @@ paths:
       - Nexsets (Data Sets)
       operationId: update_nexset
       summary: Update a Nexset
-      description: 'Updates a Nexset in the authenticated user''s account.
-
-        '
+      description: Updates a Nexset in the authenticated user's account.
       parameters:
       - name: set_id
         in: path
@@ -196,9 +154,7 @@ paths:
       - Nexsets (Data Sets)
       operationId: activate_nexset
       summary: Activate Nexset
-      description: 'Activates a paused Nexset.
-
-        '
+      description: Activates a paused Nexset.
       parameters:
       - name: set_id
         in: path
@@ -222,9 +178,7 @@ paths:
       - Nexsets (Data Sets)
       operationId: pause_nexset
       summary: Pause Nexset
-      description: 'Pauses an active Nexset.
-
-        '
+      description: Pauses an active Nexset.
       parameters:
       - name: set_id
         in: path
@@ -248,9 +202,7 @@ paths:
       - Nexsets (Data Sets)
       operationId: copy_nexset
       summary: Copy Nexset
-      description: 'Use this endpoint to create a clone of an existing Nexset.
-
-        '
+      description: Use this endpoint to create a clone of an existing Nexset.
       parameters:
       - name: set_id
         in: path
@@ -293,9 +245,7 @@ paths:
       - Nexsets (Data Sets)
       operationId: get_nexset_samples
       summary: Get Nexset Samples
-      description: 'Use this endpoint to fetch some sample records from this Nexset. Use the relevant query parameters to control whether the samples returned are from the live Nexset topic or the Nexset sample cache.
-
-        '
+      description: Use this endpoint to fetch some sample records from this Nexset. Use the relevant query parameters to control whether the samples returned are from the live Nexset topic or the Nexset sample cache.
       parameters:
       - name: set_id
         in: path
@@ -339,9 +289,7 @@ paths:
       - Nexsets (Data Sets)
       operationId: data_set_docs_recommendation
       summary: Generate an AI suggestion for Nexset documentation
-      description: 'Request a suggestion for Nexset documentation. GenAI has to be configured properly for this request, or else you get a message with an error.
-
-        '
+      description: Request a suggestion for Nexset documentation. GenAI has to be configured properly for this request, or else you get a message with an error.
       parameters:
       - name: set_id
         in: path
@@ -360,7 +308,95 @@ paths:
         '404':
           description: Not Found
 components:
+  parameters:
+    expand:
+      name: expand
+      in: query
+      schema:
+        type: integer
+        enum:
+        - 1
+        description: 'Add this parameter to a resource fetch request to receive details about related resources in the response.
+
+          '
+    access_roles:
+      name: access_role
+      in: query
+      schema:
+        type: string
+        enum:
+        - collaborator
+        - operator
+        - admin
+        - owner
+        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
+        externalDocs:
+          description: Nexla API access roles
+          url: https://developers.nexla.com/docs/access-modes
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
   schemas:
+    DataSinkSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        owner_id:
+          type: integer
+          format: int32
+        org_id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        status:
+          type: string
+        sink_type:
+          type: string
+    OrgSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: string
+        client_identifier:
+          type: string
+        org_webhook_host:
+          type: string
+    DataSetBrief:
+      type: object
+      properties:
+        id:
+          type: integer
+        owner_id:
+          type: integer
+        org_id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
     AccessRoles:
       type: array
       description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
@@ -371,6 +407,147 @@ components:
         - collaborator
         - operator
         - admin
+    DataSetCreate:
+      allOf:
+      - $ref: '#/components/schemas/DataSetMutable'
+      - required:
+        - name
+        - parent_data_set_id
+        - has_custom_transform
+    DataSet:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        owner:
+          $ref: '#/components/schemas/UserSimplified'
+        org:
+          $ref: '#/components/schemas/OrgSimplified'
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+        data_source_id:
+          type:
+          - integer
+          - 'null'
+          description: 'Id of the data source this Nexset was detected from. This is only relevant for detected Nexsets.
+
+            '
+        data_source:
+          $ref: '#/components/schemas/DataSource'
+          description: 'Details about the data source this Nexset was detected from. This is only relevant for detected Nexsets.
+
+            '
+        parent_data_sets:
+          type: array
+          description: 'Details about the Nexset this Nexset is derived from. This element is empty in case of detected Nexsets and has 1 item in case of derived Nexsets.
+
+            '
+          items:
+            minItems: 0
+            maxItems: 1
+            $ref: '#/components/schemas/DataSetBrief'
+        data_sinks:
+          type: array
+          description: 'Details about every data sink this Nexset is directly connected to.
+
+            '
+          items:
+            $ref: '#/components/schemas/DataSinkSimplified'
+        access_roles:
+          $ref: '#/components/schemas/AccessRoles'
+        transform_id:
+          type:
+          - integer
+          - 'null'
+          description: 'The ID of the Transform entity that has been used to create the output of this Nexset from the parent Nexset.
+
+
+            This element is null for detected Nexsets.
+
+            '
+        output_schema:
+          type: object
+          description: 'JSON schema of this Nexset''s output.
+
+            '
+        copied_from_id:
+          type: integer
+          format: nullable
+          description: 'Reference ID of the Nexset that this Nexset was created as a copy of. This is only valid if the Nexset was created by issuing a request to the `copy` endpoint of another Nexset.
+
+            '
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            type: string
+        flow_type:
+          type: string
+          description: 'The flow type of the origin node.
+
+            '
+    DataSource:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        owner_id:
+          type: integer
+          format: int32
+        org_id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        description:
+          type: string
+          format: nullable
+        status:
+          type: string
+        source_type:
+          type: string
+        connector:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int32
+            type:
+              type: string
+            connection_type:
+              type: string
+            name:
+              type: string
+            description:
+              type: string
+            nexset_api_compatible:
+              type: boolean
+        vendor_id:
+          type: string
+          format: nullable
+    UserSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+        email_verified_at:
+          type: string
+          format: date-time
     DataSetMutable:
       allOf:
       - oneOf:
@@ -477,236 +654,40 @@ components:
             type: array
             items:
               type: string
-    OrgSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email_domain:
-          type: string
-        email:
-          type: string
-        client_identifier:
-          type: string
-        org_webhook_host:
-          type: string
-    DataSetCreate:
-      allOf:
-      - $ref: '#/components/schemas/DataSetMutable'
-      - required:
-        - name
-        - parent_data_set_id
-        - has_custom_transform
-    DataSet:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        owner:
-          $ref: '#/components/schemas/UserSimplified'
-        org:
-          $ref: '#/components/schemas/OrgSimplified'
-        name:
-          type: string
-        description:
-          type: string
-        status:
-          type: string
-        data_source_id:
-          type:
-          - integer
-          - 'null'
-          description: 'Id of the data source this Nexset was detected from. This is only relevant for detected Nexsets.
-
-            '
-        data_source:
-          $ref: '#/components/schemas/DataSource'
-          description: 'Details about the data source this Nexset was detected from. This is only relevant for detected Nexsets.
-
-            '
-        parent_data_sets:
-          type: array
-          description: 'Details about the Nexset this Nexset is derived from. This element is empty in case of detected Nexsets and has 1 item in case of derived Nexsets.
-
-            '
-          items:
-            minItems: 0
-            maxItems: 1
-            $ref: '#/components/schemas/DataSetBrief'
-        data_sinks:
-          type: array
-          description: 'Details about every data sink this Nexset is directly connected to.
-
-            '
-          items:
-            $ref: '#/components/schemas/DataSinkSimplified'
-        access_roles:
-          $ref: '#/components/schemas/AccessRoles'
-        transform_id:
-          type:
-          - integer
-          - 'null'
-          description: 'The ID of the Transform entity that has been used to create the output of this Nexset from the parent Nexset.
-
-
-            This element is null for detected Nexsets.
-
-            '
-        output_schema:
-          type: object
-          description: 'JSON schema of this Nexset''s output.
-
-            '
-        copied_from_id:
-          type: integer
-          format: nullable
-          description: 'Reference ID of the Nexset that this Nexset was created as a copy of. This is only valid if the Nexset was created by issuing a request to the `copy` endpoint of another Nexset.
-
-            '
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        tags:
-          type: array
-          items:
-            type: string
-        flow_type:
-          type: string
-          description: 'The flow type of the origin node.
-
-            '
-    DataSinkSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        owner_id:
-          type: integer
-          format: int32
-        org_id:
-          type: integer
-          format: int32
-        name:
-          type: string
-        status:
-          type: string
-        sink_type:
-          type: string
-    UserSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        full_name:
-          type: string
-        email:
-          type: string
-        email_verified_at:
-          type: string
-          format: date-time
-    DataSetBrief:
-      type: object
-      properties:
-        id:
-          type: integer
-        owner_id:
-          type: integer
-        org_id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-    DataSource:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        owner_id:
-          type: integer
-          format: int32
-        org_id:
-          type: integer
-          format: int32
-        name:
-          type: string
-        description:
-          type: string
-          format: nullable
-        status:
-          type: string
-        source_type:
-          type: string
-        connector:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int32
-            type:
-              type: string
-            connection_type:
-              type: string
-            name:
-              type: string
-            description:
-              type: string
-            nexset_api_compatible:
-              type: boolean
-        vendor_id:
-          type: string
-          format: nullable
-  parameters:
-    access_roles:
-      name: access_role
-      in: query
-      schema:
-        type: string
-        enum:
-        - collaborator
-        - operator
-        - admin
-        - owner
-        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
-        externalDocs:
-          description: Nexla API access roles
-          url: https://developers.nexla.com/docs/access-modes
-    expand:
-      name: expand
-      in: query
-      schema:
-        type: integer
-        enum:
-        - 1
-        description: 'Add this parameter to a resource fetch request to receive details about related resources in the response.
-
-          '
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
-
-          '
   responses:
+    genai_recommendation_response:
+      description: Either success or failure
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            properties:
+              status:
+                type: string
+                description: Should be 200 or "ok" for normal response. If GenAI service is not available, you will get another status code.
+                example: ok
+              output:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    description: The response message from GenAI service. Contains Markdown text.  If there is an error, this field will not be present.
+                  statusCode:
+                    type: integer
+                    description: The status code from external GenAI service.
+                    example: 200
+                  errorMessage:
+                    type: string
+                    description: If there is an error, this field will contain the error message, and 'response' field will not be present.
+                    example: GenAI Integration has not been enabled for your Nexla organization. Please contact your organization admin or Nexla support for enabling the integration.
+    data_sets_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DataSet'
     data_sets_many:
       description: Success
       content:
@@ -809,39 +790,6 @@ components:
                       flow_type:
                         type: string
                         example: streaming
-    genai_recommendation_response:
-      description: Either success or failure
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            properties:
-              status:
-                type: string
-                description: Should be 200 or "ok" for normal response. If GenAI service is not available, you will get another status code.
-                example: ok
-              output:
-                type: object
-                properties:
-                  response:
-                    type: string
-                    description: The response message from GenAI service. Contains Markdown text.  If there is an error, this field will not be present.
-                  statusCode:
-                    type: integer
-                    description: The status code from external GenAI service.
-                    example: 200
-                  errorMessage:
-                    type: string
-                    description: If there is an error, this field will contain the error message, and 'response' field will not be present.
-                    example: GenAI Integration has not been enabled for your Nexla organization. Please contact your organization admin or Nexla support for enabling the integration.
-    data_sets_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/DataSet'
   securitySchemes:
     NexlaSessionToken:
       type: http

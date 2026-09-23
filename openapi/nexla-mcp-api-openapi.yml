@@ -4,7 +4,7 @@ info:
   description: Combined Nexla GenAI RAG API Service and MCPaaS
   version: v0.2.3.3-combined
 tags:
-- name: Mcp
+- name: MCP
 paths:
   /mcp/auth/google/callback:
     get:
@@ -17,7 +17,7 @@ paths:
             application/json:
               schema: {}
       tags:
-      - Mcp
+      - MCP
   /mcp/auth/azure/callback:
     get:
       summary: Azure Upstream Callback Bridge
@@ -29,4 +29,4 @@ paths:
             application/json:
               schema: {}
       tags:
-      - Mcp
+      - MCP

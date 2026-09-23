@@ -16,51 +16,7 @@ info:
   description: '# Introduction
 
 
-    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
-
-
-    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
-
-
-    The API references in this document lists all API endpoints and the corresponding payloads.
-
-
-    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
-
-
-    # API Data Format and Versions
-
-
-    The API uses JSON for all data exchanges.
-
-
-    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
-
-    ```
-
-    Accept: application/vnd.nexla.api.v1+json
-
-    ```
-
-
-    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
-
-
-
-    ```
-
-    Accept: application/json
-
-    ```
-
-
-    # Authentication
-
-
-    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
-
-
-    <SecurityDefinitions />'
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case.'
 servers:
 - url: https://{nexla-api-host}
   variables:
@@ -78,9 +34,7 @@ paths:
       - Data Maps
       operationId: get_data_maps
       summary: Get all Data Maps
-      description: 'Retrieves all lookups (data maps) accessible to the authenticated user.
-
-        '
+      description: Retrieves all lookups (data maps) accessible to the authenticated user.
       parameters:
       - $ref: '#/components/parameters/access_roles'
       - $ref: '#/components/parameters/accept'
@@ -94,7 +48,17 @@ paths:
       - Data Maps
       operationId: create_static_data_map
       summary: Create a Static Data Map
-      description: "Creates a new static data map in the authenticated user's account. Dynamic data maps can only be created by creating a Destination (Sink) of the type `data_map`. \n\nFor statically assigned data maps, you can choose to add data rows to the data map by either of the following methods:\n1. Send data map entries with this request. In this case, the rows of data are sent as a `data_map` array of objects.\n2. Send data map entries as a separate call to add/update entries. \n\nYou must include `map_primary_key` to specify which map attribute should be used for data matching.\n"
+      description: 'Creates a new static data map in the authenticated user''s account. Dynamic data maps can only be created by creating a Destination (Sink) of the type `data_map`.
+
+
+        For statically assigned data maps, you can choose to add data rows to the data map by either of the following methods:
+
+        1. Send data map entries with this request. In this case, the rows of data are sent as a `data_map` array of objects.
+
+        2. Send data map entries as a separate call to add/update entries.
+
+
+        You must include `map_primary_key` to specify which map attribute should be used for data matching.'
       requestBody:
         content:
           application/json:
@@ -113,7 +77,13 @@ paths:
       - Data Maps
       operationId: get_data_map
       summary: Get Data Map by ID
-      description: "Retrieves a data map object if a valid ID is provided.\n\nThis call to `/data_maps` **does not** return data map entries, as they can be a large array of objects for big data maps. \n\nYou can include the `expand` query parameter to fetch the data map entries of smaller static data maps.\n"
+      description: 'Retrieves a data map object if a valid ID is provided.
+
+
+        This call to `/data_maps` **does not** return data map entries, as they can be a large array of objects for big data maps.
+
+
+        You can include the `expand` query parameter to fetch the data map entries of smaller static data maps.'
       parameters:
       - name: data_map_id
         in: path
@@ -140,9 +110,7 @@ paths:
       description: 'Updates a data map in the authenticated user''s account.
 
 
-        This endpoint is suitable for updating the metadata of a data map. We recommend using the data map entries update and delete endpoints to update data map rows.
-
-        '
+        This endpoint is suitable for updating the metadata of a data map. We recommend using the data map entries update and delete endpoints to update data map rows.'
       parameters:
       - name: data_map_id
         in: path
@@ -170,9 +138,7 @@ paths:
       - Data Maps
       operationId: delete_data_map
       summary: Delete a Data Map
-      description: 'Deletes a data map from your Nexla account.
-
-        '
+      description: Deletes a data map from your Nexla account.
       parameters:
       - name: data_map_id
         in: path
@@ -206,9 +172,7 @@ paths:
       - Data Maps
       operationId: upsert_data_map_entries
       summary: Upsert Static Data Map Entries
-      description: 'Updates the entries in a static data map. Use this endpoint to add new entries or update the row corresponding to a specific key.
-
-        '
+      description: Updates the entries in a static data map. Use this endpoint to add new entries or update the row corresponding to a specific key.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: data_map_id
@@ -262,9 +226,7 @@ paths:
       description: 'Returns the rows of data from the data map that matches a desired key or key pattern.
 
 
-        This endpoint can be used to check whether the data map contains rows of data that match the desired key, keys, or key patterns. Key names should be provided in the path in the format described below.
-
-        '
+        This endpoint can be used to check whether the data map contains rows of data that match the desired key, keys, or key patterns. Key names should be provided in the path in the format described below.'
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: data_map_id
@@ -300,9 +262,7 @@ paths:
       description: 'Deletes specific entries from the data map.
 
 
-        Use this endpoint to remove specific entries from the data map.
-
-        '
+        Use this endpoint to remove specific entries from the data map.'
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: data_map_id
@@ -329,88 +289,36 @@ paths:
         '404':
           description: Not Found
 components:
-  schemas:
-    DataMapCreate:
-      allOf:
-      - $ref: '#/components/schemas/DataMapBase'
-      - type: object
-        required:
-        - name
-        - data_type
-      - type: object
-        properties:
-          data_map:
+  responses:
+    data_maps_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DataMap'
+    data_maps_many:
+      description: Success
+      content:
+        application/json:
+          schema:
             type: array
-            description: "Enter an array of data map entries if you wish to seed this data map with some rows of data while creating the data map. \n\nYou can also update data map rows by calling the endpoint for updating entries.\n"
+            items:
+              $ref: '#/components/schemas/DataMap'
+    data_map_entries:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
             items:
               type: object
               additionalProperties:
                 type:
                 - string
                 - number
-                x-additionalPropertiesName: data_map_key
-                description: "Each property in this object should be keyed by the desired key name and the value should be equal to the desired value of that key. \n"
-    DataMapBase:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        map_primary_key:
-          type: string
-          example: id
-          description: 'Key name which should be used as the primary key for looking up rows in this data map.
-
-            '
-        data_defaults:
-          type: object
-          description: 'The default values to use for any key if the key is not present in the corresponding row.
-
-            '
-          additionalProperties:
-            type:
-            - string
-            - number
-            x-additionalPropertiesName: data_map_key
-            description: "Enter the data map key and corresponding default value you wish to be assigned to that key. \n"
-        emit_data_default:
-          type: boolean
-          description: 'This property defines whether a lookup query should return values with applicable default values for missing properties in the row.
-
-            '
-        tags:
-          type: array
-          items:
-            type: string
-    AccessRoles:
-      type: array
-      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
-      items:
-        type: string
-        enum:
-        - owner
-        - collaborator
-        - operator
-        - admin
-    OrgSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email_domain:
-          type: string
-        email:
-          type: string
-        client_identifier:
-          type: string
-        org_webhook_host:
-          type: string
-    DataMapMutable:
-      allOf:
-      - $ref: '#/components/schemas/DataMapBase'
+                x-additionalPropertiesName: data_map_entry
+                description: "An array of objects where each object is a row from the data map.          \n  \n"
+  schemas:
     DataMap:
       type: object
       properties:
@@ -479,21 +387,88 @@ components:
           type: array
           items:
             type: string
-  parameters:
-    access_roles:
-      name: access_role
-      in: query
-      schema:
+    DataMapMutable:
+      allOf:
+      - $ref: '#/components/schemas/DataMapBase'
+    DataMapBase:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        map_primary_key:
+          type: string
+          example: id
+          description: 'Key name which should be used as the primary key for looking up rows in this data map.
+
+            '
+        data_defaults:
+          type: object
+          description: 'The default values to use for any key if the key is not present in the corresponding row.
+
+            '
+          additionalProperties:
+            type:
+            - string
+            - number
+            x-additionalPropertiesName: data_map_key
+            description: "Enter the data map key and corresponding default value you wish to be assigned to that key. \n"
+        emit_data_default:
+          type: boolean
+          description: 'This property defines whether a lookup query should return values with applicable default values for missing properties in the row.
+
+            '
+        tags:
+          type: array
+          items:
+            type: string
+    OrgSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: string
+        client_identifier:
+          type: string
+        org_webhook_host:
+          type: string
+    DataMapCreate:
+      allOf:
+      - $ref: '#/components/schemas/DataMapBase'
+      - type: object
+        required:
+        - name
+        - data_type
+      - type: object
+        properties:
+          data_map:
+            type: array
+            description: "Enter an array of data map entries if you wish to seed this data map with some rows of data while creating the data map. \n\nYou can also update data map rows by calling the endpoint for updating entries.\n"
+            items:
+              type: object
+              additionalProperties:
+                type:
+                - string
+                - number
+                x-additionalPropertiesName: data_map_key
+                description: "Each property in this object should be keyed by the desired key name and the value should be equal to the desired value of that key. \n"
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
         type: string
         enum:
+        - owner
         - collaborator
         - operator
         - admin
-        - owner
-        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
-        externalDocs:
-          description: Nexla API access roles
-          url: https://developers.nexla.com/docs/access-modes
+  parameters:
     expand:
       name: expand
       in: query
@@ -515,35 +490,20 @@ components:
         description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
 
           '
-  responses:
-    data_maps_many:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/DataMap'
-    data_map_entries:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              type: object
-              additionalProperties:
-                type:
-                - string
-                - number
-                x-additionalPropertiesName: data_map_entry
-                description: "An array of objects where each object is a row from the data map.          \n  \n"
-    data_maps_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/DataMap'
+    access_roles:
+      name: access_role
+      in: query
+      schema:
+        type: string
+        enum:
+        - collaborator
+        - operator
+        - admin
+        - owner
+        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
+        externalDocs:
+          description: Nexla API access roles
+          url: https://developers.nexla.com/docs/access-modes
   securitySchemes:
     NexlaSessionToken:
       type: http

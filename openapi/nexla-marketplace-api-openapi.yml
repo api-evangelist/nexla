@@ -16,51 +16,7 @@ info:
   description: '# Introduction
 
 
-    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
-
-
-    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
-
-
-    The API references in this document lists all API endpoints and the corresponding payloads.
-
-
-    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
-
-
-    # API Data Format and Versions
-
-
-    The API uses JSON for all data exchanges.
-
-
-    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
-
-    ```
-
-    Accept: application/vnd.nexla.api.v1+json
-
-    ```
-
-
-    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
-
-
-
-    ```
-
-    Accept: application/json
-
-    ```
-
-
-    # Authentication
-
-
-    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
-
-
-    <SecurityDefinitions />'
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case.'
 servers:
 - url: https://{nexla-api-host}
   variables:
@@ -78,10 +34,8 @@ paths:
       tags:
       - Marketplace
       operationId: get_domains
-      summary: Get marketplace domains.
-      description: 'Use this endpoint to fetch marketplace domains. You need a read permission for the org.
-
-        '
+      summary: Get marketplace domains
+      description: Use this endpoint to fetch marketplace domains. You need a read permission for the org.
       parameters:
       - $ref: '#/components/parameters/accept'
       responses:
@@ -93,10 +47,8 @@ paths:
       tags:
       - Marketplace
       operationId: create_domains
-      summary: Create marketplace domains.
-      description: 'Use this endpoint to create marketplace domains. You need a manage permission for the org.
-
-        '
+      summary: Create marketplace domains
+      description: Use this endpoint to create marketplace domains. You need a manage permission for the org.
       parameters:
       - $ref: '#/components/parameters/accept'
       requestBody:
@@ -116,10 +68,8 @@ paths:
       tags:
       - Marketplace
       operationId: get_domains_for_org
-      summary: Get marketplace domains for organization.
-      description: 'Use this endpoint to fetch marketplace domains for a specific organization. You need a read permission for the org.
-
-        '
+      summary: Get marketplace domains for organization
+      description: Use this endpoint to fetch marketplace domains for a specific organization. You need a read permission for the org.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: org_id
@@ -138,10 +88,8 @@ paths:
       tags:
       - Marketplace
       operationId: get_domain
-      summary: Get a single marketplace domain.
-      description: 'Use this endpoint to fetch a marketplace domain. You need a read permission for the domain.
-
-        '
+      summary: Get a single marketplace domain
+      description: Use this endpoint to fetch a marketplace domain. You need a read permission for the domain.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: domain_id
@@ -159,10 +107,8 @@ paths:
       tags:
       - Marketplace
       operationId: update_domain
-      summary: Update a single marketplace domain.
-      description: 'Use this endpoint to update a marketplace domain. You need a manage permission for the domain.
-
-        '
+      summary: Update a single marketplace domain
+      description: Use this endpoint to update a marketplace domain. You need a manage permission for the domain.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: domain_id
@@ -187,10 +133,8 @@ paths:
       tags:
       - Marketplace
       operationId: create_domain
-      summary: Create a single marketplace domain.
-      description: 'Use this endpoint to create a marketplace domain. You need a manage permission for the org.
-
-        '
+      summary: Create a single marketplace domain
+      description: Use this endpoint to create a marketplace domain. You need a manage permission for the org.
       parameters:
       - $ref: '#/components/parameters/accept'
       requestBody:
@@ -209,10 +153,8 @@ paths:
       tags:
       - Marketplace
       operationId: delete_domain
-      summary: Delete a single marketplace domain.
-      description: 'Use this endpoint to delete a marketplace domain. You need a manage permission for the domain to delete it.
-
-        '
+      summary: Delete a single marketplace domain
+      description: Use this endpoint to delete a marketplace domain. You need a manage permission for the domain to delete it.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: domain_id
@@ -233,10 +175,8 @@ paths:
       tags:
       - Marketplace
       operationId: get_domain_items
-      summary: Get marketplace items for a domain.
-      description: 'Use this endpoint to fetch marketplace items for a domain. You need a read permission for the domain.
-
-        '
+      summary: Get marketplace items for a domain
+      description: Use this endpoint to fetch marketplace items for a domain. You need a read permission for the domain.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: domain_id
@@ -254,10 +194,8 @@ paths:
       tags:
       - Marketplace
       operationId: create_domain_item
-      summary: Create a marketplace item for a domain.
-      description: 'Use this endpoint to create a marketplace item for a domain. You need a manage permission for the domain.
-
-        '
+      summary: Create a marketplace item for a domain
+      description: Use this endpoint to create a marketplace item for a domain. You need a manage permission for the domain.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: domain_id
@@ -283,10 +221,8 @@ paths:
       tags:
       - Marketplace
       operationId: get_domain_custodians
-      summary: Get custodians for a marketplace domain.
-      description: 'Use this endpoint to fetch custodians for a marketplace domain. You need a read permission for the domain.
-
-        '
+      summary: Get custodians for a marketplace domain
+      description: Use this endpoint to fetch custodians for a marketplace domain. You need a read permission for the domain.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: domain_id
@@ -306,10 +242,8 @@ paths:
       tags:
       - Marketplace
       operationId: update_domain_custodians
-      summary: Update custodians for a marketplace domain.
-      description: 'Use this endpoint to update custodians for a marketplace domain. You need a manage permission for the domain.
-
-        '
+      summary: Update custodians for a marketplace domain
+      description: Use this endpoint to update custodians for a marketplace domain. You need a manage permission for the domain.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: domain_id
@@ -335,10 +269,8 @@ paths:
       tags:
       - Marketplace
       operationId: add_domain_custodians
-      summary: Add custodians to a marketplace domain.
-      description: 'Use this endpoint to add custodians to a marketplace domain. You need a manage permission for the domain.
-
-        '
+      summary: Add custodians to a marketplace domain
+      description: Use this endpoint to add custodians to a marketplace domain. You need a manage permission for the domain.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: domain_id
@@ -364,10 +296,8 @@ paths:
       tags:
       - Marketplace
       operationId: remove_domain_custodians
-      summary: Remove custodians from a marketplace domain.
-      description: 'Use this endpoint to remove custodians from a marketplace domain. You need a manage permission for the domain.
-
-        '
+      summary: Remove custodians from a marketplace domain
+      description: Use this endpoint to remove custodians from a marketplace domain. You need a manage permission for the domain.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: domain_id
@@ -391,6 +321,29 @@ paths:
           description: Forbidden
 components:
   schemas:
+    CustodiansResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          email:
+            type: string
+          full_name:
+            type: string
+    MarketplaceDomainsItemCreate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type:
+          - 'null'
+          - string
+        data_set_id:
+          type: integer
+          description: ID of the org's dataset that marketplace item should present. User should have a `read` permission for the dataset.
     MarketplaceDomain:
       type: object
       properties:
@@ -417,6 +370,35 @@ components:
         updated_at:
           type: string
           format: date-time
+    MarketplaceDomainCreate:
+      type: object
+      properties:
+        org_id:
+          type:
+          - 'null'
+          - integer
+        owner_id:
+          type:
+          - 'null'
+          - integer
+        name:
+          type: string
+        description:
+          type: string
+        parent_id:
+          type: integer
+          description: ID of the parent domain. Domains may build a hierarchy.
+        custodians:
+          $ref: '#/components/schemas/CustodiansPayload'
+    CustodiansPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          email:
+            type: string
     MarketplaceDomainsItem:
       type: object
       properties:
@@ -440,65 +422,7 @@ components:
         updated_at:
           type: string
           format: date-time
-    MarketplaceDomainsItemCreate:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type:
-          - 'null'
-          - string
-        data_set_id:
-          type: integer
-          description: ID of the org's dataset that marketplace item should present. User should have a `read` permission for the dataset.
-    CustodiansPayload:
-      type: array
-      items:
-        type: object
-        properties:
-          id:
-            type: integer
-          email:
-            type: string
-    MarketplaceDomainCreate:
-      type: object
-      properties:
-        org_id:
-          type:
-          - 'null'
-          - integer
-        owner_id:
-          type:
-          - 'null'
-          - integer
-        name:
-          type: string
-        description:
-          type: string
-        parent_id:
-          type: integer
-          description: ID of the parent domain. Domains may build a hierarchy.
-        custodians:
-          $ref: '#/components/schemas/CustodiansPayload'
-    CustodiansResponse:
-      type: array
-      items:
-        type: object
-        properties:
-          id:
-            type: integer
-          email:
-            type: string
-          full_name:
-            type: string
   responses:
-    custodians_many:
-      description: List of custodians
-      content:
-        application/vnd.nexla.api.v1+json:
-          schema:
-            $ref: '#/components/schemas/CustodiansResponse'
     domains_many:
       description: List of marketplace domains
       content:
@@ -507,6 +431,18 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/MarketplaceDomain'
+    domains_one:
+      description: Single marketplace domain
+      content:
+        application/vnd.nexla.api.v1+json:
+          schema:
+            $ref: '#/components/schemas/MarketplaceDomain'
+    custodians_many:
+      description: List of custodians
+      content:
+        application/vnd.nexla.api.v1+json:
+          schema:
+            $ref: '#/components/schemas/CustodiansResponse'
     domain_items_many:
       description: List of marketplace domain items
       content:
@@ -515,12 +451,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/MarketplaceDomainsItem'
-    domains_one:
-      description: Single marketplace domain
-      content:
-        application/vnd.nexla.api.v1+json:
-          schema:
-            $ref: '#/components/schemas/MarketplaceDomain'
   parameters:
     accept:
       name: Accept

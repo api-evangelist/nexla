@@ -1,0 +1,36 @@
+# Front Door AI Index — nexla — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: nexla
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: nexla.com
+  final_host: nexla.com
+  ownership: own
+  owner: nexla
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 80
+  host_score: 80
+  density: 34.68
+  words: 2307
+  tiers:
+    agentic: 54
+    core: 23
+    model: 3
+  ambiguous: 34
+  top_terms:
+    MCP: 32
+    agent: 31
+    AI: 23
+    agentic: 7
+    AI agent: 6
+    copilot: 4
+    Claude: 2
+    RAG: 2
+    automation: 2
+    prompts: 2
+    OpenAI: 1
+    chatbot: 1

@@ -16,51 +16,7 @@ info:
   description: '# Introduction
 
 
-    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
-
-
-    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
-
-
-    The API references in this document lists all API endpoints and the corresponding payloads.
-
-
-    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
-
-
-    # API Data Format and Versions
-
-
-    The API uses JSON for all data exchanges.
-
-
-    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
-
-    ```
-
-    Accept: application/vnd.nexla.api.v1+json
-
-    ```
-
-
-    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
-
-
-
-    ```
-
-    Accept: application/json
-
-    ```
-
-
-    # Authentication
-
-
-    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
-
-
-    <SecurityDefinitions />'
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case.'
 servers:
 - url: https://{nexla-api-host}
   variables:
@@ -79,9 +35,7 @@ paths:
       - Teams
       operationId: get_teams
       summary: Get all Teams
-      description: 'Returns all teams accessible to the authenticated user.
-
-        '
+      description: Returns all teams accessible to the authenticated user.
       parameters:
       - $ref: '#/components/parameters/access_roles'
       - $ref: '#/components/parameters/accept'
@@ -97,9 +51,7 @@ paths:
       - Teams
       operationId: create_team
       summary: Create a team
-      description: 'Creates a team with the specified configuration and members.
-
-        '
+      description: Creates a team with the specified configuration and members.
       requestBody:
         content:
           application/vnd.nexla.api.v1+json:
@@ -118,9 +70,7 @@ paths:
       - Teams
       operationId: get_team
       summary: Get Team by ID
-      description: 'Returns a team if a valid ID is provided.
-
-        '
+      description: Returns a team if a valid ID is provided.
       parameters:
       - name: team_id
         in: path
@@ -142,9 +92,7 @@ paths:
       - Teams
       operationId: update_team
       summary: Modify a Team
-      description: 'Modifies a team''s information and settings if a valid ID and body are provided.
-
-        '
+      description: Modifies a team's information and settings if a valid ID and body are provided.
       parameters:
       - name: team_id
         in: path
@@ -171,9 +119,7 @@ paths:
       - Teams
       operationId: delete_team
       summary: Delete Team by ID
-      description: 'Deletes a team if a valid ID is provided.
-
-        '
+      description: Deletes a team if a valid ID is provided.
       parameters:
       - name: team_id
         in: path
@@ -196,9 +142,7 @@ paths:
       - Teams
       operationId: get_team_members
       summary: Get Team Members
-      description: 'Returns a list of the members belonging to a team.
-
-        '
+      description: Returns a list of the members belonging to a team.
       parameters:
       - name: team_id
         in: path
@@ -220,9 +164,7 @@ paths:
       - Teams
       operationId: replace_team_members
       summary: Replace Team Members List
-      description: 'Replaces the list of members belonging to a team. Existing members will be removed from the team.
-
-        '
+      description: Replaces the list of members belonging to a team. Existing members will be removed from the team.
       parameters:
       - name: team_id
         in: path
@@ -249,9 +191,7 @@ paths:
       - Teams
       operationId: add_team_members
       summary: Add Members to A Team
-      description: 'Adds a list of members to a team. The existing list of members will be retained and merged with the new list of members.
-
-        '
+      description: Adds a list of members to a team. The existing list of members will be retained and merged with the new list of members.
       parameters:
       - name: team_id
         in: path
@@ -278,9 +218,7 @@ paths:
       - Teams
       operationId: delete_team_members
       summary: Remove Team Members
-      description: 'Removes members from a team. If no request body is provided, all members belonging to the team will be removed.
-
-        '
+      description: Removes members from a team. If no request body is provided, all members belonging to the team will be removed.
       parameters:
       - name: team_id
         in: path
@@ -305,40 +243,7 @@ paths:
         '404':
           description: Not Found
 components:
-  responses:
-    teams_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Team'
-    teams_many:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/Team'
-    team_members:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/TeamMemberList'
   schemas:
-    AccessRoles:
-      type: array
-      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
-      items:
-        type: string
-        enum:
-        - owner
-        - collaborator
-        - operator
-        - admin
     OrgSimplified:
       type: object
       properties:
@@ -354,6 +259,39 @@ components:
           type: string
         org_webhook_host:
           type: string
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
+    TeamMemberRequestSchema:
+      oneOf:
+      - type: object
+        properties:
+          id:
+            type: integer
+            description: "Unique ID of the user. \n"
+          admin:
+            type: boolean
+            description: 'Reflects whether the user is an administrator of this team or not.
+
+              '
+      - type: object
+        properties:
+          email:
+            type: string
+            format: email
+            description: 'Email ID of the user.
+
+              '
+          admin:
+            type: boolean
+            description: "Reflects whether the user is an administrator of this team or not.        \n"
     Team:
       type: object
       properties:
@@ -385,35 +323,42 @@ components:
           type: array
           items:
             type: string
-    TeamMemberRequestSchema:
-      oneOf:
-      - type: object
-        properties:
-          id:
-            type: integer
-            description: "Unique ID of the user. \n"
-          admin:
-            type: boolean
-            description: 'Reflects whether the user is an administrator of this team or not.
-
-              '
-      - type: object
-        properties:
-          email:
-            type: string
-            format: email
-            description: 'Email ID of the user.
-
-              '
-          admin:
-            type: boolean
-            description: "Reflects whether the user is an administrator of this team or not.        \n"
+    UserSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+        email_verified_at:
+          type: string
+          format: date-time
     TeamCreate:
       allOf:
       - $ref: '#/components/schemas/TeamMutable'
       - type: object
         required:
         - name
+    TeamMemberList:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamMemberResponseSchema'
+    TeamMutable:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamMemberRequestSchema'
     TeamMemberResponseSchema:
       type: object
       properties:
@@ -429,37 +374,41 @@ components:
           description: 'Reflects whether the user is an administrator of this team or not.
 
             '
-    UserSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        full_name:
-          type: string
-        email:
-          type: string
-        email_verified_at:
-          type: string
-          format: date-time
-    TeamMutable:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        members:
-          type: array
-          items:
-            $ref: '#/components/schemas/TeamMemberRequestSchema'
-    TeamMemberList:
-      type: object
-      properties:
-        members:
-          type: array
-          items:
-            $ref: '#/components/schemas/TeamMemberResponseSchema'
+  responses:
+    teams_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Team'
+    team_members:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/TeamMemberList'
+    teams_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Team'
   parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
     access_roles:
       name: access_role
       in: query
@@ -474,17 +423,6 @@ components:
         externalDocs:
           description: Nexla API access roles
           url: https://developers.nexla.com/docs/access-modes
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
-
-          '
   securitySchemes:
     NexlaSessionToken:
       type: http

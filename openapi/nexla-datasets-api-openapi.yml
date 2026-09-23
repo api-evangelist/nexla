@@ -4,7 +4,7 @@ info:
   description: Combined Nexla GenAI RAG API Service and MCPaaS
   version: v0.2.3.3-combined
 tags:
-- name: Data Sets
+- name: Datasets
 paths:
   /data_sets/{nexset_id}/semantic_schema:
     post:
@@ -37,7 +37,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
-      - Data Sets
+      - Datasets
 components:
   schemas:
     HTTPValidationError:

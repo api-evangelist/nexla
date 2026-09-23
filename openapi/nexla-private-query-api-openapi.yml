@@ -40,81 +40,6 @@ paths:
       - Private Query
 components:
   schemas:
-    RerankingConfig:
-      properties:
-        model:
-          type: string
-          title: Model
-          description: The identifier of the reranking model to use
-        provider:
-          type: string
-          title: Provider
-          description: The provider of the reranking model (e.g., Azure, OpenAI)
-        credential_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Credential Id
-          description: An optional credential ID for accessing the reranking model
-        credential_parameters:
-          anyOf:
-          - $ref: '#/components/schemas/LLMCredentialParameters'
-          - type: 'null'
-          description: Optional credential parameters for accessing the reranking model
-      type: object
-      required:
-      - model
-      - provider
-      title: RerankingConfig
-    LLMConfig:
-      properties:
-        model:
-          type: string
-          title: Model
-          description: The identifier of the AI model to use for processing the query
-        provider:
-          type: string
-          title: Provider
-          description: The provider of the AI model (e.g., Azure, OpenAI)
-        credential_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Credential Id
-          description: An optional credential ID for accessing the LLM
-        credential_parameters:
-          anyOf:
-          - $ref: '#/components/schemas/LLMCredentialParameters'
-          - type: 'null'
-          description: Optional credential parameters for accessing the LLM
-        reasoning_effort:
-          anyOf:
-          - type: string
-            enum:
-            - none
-            - minimal
-            - low
-            - medium
-            - high
-            - xhigh
-          - type: 'null'
-          title: Reasoning Effort
-          description: Reasoning effort for OpenAI reasoning models (gpt-5*). Controls how much the model thinks. Defaults to 'low' when unset.
-        reasoning_summary:
-          anyOf:
-          - type: string
-            enum:
-            - concise
-            - detailed
-            - auto
-          - type: 'null'
-          title: Reasoning Summary
-          description: Reasoning summary verbosity for OpenAI reasoning models. Controls how much of the chain-of-thought is streamed back as thinking_delta events. 'detailed' produces visibly streaming multi-paragraph summaries. Defaults to 'concise' when unset.
-      type: object
-      required:
-      - model
-      - provider
-      title: LLMConfig
     EmbeddingConfig:
       properties:
         model:
@@ -141,113 +66,13 @@ components:
       - model
       - provider
       title: EmbeddingConfig
-    FilterCondition:
-      properties:
-        key:
-          type: string
-          title: Key
-          description: The metadata field name to filter on (e.g., 'access_role', 'tenant_id', 'document_id').
-        operator:
-          $ref: '#/components/schemas/FilterOperator'
-          description: The comparison operator to apply.
-        value:
-          title: Value
-          description: 'The value(s) to compare against. Type depends on operator: single value for EQ/NEQ/GT/GTE/LT/LTE/CONTAINS/NOT_CONTAINS, list for IN/NOT_IN, two-element list [min, max] for BETWEEN, ignored for EXISTS/NOT_EXISTS.'
-      additionalProperties: false
-      type: object
-      required:
-      - key
-      - operator
-      title: FilterCondition
-      description: A single filter predicate on a metadata key.
-    NexsetFilters:
-      properties:
-        acl_filter:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/FilterCondition'
-            type: array
-          - type: 'null'
-          title: Acl Filter
-          description: Access control filters. Restrict results based on authorization rules. Multiple conditions are combined with AND logic.
-        pre_filter:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/FilterCondition'
-            type: array
-          - type: 'null'
-          title: Pre Filter
-          description: Pre-retrieval metadata filters. Narrow the search space before vector/semantic retrieval. Multiple conditions are combined with AND logic.
-        strict_metadata_filter:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Strict Metadata Filter
-          description: When True, agent-supplied metadata_filter keys not in the allowed list cause the entire agent filter to be rejected. When None, falls back to the V2_PINECONE_STRICT_METADATA_FILTER env var.
-      additionalProperties: false
-      type: object
-      title: NexsetFilters
-      description: Filters applied to a specific nexset during retrieval.
-    UserContext:
-      properties:
-        access_role:
-          items:
-            type: string
-          type: array
-          title: Access Role
-          description: The access roles for the requesting user.
-        user_id:
-          type: string
-          title: User Id
-          description: The unique identifier for the requesting user.
-        session_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Session Id
-          description: Session ID associated with user session. Useful for storing conversation history.
-        access_rules:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Access Rules
-          description: Policy-level gate. Keys and valid values configured at registration.
-        access_scope:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Access Scope
-          description: Data ownership scope. Values are always arrays (IN semantics).
-        filters:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Filters
-          description: Page/session context filters. String = EQ, array = IN.
-      additionalProperties: false
-      type: object
-      required:
-      - user_id
-      title: UserContext
-    PromptOverrides:
-      properties:
-        system_prompt:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: System Prompt
-          description: Optional system prompt to override the default behavior.
-        prompt_hints:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Prompt Hints
-          description: Optional hints to guide the prompt generation.
-      type: object
-      title: PromptOverrides
+    StreamFormat:
+      type: string
+      enum:
+      - text
+      - sse
+      title: StreamFormat
+      description: Supported streaming response formats.
     ValidationError:
       properties:
         loc:
@@ -274,49 +99,6 @@ components:
       - msg
       - type
       title: ValidationError
-    LLMCredentialParameters:
-      properties:
-        model:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Model
-          description: The model to use for the credential
-        provider:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Provider
-          description: The provider to use for the credential
-        url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Url
-          description: The endpoint URL for the AI provider
-        api_key:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Api Key
-          description: The API key for the AI provider
-        api_version:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Api Version
-          description: The API version to use with the AI provider
-      type: object
-      title: LLMCredentialParameters
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     RetrievalParams:
       properties:
         topk:
@@ -334,23 +116,6 @@ components:
           description: Optional reranking object
       type: object
       title: RetrievalParams
-    NexsetSpec:
-      properties:
-        id:
-          type: string
-          title: Id
-          description: The unique identifier for the nexset.
-        filters:
-          anyOf:
-          - $ref: '#/components/schemas/NexsetFilters'
-          - type: 'null'
-          description: Optional per-nexset filters for ACL and pre-retrieval filtering.
-      additionalProperties: false
-      type: object
-      required:
-      - id
-      title: NexsetSpec
-      description: Specification for a nexset to include in a query, with optional per-nexset filters.
     PrivateQueryRequest:
       properties:
         user_prompt:
@@ -431,12 +196,6 @@ components:
       - user_prompt
       - llm_config
       title: PrivateQueryRequest
-    TokenType:
-      type: string
-      enum:
-      - bearer
-      - service_key
-      title: TokenType
     FilterOperator:
       type: string
       enum:
@@ -455,6 +214,93 @@ components:
       - BETWEEN
       title: FilterOperator
       description: Supported operators for nexset metadata filtering.
+    UserContext:
+      properties:
+        access_role:
+          items:
+            type: string
+          type: array
+          title: Access Role
+          description: The access roles for the requesting user.
+        user_id:
+          type: string
+          title: User Id
+          description: The unique identifier for the requesting user.
+        session_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Session Id
+          description: Session ID associated with user session. Useful for storing conversation history.
+        access_rules:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Access Rules
+          description: Policy-level gate. Keys and valid values configured at registration.
+        access_scope:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Access Scope
+          description: Data ownership scope. Values are always arrays (IN semantics).
+        filters:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Filters
+          description: Page/session context filters. String = EQ, array = IN.
+      additionalProperties: false
+      type: object
+      required:
+      - user_id
+      title: UserContext
+    RerankingConfig:
+      properties:
+        model:
+          type: string
+          title: Model
+          description: The identifier of the reranking model to use
+        provider:
+          type: string
+          title: Provider
+          description: The provider of the reranking model (e.g., Azure, OpenAI)
+        credential_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Credential Id
+          description: An optional credential ID for accessing the reranking model
+        credential_parameters:
+          anyOf:
+          - $ref: '#/components/schemas/LLMCredentialParameters'
+          - type: 'null'
+          description: Optional credential parameters for accessing the reranking model
+      type: object
+      required:
+      - model
+      - provider
+      title: RerankingConfig
+    NexsetSpec:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: The unique identifier for the nexset.
+        filters:
+          anyOf:
+          - $ref: '#/components/schemas/NexsetFilters'
+          - type: 'null'
+          description: Optional per-nexset filters for ACL and pre-retrieval filtering.
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      title: NexsetSpec
+      description: Specification for a nexset to include in a query, with optional per-nexset filters.
     LLMModelParams:
       properties:
         temperature:
@@ -481,10 +327,164 @@ components:
           description: Token budget for extended thinking (Anthropic). Defaults to 4096 for Anthropic models.
       type: object
       title: LLMModelParams
-    StreamFormat:
+    NexsetFilters:
+      properties:
+        acl_filter:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/FilterCondition'
+            type: array
+          - type: 'null'
+          title: Acl Filter
+          description: Access control filters. Restrict results based on authorization rules. Multiple conditions are combined with AND logic.
+        pre_filter:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/FilterCondition'
+            type: array
+          - type: 'null'
+          title: Pre Filter
+          description: Pre-retrieval metadata filters. Narrow the search space before vector/semantic retrieval. Multiple conditions are combined with AND logic.
+        strict_metadata_filter:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Strict Metadata Filter
+          description: When True, agent-supplied metadata_filter keys not in the allowed list cause the entire agent filter to be rejected. When None, falls back to the V2_PINECONE_STRICT_METADATA_FILTER env var.
+      additionalProperties: false
+      type: object
+      title: NexsetFilters
+      description: Filters applied to a specific nexset during retrieval.
+    TokenType:
       type: string
       enum:
-      - text
-      - sse
-      title: StreamFormat
-      description: Supported streaming response formats.
+      - bearer
+      - service_key
+      title: TokenType
+    FilterCondition:
+      properties:
+        key:
+          type: string
+          title: Key
+          description: The metadata field name to filter on (e.g., 'access_role', 'tenant_id', 'document_id').
+        operator:
+          $ref: '#/components/schemas/FilterOperator'
+          description: The comparison operator to apply.
+        value:
+          title: Value
+          description: 'The value(s) to compare against. Type depends on operator: single value for EQ/NEQ/GT/GTE/LT/LTE/CONTAINS/NOT_CONTAINS, list for IN/NOT_IN, two-element list [min, max] for BETWEEN, ignored for EXISTS/NOT_EXISTS.'
+      additionalProperties: false
+      type: object
+      required:
+      - key
+      - operator
+      title: FilterCondition
+      description: A single filter predicate on a metadata key.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    LLMCredentialParameters:
+      properties:
+        model:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Model
+          description: The model to use for the credential
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+          description: The provider to use for the credential
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: The endpoint URL for the AI provider
+        api_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Api Key
+          description: The API key for the AI provider
+        api_version:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Api Version
+          description: The API version to use with the AI provider
+      type: object
+      title: LLMCredentialParameters
+    PromptOverrides:
+      properties:
+        system_prompt:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: System Prompt
+          description: Optional system prompt to override the default behavior.
+        prompt_hints:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Prompt Hints
+          description: Optional hints to guide the prompt generation.
+      type: object
+      title: PromptOverrides
+    LLMConfig:
+      properties:
+        model:
+          type: string
+          title: Model
+          description: The identifier of the AI model to use for processing the query
+        provider:
+          type: string
+          title: Provider
+          description: The provider of the AI model (e.g., Azure, OpenAI)
+        credential_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Credential Id
+          description: An optional credential ID for accessing the LLM
+        credential_parameters:
+          anyOf:
+          - $ref: '#/components/schemas/LLMCredentialParameters'
+          - type: 'null'
+          description: Optional credential parameters for accessing the LLM
+        reasoning_effort:
+          anyOf:
+          - type: string
+            enum:
+            - none
+            - minimal
+            - low
+            - medium
+            - high
+            - xhigh
+          - type: 'null'
+          title: Reasoning Effort
+          description: Reasoning effort for OpenAI reasoning models (gpt-5*). Controls how much the model thinks. Defaults to 'low' when unset.
+        reasoning_summary:
+          anyOf:
+          - type: string
+            enum:
+            - concise
+            - detailed
+            - auto
+          - type: 'null'
+          title: Reasoning Summary
+          description: Reasoning summary verbosity for OpenAI reasoning models. Controls how much of the chain-of-thought is streamed back as thinking_delta events. 'detailed' produces visibly streaming multi-paragraph summaries. Defaults to 'concise' when unset.
+      type: object
+      required:
+      - model
+      - provider
+      title: LLMConfig

@@ -9,7 +9,17 @@ paths:
   /list_models:
     get:
       summary: List Models
-      description: "List available models.\n\nArgs:\n    auth_response: Authentication response from AuthHandler.verify_auth dependency\n\nReturns:\n    dict: List of available models"
+      description: 'List available models.
+
+
+        Args:
+
+        auth_response: Authentication response from AuthHandler.verify_auth dependency
+
+
+        Returns:
+
+        dict: List of available models'
       operationId: list_models_list_models_get
       parameters:
       - name: token_type
@@ -43,6 +53,12 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    TokenType:
+      type: string
+      enum:
+      - bearer
+      - service_key
+      title: TokenType
     ValidationError:
       properties:
         loc:
@@ -69,9 +85,3 @@ components:
       - msg
       - type
       title: ValidationError
-    TokenType:
-      type: string
-      enum:
-      - bearer
-      - service_key
-      title: TokenType

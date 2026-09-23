@@ -16,51 +16,7 @@ info:
   description: '# Introduction
 
 
-    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
-
-
-    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
-
-
-    The API references in this document lists all API endpoints and the corresponding payloads.
-
-
-    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
-
-
-    # API Data Format and Versions
-
-
-    The API uses JSON for all data exchanges.
-
-
-    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
-
-    ```
-
-    Accept: application/vnd.nexla.api.v1+json
-
-    ```
-
-
-    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
-
-
-
-    ```
-
-    Accept: application/json
-
-    ```
-
-
-    # Authentication
-
-
-    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
-
-
-    <SecurityDefinitions />'
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case.'
 servers:
 - url: https://{nexla-api-host}
   variables:
@@ -71,7 +27,7 @@ security:
 - NexlaSessionToken: []
 tags:
 - name: Code Containers
-  description: "\nCode containers are a general-purpose resource in the platform for storing user-defined functions that can be referenced by different modules for different purposes.\n\nThese containers can either hold the code in the database or reference the repository where the code is saved.\n\nCommon use cases are - \n1. `transform` for code blocks that are used to transform Nexsets.\n2. `ai_function` for code blocks that can be used for AI functions.\n\nFor convenience, in addition to allowing direct access to any type of code_container, the API also provides some aliased versions of commonly used types of code containers. For ex, all endpoints for `transforms` are just aliases to endpoints for code_containers that can only be used for transforming Nexset record,\n"
+  description: Code containers are a general-purpose resource in the platform for storing user-defined functions that can be referenced by different modules for different purposes.
 paths:
   /code_containers:
     get:
@@ -79,9 +35,7 @@ paths:
       - Code Containers
       operationId: get_code_containers
       summary: Get all Code Containers
-      description: 'Use this endpoint to fetch all code containers accessible to the authenticated user.
-
-        '
+      description: Use this endpoint to fetch all code containers accessible to the authenticated user.
       parameters:
       - $ref: '#/components/parameters/accept'
       responses:
@@ -96,9 +50,7 @@ paths:
       - Code Containers
       operationId: create_code_container
       summary: Create a Code Container
-      description: 'Use this endpoint to create a new code container.
-
-        '
+      description: Use this endpoint to create a new code container.
       requestBody:
         content:
           application/json:
@@ -117,9 +69,7 @@ paths:
       - Code Containers
       operationId: get_code_container
       summary: Get Code Container by ID
-      description: 'Returns a code container object if a valid ID is provided.
-
-        '
+      description: Returns a code container object if a valid ID is provided.
       parameters:
       - name: code_container_id
         in: path
@@ -142,9 +92,7 @@ paths:
       - Code Containers
       operationId: update_code_container
       summary: Update a Code Container
-      description: 'Updates a code container in the authenticated user''s account.
-
-        '
+      description: Updates a code container in the authenticated user's account.
       parameters:
       - name: code_container_id
         in: path
@@ -206,7 +154,7 @@ paths:
       - Code Containers
       operationId: copy_code_container
       summary: Copy a Code Container
-      description: "Use this endpoint to create a copy of an existing code container. \n"
+      description: Use this endpoint to create a copy of an existing code container.
       parameters:
       - name: code_container_id
         in: path
@@ -230,7 +178,10 @@ paths:
       - Code Containers
       operationId: get_public_code_containers
       summary: Get all Public Code Containers
-      description: "The Nexla team regularly adds common code containers that are made available to all Nexla accounts. \n\nUse this endpoint to fetch all such \"publicly\" available code containers.\n"
+      description: 'The Nexla team regularly adds common code containers that are made available to all Nexla accounts.
+
+
+        Use this endpoint to fetch all such "publicly" available code containers.'
       parameters:
       - $ref: '#/components/parameters/accept'
       responses:
@@ -242,130 +193,6 @@ paths:
           description: Forbidden
 components:
   schemas:
-    AccessRoles:
-      type: array
-      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
-      items:
-        type: string
-        enum:
-        - owner
-        - collaborator
-        - operator
-        - admin
-    code_containers_CodeType:
-      type: string
-      enum:
-      - jolt_standard
-      - jolt_custom
-      - python
-      - python3
-      - javascript
-    code_containers_ResourceType:
-      type: string
-      enum:
-      - transform
-      - ai_function
-      - source
-      - sink
-      - error
-      - validator
-      description: "The type of resource that this code container is to be used for. \n- `transform`: For user defined code that is used in a Nexset transform.\n- `ai_function`: For user defined code that is used in an AI function. See `ai_function_type` for the scenarios where this is used.\n- `source`: For user defined code in a source.\n- `sink`: For user defined code in a sink.\n- `error`: For user defined code that acts as an error handler.\n- `validator`: For user defined code that acts as a validator.\n"
-    OrgSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email_domain:
-          type: string
-        email:
-          type: string
-        client_identifier:
-          type: string
-        org_webhook_host:
-          type: string
-    CodeContainerMutable:
-      type: object
-      required:
-      - name
-      - output_type
-      - reusable
-      - code
-      - code_type
-      - code_encoding
-      properties:
-        name:
-          type: string
-          example: test
-        description:
-          type: string
-          example: test
-        data_credentials_id:
-          type: integer
-          format: nullable
-          description: 'Credential ID for accessing the code repository (e.g., Github). This is for code containers in which the code is saved in a remote repository.
-
-
-            Note that this is not required for script connectors in which the script is hosted in a Nexla Github repository.
-
-            '
-        resource_type:
-          $ref: '#/components/schemas/code_containers_ResourceType'
-        ai_function_type:
-          type: string
-          enum:
-          - chunker
-          - context_enricher
-          - query_rewriter
-          - reranker
-          description: "The type of AI function that this code container is used for.\n- `chunker`:  Used to chunk parsed file content into smaller chunks in a Document Ingestion flow.\n- `context_enricher`: Used to enrich the context of a query in a RAG flow.\n- `query_rewriter`: Used to rewrite a query in a RAG flow.\n- `reranker`: Used to rerank a list of results in a RAG flow.        \n"
-        output_type:
-          $ref: '#/components/schemas/code_containers_OutputType'
-        code_type:
-          $ref: '#/components/schemas/code_containers_CodeType'
-        code_encoding:
-          type: string
-          enum:
-          - none
-          - base64
-          description: "Whether or not the code in the `code` block is encoded. Set this to `none` for reusable record transforms.      \n"
-        code:
-          description: 'Code to be executed in this code container.
-
-
-            Please refer to the endpoints for `transforms`, `attribute_transforms` and `validators` for respective `code` block requirements.
-
-            '
-          oneOf:
-          - type: string
-          - type: array
-            items:
-              type: object
-              properties:
-                operation:
-                  type: string
-                  example: nexla.custom
-                spec:
-                  type: object
-                  properties:
-                    language:
-                      type: string
-                      example: python
-                    encoding:
-                      type: string
-                      example: base64
-                    script:
-                      type: string
-        reusable:
-          type: boolean
-          description: "Whether or not this transform can be referenced by multiple resources. This should always be `true` for reusable record and attribute transforms.       \n"
-        tags:
-          type: array
-          items:
-            type: string
-        custom_config:
-          type: object
     CodeContainer:
       type: object
       properties:
@@ -470,21 +297,6 @@ components:
           type: array
           items:
             type: string
-    DataCredentialBrief:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-        updated_at:
-          type: string
-          format: date-time
-        created_at:
-          type: string
-          format: date-time
     code_containers_OutputType:
       type: string
       enum:
@@ -501,6 +313,46 @@ components:
         - `custom`: Produces custom output. Used as a catch-all output format when a code container is used in any context other than for Nexset modification.
 
         '
+    OrgSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: string
+        client_identifier:
+          type: string
+        org_webhook_host:
+          type: string
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
+    DataCredentialBrief:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
     UserSimplified:
       type: object
       properties:
@@ -513,6 +365,120 @@ components:
         email_verified_at:
           type: string
           format: date-time
+    code_containers_CodeType:
+      type: string
+      enum:
+      - jolt_standard
+      - jolt_custom
+      - python
+      - python3
+      - javascript
+    CodeContainerMutable:
+      type: object
+      required:
+      - name
+      - output_type
+      - reusable
+      - code
+      - code_type
+      - code_encoding
+      properties:
+        name:
+          type: string
+          example: test
+        description:
+          type: string
+          example: test
+        data_credentials_id:
+          type: integer
+          format: nullable
+          description: 'Credential ID for accessing the code repository (e.g., Github). This is for code containers in which the code is saved in a remote repository.
+
+
+            Note that this is not required for script connectors in which the script is hosted in a Nexla Github repository.
+
+            '
+        resource_type:
+          $ref: '#/components/schemas/code_containers_ResourceType'
+        ai_function_type:
+          type: string
+          enum:
+          - chunker
+          - context_enricher
+          - query_rewriter
+          - reranker
+          description: "The type of AI function that this code container is used for.\n- `chunker`:  Used to chunk parsed file content into smaller chunks in a Document Ingestion flow.\n- `context_enricher`: Used to enrich the context of a query in a RAG flow.\n- `query_rewriter`: Used to rewrite a query in a RAG flow.\n- `reranker`: Used to rerank a list of results in a RAG flow.        \n"
+        output_type:
+          $ref: '#/components/schemas/code_containers_OutputType'
+        code_type:
+          $ref: '#/components/schemas/code_containers_CodeType'
+        code_encoding:
+          type: string
+          enum:
+          - none
+          - base64
+          description: "Whether or not the code in the `code` block is encoded. Set this to `none` for reusable record transforms.      \n"
+        code:
+          description: 'Code to be executed in this code container.
+
+
+            Please refer to the endpoints for `transforms`, `attribute_transforms` and `validators` for respective `code` block requirements.
+
+            '
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              type: object
+              properties:
+                operation:
+                  type: string
+                  example: nexla.custom
+                spec:
+                  type: object
+                  properties:
+                    language:
+                      type: string
+                      example: python
+                    encoding:
+                      type: string
+                      example: base64
+                    script:
+                      type: string
+        reusable:
+          type: boolean
+          description: "Whether or not this transform can be referenced by multiple resources. This should always be `true` for reusable record and attribute transforms.       \n"
+        tags:
+          type: array
+          items:
+            type: string
+        custom_config:
+          type: object
+    code_containers_ResourceType:
+      type: string
+      enum:
+      - transform
+      - ai_function
+      - source
+      - sink
+      - error
+      - validator
+      description: "The type of resource that this code container is to be used for. \n- `transform`: For user defined code that is used in a Nexset transform.\n- `ai_function`: For user defined code that is used in an AI function. See `ai_function_type` for the scenarios where this is used.\n- `source`: For user defined code in a source.\n- `sink`: For user defined code in a sink.\n- `error`: For user defined code that acts as an error handler.\n- `validator`: For user defined code that acts as a validator.\n"
+  responses:
+    code_containers_many_CodeContainer:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/CodeContainer'
+    CodeContainer:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CodeContainer'
   parameters:
     accept:
       name: Accept
@@ -525,21 +491,6 @@ components:
         description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
 
           '
-  responses:
-    CodeContainer:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CodeContainer'
-    code_containers_many_CodeContainer:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/CodeContainer'
   securitySchemes:
     NexlaSessionToken:
       type: http

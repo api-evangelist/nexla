@@ -4,12 +4,12 @@ info:
   description: Combined Nexla GenAI RAG API Service and MCPaaS
   version: v0.2.3.3-combined
 tags:
-- name: tools
+- name: Tools
 paths:
   /v1/tools:from_nexset:
     post:
       tags:
-      - tools
+      - Tools
       summary: Create Tool From Nexset
       operationId: create_tool_from_nexset_v1_tools_from_nexset_post
       parameters:
@@ -109,7 +109,7 @@ paths:
   /v1/tools:
     get:
       tags:
-      - tools
+      - Tools
       summary: List Tools
       description: 'List all tools.
 
@@ -305,7 +305,7 @@ paths:
   /v1/tools/{tool_id}:
     get:
       tags:
-      - tools
+      - Tools
       summary: Get Tool
       description: 'Get a tool by ID.
 
@@ -410,7 +410,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     patch:
       tags:
-      - tools
+      - Tools
       summary: Update Tool
       description: 'Update tool metadata.
 
@@ -521,7 +521,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     delete:
       tags:
-      - tools
+      - Tools
       summary: Delete Tool
       description: 'Soft delete a tool.
 
@@ -627,7 +627,7 @@ paths:
   /v1/tools/{tool_id}:activate:
     post:
       tags:
-      - tools
+      - Tools
       summary: Activate Tool
       operationId: activate_tool_v1_tools__tool_id__activate_post
       parameters:
@@ -727,7 +727,7 @@ paths:
   /v1/tools/{tool_id}:pause:
     post:
       tags:
-      - tools
+      - Tools
       summary: Pause Tool
       operationId: pause_tool_v1_tools__tool_id__pause_post
       parameters:
@@ -827,7 +827,7 @@ paths:
   /v1/tools/{tool_id}/usage:
     get:
       tags:
-      - tools
+      - Tools
       summary: Get Tool Usage
       description: 'Get usage information for a tool.
 
@@ -931,7 +931,7 @@ paths:
   /v1/tools/{tool_id}/definition:
     get:
       tags:
-      - tools
+      - Tools
       summary: Get Tool Definition
       description: 'Get the tool definition (JSON schema).
 
@@ -1035,7 +1035,7 @@ paths:
   /v1/tools:reconcile:
     post:
       tags:
-      - tools
+      - Tools
       summary: Reconcile Tools
       description: Re-sync local tools by re-fetching nexset metadata from Nexla Admin API.
       operationId: reconcile_tools_v1_tools_reconcile_post
@@ -1136,7 +1136,7 @@ paths:
   /v1/tools/{tool_id}:execute:
     post:
       tags:
-      - tools
+      - Tools
       summary: Execute Tool
       operationId: execute_tool_v1_tools__tool_id__execute_post
       parameters:
@@ -1242,7 +1242,7 @@ paths:
   /v1/tools/{tool_id}/changelogs:
     get:
       tags:
-      - tools
+      - Tools
       summary: List Tool Changelogs
       description: 'List changelogs for a tool.
 
@@ -1361,6 +1361,21 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    FromNexsetIn:
+      properties:
+        nexset_id:
+          type: integer
+          minimum: 1.0
+          title: Nexset Id
+        publish:
+          type: boolean
+          title: Publish
+          default: false
+      additionalProperties: false
+      type: object
+      required:
+      - nexset_id
+      title: FromNexsetIn
     ValidationError:
       properties:
         loc:
@@ -1408,22 +1423,6 @@ components:
       required:
       - version
       title: ExecuteIn
-    ReconcileIn:
-      properties:
-        mode:
-          type: string
-          const: changed_since
-          title: Mode
-          default: changed_since
-        since:
-          type: string
-          format: date-time
-          title: Since
-      additionalProperties: false
-      type: object
-      required:
-      - since
-      title: ReconcileIn
     ToolUpdateIn:
       properties:
         name:
@@ -1456,21 +1455,6 @@ components:
       type: object
       title: ToolUpdateIn
       description: Input schema for updating a tool.
-    FromNexsetIn:
-      properties:
-        nexset_id:
-          type: integer
-          minimum: 1.0
-          title: Nexset Id
-        publish:
-          type: boolean
-          title: Publish
-          default: false
-      additionalProperties: false
-      type: object
-      required:
-      - nexset_id
-      title: FromNexsetIn
     HTTPValidationError:
       properties:
         detail:
@@ -1480,3 +1464,19 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    ReconcileIn:
+      properties:
+        mode:
+          type: string
+          const: changed_since
+          title: Mode
+          default: changed_since
+        since:
+          type: string
+          format: date-time
+          title: Since
+      additionalProperties: false
+      type: object
+      required:
+      - since
+      title: ReconcileIn

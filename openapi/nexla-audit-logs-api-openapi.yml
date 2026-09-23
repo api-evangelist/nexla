@@ -16,51 +16,7 @@ info:
   description: '# Introduction
 
 
-    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
-
-
-    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
-
-
-    The API references in this document lists all API endpoints and the corresponding payloads.
-
-
-    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
-
-
-    # API Data Format and Versions
-
-
-    The API uses JSON for all data exchanges.
-
-
-    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
-
-    ```
-
-    Accept: application/vnd.nexla.api.v1+json
-
-    ```
-
-
-    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
-
-
-
-    ```
-
-    Accept: application/json
-
-    ```
-
-
-    # Authentication
-
-
-    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
-
-
-    <SecurityDefinitions />'
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case.'
 servers:
 - url: https://{nexla-api-host}
   variables:
@@ -79,9 +35,7 @@ paths:
       - Audit Logs
       operationId: get_data_source_audit_log
       summary: Get Audit Log for a Data Source
-      description: 'Retrieves the history of changes made to the properties of a data source.
-
-        '
+      description: Retrieves the history of changes made to the properties of a data source.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: data_source_id
@@ -121,9 +75,7 @@ paths:
       - Audit Logs
       operationId: get_data_sink_audit_log
       summary: Get Audit Log for a Data Sink
-      description: 'Retrieves the history of changes made to the properties of a data sink.
-
-        '
+      description: Retrieves the history of changes made to the properties of a data sink.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: data_sink_id
@@ -151,9 +103,7 @@ paths:
       - Audit Logs
       operationId: get_nexset_audit_log
       summary: Get Audit Log for a Nexset
-      description: 'Retrieves the history of changes made to the properties of a Nexset.
-
-        '
+      description: Retrieves the history of changes made to the properties of a Nexset.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: data_set_id
@@ -181,9 +131,7 @@ paths:
       - Audit Logs
       operationId: get_data_credential_audit_log
       summary: Get Audit Log for a Data Credential
-      description: 'Retrieves the history of changes made to the properties of a data credential.
-
-        '
+      description: Retrieves the history of changes made to the properties of a data credential.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: data_credential_id
@@ -211,9 +159,7 @@ paths:
       - Audit Logs
       operationId: get_data_map_audit_log
       summary: Get Audit Log for a Data Map
-      description: 'Retrieves the history of changes made to the properties of a data map.
-
-        '
+      description: Retrieves the history of changes made to the properties of a data map.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: data_map_id
@@ -241,9 +187,7 @@ paths:
       - Audit Logs
       operationId: get_data_schema_audit_log
       summary: Get Audit Log for a Data Schema
-      description: 'Retrieves the history of changes made to the properties of a data schema.
-
-        '
+      description: Retrieves the history of changes made to the properties of a data schema.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: data_schema_id
@@ -271,9 +215,7 @@ paths:
       - Audit Logs
       operationId: get_code_container_audit_log
       summary: Get Audit Log for a Code Container
-      description: 'Retrieves the history of changes made to the properties of a code container. This endpoint can also be used to fetch the history of changes made to any transform object.
-
-        '
+      description: Retrieves the history of changes made to the properties of a code container. This endpoint can also be used to fetch the history of changes made to any transform object.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: code_container_id
@@ -313,9 +255,7 @@ paths:
       - Audit Logs
       operationId: get_project_audit_log
       summary: Get Audit Log for a Project
-      description: 'Retrieves the history of changes made to the properties of a project.
-
-        '
+      description: Retrieves the history of changes made to the properties of a project.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: project_id
@@ -355,9 +295,7 @@ paths:
       - Audit Logs
       operationId: get_doc_container_audit_log
       summary: Get Audit Log for a Document
-      description: 'Retrieves the history of changes made to the properties of a document.
-
-        '
+      description: Retrieves the history of changes made to the properties of a document.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: doc_container_id
@@ -397,9 +335,7 @@ paths:
       - Audit Logs
       operationId: get_user_audit_log
       summary: Get Audit Log for a User
-      description: 'Retrieves the history of changes made to the properties of a user.
-
-        '
+      description: Retrieves the history of changes made to the properties of a user.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: user_id
@@ -439,9 +375,7 @@ paths:
       - Audit Logs
       operationId: get_org_audit_log
       summary: Get Audit Log for an Organization
-      description: 'Retrieves the history of changes made to the properties of an organization.
-
-        '
+      description: Retrieves the history of changes made to the properties of an organization.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: org_id
@@ -481,9 +415,7 @@ paths:
       - Audit Logs
       operationId: get_team_audit_log
       summary: Get Audit Log for a Team
-      description: 'Retrieves the history of changes made to the properties of a team.
-
-        '
+      description: Retrieves the history of changes made to the properties of a team.
       parameters:
       - $ref: '#/components/parameters/accept'
       - name: team_id
@@ -518,7 +450,67 @@ paths:
         '404':
           description: Not found
 components:
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
   schemas:
+    AsyncResponse:
+      type: object
+      description: 'This object represents the response of an asynchronous operation. The response can be a dictionary or an array of dictionaries. The format of the response depends on the operation that was executed.
+
+        '
+      properties:
+        request_id:
+          type: integer
+          description: 'The unique ID of the request that was executed. This ID can be used to track the status of the request.
+
+            '
+        status:
+          type: string
+          enum:
+          - pending
+          - running
+          - completed
+          - failed
+          - cancelled
+        request_started_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was started.
+
+            '
+        progress:
+          type: integer
+          description: 'The progress of the request (value from 0 to 100). This value is a percentage of the total progress of the request. Applicable only to certain types of async operations.
+
+            '
+        result:
+          type: object
+          description: 'The result of the async operation. Format depends on the task type.
+
+            '
+          additionalProperties: true
+        request_stopped_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was stopped. This field is only present if the request has been stopped (due to cancellation or error).
+
+            '
+        request_completed_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was completed. This field is only present if the request has been completed successfully.
+
+            '
     LogEntry:
       type: object
       properties:
@@ -640,72 +632,12 @@ components:
           type: string
           format: date-time
           example: '2022-11-08T22:51:47.720Z'
-    AsyncResponse:
-      type: object
-      description: 'This object represents the response of an asynchronous operation. The response can be a dictionary or an array of dictionaries. The format of the response depends on the operation that was executed.
-
-        '
-      properties:
-        request_id:
-          type: integer
-          description: 'The unique ID of the request that was executed. This ID can be used to track the status of the request.
-
-            '
-        status:
-          type: string
-          enum:
-          - pending
-          - running
-          - completed
-          - failed
-          - cancelled
-        request_started_at:
-          type: string
-          format: date-time
-          description: 'The date and time when the request was started.
-
-            '
-        progress:
-          type: integer
-          description: 'The progress of the request (value from 0 to 100). This value is a percentage of the total progress of the request. Applicable only to certain types of async operations.
-
-            '
-        result:
-          type: object
-          description: 'The result of the async operation. Format depends on the task type.
-
-            '
-          additionalProperties: true
-        request_stopped_at:
-          type: string
-          format: date-time
-          description: 'The date and time when the request was stopped. This field is only present if the request has been stopped (due to cancellation or error).
-
-            '
-        request_completed_at:
-          type: string
-          format: date-time
-          description: 'The date and time when the request was completed. This field is only present if the request has been completed successfully.
-
-            '
     audit_log_response:
       oneOf:
       - type: array
         items:
           $ref: '#/components/schemas/LogEntry'
       - $ref: '#/components/schemas/AsyncResponse'
-  parameters:
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
-
-          '
   securitySchemes:
     NexlaSessionToken:
       type: http

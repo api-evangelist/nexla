@@ -226,6 +226,48 @@ components:
       - msg
       - type
       title: ValidationError
+    FilterType:
+      type: string
+      enum:
+      - access_rules
+      - access_scope
+      - filters
+      title: FilterType
+      description: Supported user-context layers for registered nexset filters.
+    TokenType:
+      type: string
+      enum:
+      - bearer
+      - service_key
+      title: TokenType
+    FilterKeyPatchRequest:
+      properties:
+        type:
+          anyOf:
+          - $ref: '#/components/schemas/FilterType'
+          - type: 'null'
+          description: Updated filter type.
+        operator:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Operator
+          description: Updated operator.
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          description: Updated description.
+        nexset_field:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Nexset Field
+          description: Updated backend field name.
+      type: object
+      title: FilterKeyPatchRequest
+      description: Request body for ``PATCH /v2/nexsets/{nexset_id}/filters/{key}``.
     FilterRegistrationRequest:
       properties:
         filters:
@@ -239,6 +281,15 @@ components:
       - filters
       title: FilterRegistrationRequest
       description: Request body for ``POST /v2/nexsets/{nexset_id}/filters``.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     FilterKeyDefinition:
       properties:
         key:
@@ -271,54 +322,3 @@ components:
       - type
       title: FilterKeyDefinition
       description: Definition of a single filter key in a nexset's filter schema.
-    FilterKeyPatchRequest:
-      properties:
-        type:
-          anyOf:
-          - $ref: '#/components/schemas/FilterType'
-          - type: 'null'
-          description: Updated filter type.
-        operator:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Operator
-          description: Updated operator.
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-          description: Updated description.
-        nexset_field:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Nexset Field
-          description: Updated backend field name.
-      type: object
-      title: FilterKeyPatchRequest
-      description: Request body for ``PATCH /v2/nexsets/{nexset_id}/filters/{key}``.
-    TokenType:
-      type: string
-      enum:
-      - bearer
-      - service_key
-      title: TokenType
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    FilterType:
-      type: string
-      enum:
-      - access_rules
-      - access_scope
-      - filters
-      title: FilterType
-      description: Supported user-context layers for registered nexset filters.

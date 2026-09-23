@@ -16,51 +16,7 @@ info:
   description: '# Introduction
 
 
-    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
-
-
-    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
-
-
-    The API references in this document lists all API endpoints and the corresponding payloads.
-
-
-    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
-
-
-    # API Data Format and Versions
-
-
-    The API uses JSON for all data exchanges.
-
-
-    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
-
-    ```
-
-    Accept: application/vnd.nexla.api.v1+json
-
-    ```
-
-
-    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
-
-
-
-    ```
-
-    Accept: application/json
-
-    ```
-
-
-    # Authentication
-
-
-    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
-
-
-    <SecurityDefinitions />'
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case.'
 servers:
 - url: https://{nexla-api-host}
   variables:
@@ -79,9 +35,7 @@ paths:
       - Access Control
       operationId: get_data_source_accessors
       summary: Get Access Rules on Data Source
-      description: 'Returns a list of the access-control rules set for this data source.
-
-        '
+      description: Returns a list of the access-control rules set for this data source.
       parameters:
       - name: data_source_id
         in: path
@@ -103,9 +57,7 @@ paths:
       - Access Control
       operationId: replace_data_source_accessors
       summary: Replace Access Rules on Data Source
-      description: 'Replaces the list of accessors belonging to a data source. Existing accessors will be removed from the data source.
-
-        '
+      description: Replaces the list of accessors belonging to a data source. Existing accessors will be removed from the data source.
       parameters:
       - name: data_source_id
         in: path
@@ -132,9 +84,7 @@ paths:
       - Access Control
       operationId: add_data_source_accessors
       summary: Add Access Rules on Data Source
-      description: 'Adds a list of accessors to a data source. The existing accessors list is retained and merged with the new accessors list.
-
-        '
+      description: Adds a list of accessors to a data source. The existing accessors list is retained and merged with the new accessors list.
       parameters:
       - name: data_source_id
         in: path
@@ -161,9 +111,7 @@ paths:
       - Access Control
       operationId: delete_data_source_accessors
       summary: Delete Access Rules on Data Source
-      description: 'Removes access-control rules from a data source. If no request body is provided, all rules associated with the data source will be removed.
-
-        '
+      description: Removes access-control rules from a data source. If no request body is provided, all rules associated with the data source will be removed.
       parameters:
       - name: data_source_id
         in: path
@@ -193,9 +141,7 @@ paths:
       - Access Control
       operationId: get_nexset_accessors
       summary: Get Access Rules on Nexset
-      description: 'Returns a list of the access-control rules set for this Nexset.
-
-        '
+      description: Returns a list of the access-control rules set for this Nexset.
       parameters:
       - name: data_set_id
         in: path
@@ -217,9 +163,7 @@ paths:
       - Access Control
       operationId: replace_nexset_accessors
       summary: Replace Access Rules on Nexset
-      description: 'Replaces the list of access-control rules set for this Nexset. Existing rules will be removed from the Nexset, and only these new rules will be applied.
-
-        '
+      description: Replaces the list of access-control rules set for this Nexset. Existing rules will be removed from the Nexset, and only these new rules will be applied.
       parameters:
       - name: data_set_id
         in: path
@@ -246,9 +190,7 @@ paths:
       - Access Control
       operationId: add_nexset_accessors
       summary: Add Access Rules on Nexset
-      description: 'Adds new access-control rules to this Nexset.
-
-        '
+      description: Adds new access-control rules to this Nexset.
       parameters:
       - name: data_set_id
         in: path
@@ -275,9 +217,7 @@ paths:
       - Access Control
       operationId: delete_nexset_accessors
       summary: Delete Access Rules on Nexset
-      description: 'Removes access-control rules from a Nexset. If no request body is provided, all rules associated with the Nexset will be removed.
-
-        '
+      description: Removes access-control rules from a Nexset. If no request body is provided, all rules associated with the Nexset will be removed.
       parameters:
       - name: data_set_id
         in: path
@@ -307,9 +247,7 @@ paths:
       - Access Control
       operationId: get_data_sink_accessors
       summary: Get Access Rules on Data Sink
-      description: 'Returns a list of the access-control rules set for this data sink.
-
-        '
+      description: Returns a list of the access-control rules set for this data sink.
       parameters:
       - name: data_sink_id
         in: path
@@ -331,9 +269,7 @@ paths:
       - Access Control
       operationId: replace_data_sink_accessors
       summary: Replace Access Rules on Data Sink
-      description: 'Replaces the list of access-control rules set for this data sink. Existing rules will be removed from the data sink, and only these new rules will be applied.
-
-        '
+      description: Replaces the list of access-control rules set for this data sink. Existing rules will be removed from the data sink, and only these new rules will be applied.
       parameters:
       - name: data_sink_id
         in: path
@@ -360,9 +296,7 @@ paths:
       - Access Control
       operationId: add_data_sink_accessors
       summary: Add Access Rules on Data Sink
-      description: 'Adds new access-control rules to this data sink.
-
-        '
+      description: Adds new access-control rules to this data sink.
       parameters:
       - name: data_sink_id
         in: path
@@ -389,9 +323,7 @@ paths:
       - Access Control
       operationId: delete_data_sink_accessors
       summary: Delete Access Rules on Data Sink
-      description: 'Removes access-control rules from a data sink. If no request body is provided, all rules associated with the data sink will be removed.
-
-        '
+      description: Removes access-control rules from a data sink. If no request body is provided, all rules associated with the data sink will be removed.
       parameters:
       - name: data_sink_id
         in: path
@@ -421,9 +353,7 @@ paths:
       - Access Control
       operationId: get_data_map_accessors
       summary: Get Access Rules on Data Map
-      description: 'Returns a list of the access-control rules set for this data map.
-
-        '
+      description: Returns a list of the access-control rules set for this data map.
       parameters:
       - name: data_map_id
         in: path
@@ -445,9 +375,7 @@ paths:
       - Access Control
       operationId: replace_data_map_accessors
       summary: Replace Access Rules on Data Map
-      description: 'Replaces the list of access-control rules set for this data map. Existing rules will be removed from the data map, and only these new rules will be applied.
-
-        '
+      description: Replaces the list of access-control rules set for this data map. Existing rules will be removed from the data map, and only these new rules will be applied.
       parameters:
       - name: data_map_id
         in: path
@@ -474,9 +402,7 @@ paths:
       - Access Control
       operationId: add_data_map_accessors
       summary: Add Access Rules on Data Map
-      description: 'Adds new access-control rules to this data map.
-
-        '
+      description: Adds new access-control rules to this data map.
       parameters:
       - name: data_map_id
         in: path
@@ -503,9 +429,7 @@ paths:
       - Access Control
       operationId: delete_data_map_accessors
       summary: Delete Access Rules on Data Map
-      description: 'Removes access-control rules from a data map. If no request body is provided, all rules associated with the data map will be removed.
-
-        '
+      description: Removes access-control rules from a data map. If no request body is provided, all rules associated with the data map will be removed.
       parameters:
       - name: data_map_id
         in: path
@@ -535,9 +459,7 @@ paths:
       - Access Control
       operationId: get_data_credential_accessors
       summary: Get Access Rules on Data Credential
-      description: 'Returns a list of the access-control rules set for this data credential.
-
-        '
+      description: Returns a list of the access-control rules set for this data credential.
       parameters:
       - name: data_credential_id
         in: path
@@ -559,9 +481,7 @@ paths:
       - Access Control
       operationId: replace_data_credential_accessors
       summary: Replace Access Rules on Data Credential
-      description: 'Replaces the list of access-control rules set for this data credential. Existing rules will be removed from the data credential, and only these new rules will be applied.
-
-        '
+      description: Replaces the list of access-control rules set for this data credential. Existing rules will be removed from the data credential, and only these new rules will be applied.
       parameters:
       - name: data_credential_id
         in: path
@@ -588,9 +508,7 @@ paths:
       - Access Control
       operationId: add_data_credential_accessors
       summary: Add Access Rules on Data Credential
-      description: 'Adds new access-control rules to this data credential.
-
-        '
+      description: Adds new access-control rules to this data credential.
       parameters:
       - name: data_credential_id
         in: path
@@ -617,9 +535,7 @@ paths:
       - Access Control
       operationId: delete_data_credential_accessors
       summary: Delete Access Rules on Data Credential
-      description: 'Removes access-control rules from a data credential. If no request body is provided, all rules associated with the data credential will be removed.
-
-        '
+      description: Removes access-control rules from a data credential. If no request body is provided, all rules associated with the data credential will be removed.
       parameters:
       - name: data_credential_id
         in: path
@@ -649,9 +565,7 @@ paths:
       - Access Control
       operationId: get_project_accessors
       summary: Get Project Accessors
-      description: 'Returns a list of the access-control rules set for this project.
-
-        '
+      description: Returns a list of the access-control rules set for this project.
       parameters:
       - name: project_id
         in: path
@@ -673,9 +587,7 @@ paths:
       - Access Control
       operationId: replace_project_accessors
       summary: Replace Access Rules on Project
-      description: 'Replaces the list of access-control rules set for this project. Existing rules will be removed from the project, and only these new rules will be applied.
-
-        '
+      description: Replaces the list of access-control rules set for this project. Existing rules will be removed from the project, and only these new rules will be applied.
       parameters:
       - name: project_id
         in: path
@@ -702,9 +614,7 @@ paths:
       - Access Control
       operationId: add_project_accessors
       summary: Add Project Accessors
-      description: 'Adds new access-control rules to this project.
-
-        '
+      description: Adds new access-control rules to this project.
       parameters:
       - name: project_id
         in: path
@@ -731,9 +641,7 @@ paths:
       - Access Control
       operationId: delete_project_accessors
       summary: Delete Project Accessors
-      description: 'Removes access-control rules from a project. If no request body is provided, all rules associated with the project will be removed.
-
-        '
+      description: Removes access-control rules from a project. If no request body is provided, all rules associated with the project will be removed.
       parameters:
       - name: project_id
         in: path
@@ -763,9 +671,7 @@ paths:
       - Access Control
       operationId: get_flow_accessors
       summary: Get Access Rules on Flow
-      description: 'Returns a list of the access-control rules set for this flow.
-
-        '
+      description: Returns a list of the access-control rules set for this flow.
       parameters:
       - name: data_flow_id
         in: path
@@ -787,9 +693,7 @@ paths:
       - Access Control
       operationId: replace_flow_accessors
       summary: Replace Access Rules on Flow
-      description: 'Replaces the list of access-control rules set for this flow. Existing rules will be removed from the flow, and only these new rules will be applied.
-
-        '
+      description: Replaces the list of access-control rules set for this flow. Existing rules will be removed from the flow, and only these new rules will be applied.
       parameters:
       - name: flow_id
         in: path
@@ -816,9 +720,7 @@ paths:
       - Access Control
       operationId: add_flow_accessors
       summary: Add Access Rules on Flow
-      description: 'Adds new access-control rules to this data flow.
-
-        '
+      description: Adds new access-control rules to this data flow.
       parameters:
       - name: flow_id
         in: path
@@ -845,9 +747,7 @@ paths:
       - Access Control
       operationId: delete_flow_accessors
       summary: Delete Access Rules on Flow
-      description: 'Removes access-control rules from a data flow. If no request body is provided, all rules associated with the data flow will be removed.
-
-        '
+      description: Removes access-control rules from a data flow. If no request body is provided, all rules associated with the data flow will be removed.
       parameters:
       - name: data_flow_id
         in: path
@@ -877,7 +777,10 @@ paths:
       - Access Control
       operationId: get_flow_accessors_(deprecated)
       summary: Get Access Rules on Flow (Deprecated)
-      description: "Returns a list of the access-control rules set for this data flow. \n\n> **Note**: This version of the endpoint has been deprecated. It uses a composite data flow id of the type `{resource_type}/{resource_id}`. See get_flow_accessors for a new version of this endpoint that uses unique `flow_id`.\n"
+      description: 'Returns a list of the access-control rules set for this data flow.
+
+
+        > **Note**: This version of the endpoint has been deprecated. It uses a composite data flow id of the type `{resource_type}/{resource_id}`. See get_flow_accessors for a new version of this endpoint that uses unique `flow_id`.'
       parameters:
       - name: data_flow_id
         in: path
@@ -899,7 +802,10 @@ paths:
       - Access Control
       operationId: replace_flow_accessors_(deprecated)
       summary: Replace Access Rules on Flow (Deprecated)
-      description: "Replace the list of access-control rules set for this data flow. Existing rules will be removed from the data flow, and only these new rules will be applied. This version uses a composite data flow id of the type `{resource_type}/{resource_id}`. \n\n> **Note**: This version of the endpoint has been deprecated. It uses a composite data flow id of the type `{resource_type}/{resource_id}`. See replace_flow_accessors for a new version of this endpoint that uses unique `flow_id`.\n"
+      description: 'Replace the list of access-control rules set for this data flow. Existing rules will be removed from the data flow, and only these new rules will be applied. This version uses a composite data flow id of the type `{resource_type}/{resource_id}`.
+
+
+        > **Note**: This version of the endpoint has been deprecated. It uses a composite data flow id of the type `{resource_type}/{resource_id}`. See replace_flow_accessors for a new version of this endpoint that uses unique `flow_id`.'
       parameters:
       - name: data_flow_id
         in: path
@@ -926,7 +832,10 @@ paths:
       - Access Control
       operationId: add_flow_accessors_(deprecated)
       summary: Add Access Rules on Flow (Deprecated)
-      description: "Add new access-control rules to this data flow. This version uses a composite data flow id of the type `{resource_type}/{resource_id}`. \n\n> **Note**: This version of the endpoint has been deprecated. It uses a composite data flow id of the type `{resource_type}/{resource_id}`. See add_flow_accessors for a new version of this endpoint that uses unique `flow_id`.  \n"
+      description: 'Add new access-control rules to this data flow. This version uses a composite data flow id of the type `{resource_type}/{resource_id}`.
+
+
+        > **Note**: This version of the endpoint has been deprecated. It uses a composite data flow id of the type `{resource_type}/{resource_id}`. See add_flow_accessors for a new version of this endpoint that uses unique `flow_id`.'
       parameters:
       - name: data_flow_id
         in: path
@@ -953,7 +862,10 @@ paths:
       - Access Control
       operationId: delete_flow_accessors_(deprecated)
       summary: Delete Access Rules on Flow (Deprecated)
-      description: "Remove access-control rules from a data flow. If no request body is provided, all rules associated with the data flow will be removed. This version uses a composite data flow id of the type `{resource_type}/{resource_id}`. \n\n> **Note**: This version of the endpoint has been deprecated. It uses a composite data flow id of the type `{resource_type}/{resource_id}`. See delete_flow_accessors for a new version of this endpoint that uses unique `flow_id`.    \n"
+      description: 'Remove access-control rules from a data flow. If no request body is provided, all rules associated with the data flow will be removed. This version uses a composite data flow id of the type `{resource_type}/{resource_id}`.
+
+
+        > **Note**: This version of the endpoint has been deprecated. It uses a composite data flow id of the type `{resource_type}/{resource_id}`. See delete_flow_accessors for a new version of this endpoint that uses unique `flow_id`.'
       parameters:
       - name: data_flow_id
         in: path
@@ -983,9 +895,7 @@ paths:
       - Access Control
       operationId: get_data_schema_accessors
       summary: Get Access Rules on Data Schema
-      description: 'Returns a list of the access-control rules set for this data schema.
-
-        '
+      description: Returns a list of the access-control rules set for this data schema.
       parameters:
       - name: data_schema_id
         in: path
@@ -1007,9 +917,7 @@ paths:
       - Access Control
       operationId: replace_data_schema_accessors
       summary: Replace Access Rules on Data Schema
-      description: 'Replaces the list of access-control rules set for this data schema. Existing rules will be removed from the data schema, and only these new rules will be applied.
-
-        '
+      description: Replaces the list of access-control rules set for this data schema. Existing rules will be removed from the data schema, and only these new rules will be applied.
       parameters:
       - name: data_schema_id
         in: path
@@ -1036,9 +944,7 @@ paths:
       - Access Control
       operationId: add_data_schema_accessors
       summary: Add Access Rules on Data Schema
-      description: 'Adds new access-control rules to this data schema.
-
-        '
+      description: Adds new access-control rules to this data schema.
       parameters:
       - name: data_schema_id
         in: path
@@ -1065,9 +971,7 @@ paths:
       - Access Control
       operationId: delete_data_schema_accessors
       summary: Delete Access Rules on Data Schema
-      description: 'Removes access-control rules from a data schema. If no request body is provided, all rules associated with the data schema will be removed.
-
-        '
+      description: Removes access-control rules from a data schema. If no request body is provided, all rules associated with the data schema will be removed.
       parameters:
       - name: data_schema_id
         in: path
@@ -1097,9 +1001,7 @@ paths:
       - Access Control
       operationId: get_doc_container_accessors
       summary: Get Access Rules on Document
-      description: 'Returns a list of the access-control rules set for this document.
-
-        '
+      description: Returns a list of the access-control rules set for this document.
       parameters:
       - name: doc_container_id
         in: path
@@ -1121,9 +1023,7 @@ paths:
       - Access Control
       operationId: replace_doc_container_accessors
       summary: Replace Access Rules on Document
-      description: 'Replaces the list of access-control rules set for this document. Existing rules will be removed from the document, and only these new rules will be applied.
-
-        '
+      description: Replaces the list of access-control rules set for this document. Existing rules will be removed from the document, and only these new rules will be applied.
       parameters:
       - name: doc_container_id
         in: path
@@ -1150,9 +1050,7 @@ paths:
       - Access Control
       operationId: add_doc_container_accessors
       summary: Add Access Rules on Document
-      description: 'Adds new access-control rules to this document.
-
-        '
+      description: Adds new access-control rules to this document.
       parameters:
       - name: doc_container_id
         in: path
@@ -1179,9 +1077,7 @@ paths:
       - Access Control
       operationId: delete_doc_container_accessors
       summary: Delete Access Rules on Document
-      description: 'Removes access-control rules from a document. If no request body is provided, all rules associated with the document will be removed.
-
-        '
+      description: Removes access-control rules from a document. If no request body is provided, all rules associated with the document will be removed.
       parameters:
       - name: doc_container_id
         in: path
@@ -1211,9 +1107,7 @@ paths:
       - Access Control
       operationId: get_code_container_accessors
       summary: Get Access Rules on Code Container
-      description: 'Returns a list of the access-control rules set for this code container.
-
-        '
+      description: Returns a list of the access-control rules set for this code container.
       parameters:
       - name: code_container_id
         in: path
@@ -1235,9 +1129,7 @@ paths:
       - Access Control
       operationId: replace_code_container_accessors
       summary: Replace Access Rules on Code Container
-      description: 'Replaces the list of access-control rules set for this code container. Existing rules will be removed from the code container, and only these new rules will be applied.
-
-        '
+      description: Replaces the list of access-control rules set for this code container. Existing rules will be removed from the code container, and only these new rules will be applied.
       parameters:
       - name: code_container_id
         in: path
@@ -1264,9 +1156,7 @@ paths:
       - Access Control
       operationId: add_code_container_accessors
       summary: Add Access Rules on Code Container
-      description: 'Adds new access-control rules to this code container.
-
-        '
+      description: Adds new access-control rules to this code container.
       parameters:
       - name: code_container_id
         in: path
@@ -1293,9 +1183,7 @@ paths:
       - Access Control
       operationId: delete_code_container_accessors
       summary: Delete Access Rules on Code Container
-      description: 'Removes access-control rules from a code container. If no request body is provided, all rules associated with the code container will be removed.
-
-        '
+      description: Removes access-control rules from a code container. If no request body is provided, all rules associated with the code container will be removed.
       parameters:
       - name: code_container_id
         in: path
@@ -1325,9 +1213,7 @@ paths:
       - Access Control
       operationId: get_team_accessors
       summary: Get Team Accessors
-      description: 'Returns a list of the access-control rules set for this team.
-
-        '
+      description: Returns a list of the access-control rules set for this team.
       parameters:
       - name: team_id
         in: path
@@ -1349,9 +1235,7 @@ paths:
       - Access Control
       operationId: replace_team_accessors
       summary: Replace Team Accessors List
-      description: 'Replaces the list of access-control rules set for this team. Existing rules will be removed from the team, and only these new rules will be applied.
-
-        '
+      description: Replaces the list of access-control rules set for this team. Existing rules will be removed from the team, and only these new rules will be applied.
       parameters:
       - name: team_id
         in: path
@@ -1378,9 +1262,7 @@ paths:
       - Access Control
       operationId: add_team_accessors
       summary: Add Team Accessors
-      description: 'Adds new access-control rules to this team.
-
-        '
+      description: Adds new access-control rules to this team.
       parameters:
       - name: team_id
         in: path
@@ -1407,9 +1289,7 @@ paths:
       - Access Control
       operationId: delete_team_accessors
       summary: Delete Team Accessors
-      description: 'Removes access-control rules from a team. If no request body is provided, all rules associated with the team will be removed.
-
-        '
+      description: Removes access-control rules from a team. If no request body is provided, all rules associated with the team will be removed.
       parameters:
       - name: team_id
         in: path
@@ -1435,29 +1315,6 @@ paths:
           description: Not Found
 components:
   schemas:
-    RequestTeamAccessor:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - TEAM
-          description: "Choose this option if the access permissions should be granted to a team.       \n"
-        id:
-          type: integer
-          description: 'Unique ID of the team that should be granted this permission.
-
-            '
-    AccessorsMutable:
-      allOf:
-      - oneOf:
-        - $ref: '#/components/schemas/RequestUserAccessor'
-        - $ref: '#/components/schemas/RequestTeamAccessor'
-        - $ref: '#/components/schemas/RequestOrgAccessor'
-      - type: object
-        properties:
-          access_roles:
-            $ref: '#/components/schemas/AccessRoles'
     ResponseTeamAccessor:
       type: object
       properties:
@@ -1467,6 +1324,19 @@ components:
           - TEAM
         name:
           type: string
+    RequestOrgAccessor:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - ORG
+          description: "Choose this option if the access permissions should be granted to an entire organization.      \n"
+        id:
+          type: integer
+          description: 'Unique ID of the organization that should be granted this permission.
+
+            '
     AccessRoles:
       type: array
       description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
@@ -1495,13 +1365,16 @@ components:
             type: string
             format: date-time
             example: '2021-04-06T21:02:17.000Z'
-    AccessorsRequestSchema:
-      type: object
-      properties:
-        accessors:
-          type: array
-          items:
-            $ref: '#/components/schemas/AccessorsMutable'
+    AccessorsMutable:
+      allOf:
+      - oneOf:
+        - $ref: '#/components/schemas/RequestUserAccessor'
+        - $ref: '#/components/schemas/RequestTeamAccessor'
+        - $ref: '#/components/schemas/RequestOrgAccessor'
+      - type: object
+        properties:
+          access_roles:
+            $ref: '#/components/schemas/AccessRoles'
     RequestUserAccessor:
       type: object
       properties:
@@ -1522,19 +1395,6 @@ components:
           description: 'Users can belong to multiple organizations. Specify the org_id to explicitly set the organization context for this access permission. If this is not specified the platform will try to automatically assign the permission to the user''s default organization (when granting sharer access on a Nexset) or to the current organization (for all other access roles).
 
             '
-    RequestOrgAccessor:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - ORG
-          description: "Choose this option if the access permissions should be granted to an entire organization.      \n"
-        id:
-          type: integer
-          description: 'Unique ID of the organization that should be granted this permission.
-
-            '
     ResponseUserAccessor:
       type: object
       properties:
@@ -1545,6 +1405,13 @@ components:
         email:
           type: string
           example: example@nexla.com
+    AccessorsRequestSchema:
+      type: object
+      properties:
+        accessors:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessorsMutable'
     ResponseOrgAccessor:
       type: object
       properties:
@@ -1558,6 +1425,19 @@ components:
         client_identifier:
           type: string
           format: nullable
+    RequestTeamAccessor:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - TEAM
+          description: "Choose this option if the access permissions should be granted to a team.       \n"
+        id:
+          type: integer
+          description: 'Unique ID of the team that should be granted this permission.
+
+            '
   responses:
     accessors_list:
       description: Success

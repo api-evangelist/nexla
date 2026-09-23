@@ -16,51 +16,7 @@ info:
   description: '# Introduction
 
 
-    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
-
-
-    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
-
-
-    The API references in this document lists all API endpoints and the corresponding payloads.
-
-
-    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
-
-
-    # API Data Format and Versions
-
-
-    The API uses JSON for all data exchanges.
-
-
-    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
-
-    ```
-
-    Accept: application/vnd.nexla.api.v1+json
-
-    ```
-
-
-    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
-
-
-
-    ```
-
-    Accept: application/json
-
-    ```
-
-
-    # Authentication
-
-
-    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
-
-
-    <SecurityDefinitions />'
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case.'
 servers:
 - url: https://{nexla-api-host}
   variables:
@@ -77,9 +33,7 @@ paths:
     get:
       operationId: get_self_signup_requests
       summary: List Self Sign Up Requests
-      description: 'Returns a list of self sign up requests for an admin.
-
-        '
+      description: Returns a list of self sign up requests for an admin.
       tags:
       - Self Sign-Up Admin
       responses:
@@ -91,7 +45,9 @@ paths:
     put:
       operationId: approve_self_sign_up_request
       summary: Approve Self Sign Up Request
-      description: "This endpoint is used to approve a self sign up request. System admin access required. \nThe user will be able to set a password and login to the system after the request is approved.\n"
+      description: 'This endpoint is used to approve a self sign up request. System admin access required.
+
+        The user will be able to set a password and login to the system after the request is approved.'
       tags:
       - Self Sign-Up Admin
       parameters:
@@ -109,10 +65,8 @@ paths:
   /self_signup_blocked_domains:
     get:
       operationId: get_self_signup_blocked_domains
-      summary: List self-sign-up blocked domains for admins.
-      description: 'Returns a list of domains that are blocked for self-sign-up. Requires admin access.
-
-        '
+      summary: List self-sign-up blocked domains for admins
+      description: Returns a list of domains that are blocked for self-sign-up. Requires admin access.
       tags:
       - Self Sign-Up Admin
       responses:
@@ -122,10 +76,8 @@ paths:
           description: Forbidden
     post:
       operationId: add_self_signup_blocked_domain
-      summary: Add self-sign-up blocked domain for admins.
-      description: 'Adds a domain to the list of domains that are blocked for self-sign-up. Requires admin access.
-
-        '
+      summary: Add self-sign-up blocked domain for admins
+      description: Adds a domain to the list of domains that are blocked for self-sign-up. Requires admin access.
       tags:
       - Self Sign-Up Admin
       requestBody:
@@ -148,10 +100,8 @@ paths:
   /self_signup_blocked_domains/{domain_id}:
     put:
       operationId: update_self_signup_blocked_domain
-      summary: Update self-sign-up blocked domain for admins.
-      description: 'Updates a domain in the list of domains that are blocked for self-sign-up. Requires admin access.
-
-        '
+      summary: Update self-sign-up blocked domain for admins
+      description: Updates a domain in the list of domains that are blocked for self-sign-up. Requires admin access.
       tags:
       - Self Sign-Up Admin
       parameters:
@@ -182,10 +132,8 @@ paths:
           description: Not found error
     delete:
       operationId: delete_self_signup_blocked_domain
-      summary: Delete self-sign-up blocked domain for admins.
-      description: 'Deletes a domain from the list of domains that are blocked for self-sign-up. Requires admin access.
-
-        '
+      summary: Delete self-sign-up blocked domain for admins
+      description: Deletes a domain from the list of domains that are blocked for self-sign-up. Requires admin access.
       tags:
       - Self Sign-Up Admin
       parameters:
@@ -204,21 +152,6 @@ paths:
           description: Not found error
 components:
   responses:
-    self_signup_blocked_domains_response:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: integer
-                  description: The unique identifier of the blocked domain.
-                domain:
-                  type: string
-                  description: The email domain that is blocked.
     self_signup_requests_response:
       description: Success
       content:
@@ -256,6 +189,21 @@ components:
                   type: string
                   format: date-time
                   description: The date and time when the self sign up request was last updated.
+    self_signup_blocked_domains_response:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: The unique identifier of the blocked domain.
+                domain:
+                  type: string
+                  description: The email domain that is blocked.
   securitySchemes:
     NexlaSessionToken:
       type: http

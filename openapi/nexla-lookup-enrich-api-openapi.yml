@@ -9,7 +9,21 @@ paths:
   /lookup_enrich:
     post:
       summary: Lookup Enrich
-      description: "Lookup enrichment endpoint that reads from and writes to the same BigQuery table.\n\nArgs:\n    mode: Either 'init' (truncate and reload) or 'update' (append)\n    request: Request containing project_id, dataset_id, table_name, and gbq_key_path\n    auth_response: Authenticated response\n\nReturns:\n    LookupEnrichResponse with operation results"
+      description: 'Lookup enrichment endpoint that reads from and writes to the same BigQuery table.
+
+
+        Args:
+
+        mode: Either ''init'' (truncate and reload) or ''update'' (append)
+
+        request: Request containing project_id, dataset_id, table_name, and gbq_key_path
+
+        auth_response: Authenticated response
+
+
+        Returns:
+
+        LookupEnrichResponse with operation results'
       operationId: lookup_enrich_lookup_enrich_post
       parameters:
       - name: mode
@@ -49,6 +63,17 @@ paths:
       - Lookup Enrich
 components:
   schemas:
+    LookupEnrichRequest:
+      properties:
+        key_path:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Key Path
+          description: Path to file
+      type: object
+      title: LookupEnrichRequest
+      description: Request model for lookup enrichment endpoint
     ValidationError:
       properties:
         loc:
@@ -133,14 +158,3 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    LookupEnrichRequest:
-      properties:
-        key_path:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Key Path
-          description: Path to file
-      type: object
-      title: LookupEnrichRequest
-      description: Request model for lookup enrichment endpoint

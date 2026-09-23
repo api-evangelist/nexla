@@ -4,12 +4,12 @@ info:
   description: Combined Nexla GenAI RAG API Service and MCPaaS
   version: v0.2.3.3-combined
 tags:
-- name: gateway
+- name: Gateway
 paths:
   /v1/toolsets/{tool_set_id}/gateway/mcp-servers:
     post:
       tags:
-      - gateway
+      - Gateway
       summary: Create Ext Mcp Server
       operationId: create_ext_mcp_server_v1_toolsets__tool_set_id__gateway_mcp_servers_post
       parameters:
@@ -114,7 +114,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     get:
       tags:
-      - gateway
+      - Gateway
       summary: List Ext Mcp Servers
       operationId: list_ext_mcp_servers_v1_toolsets__tool_set_id__gateway_mcp_servers_get
       parameters:
@@ -236,7 +236,7 @@ paths:
   /v1/toolsets/{tool_set_id}/gateway/mcp-servers/{server_id}:
     get:
       tags:
-      - gateway
+      - Gateway
       summary: Get Ext Mcp Server
       operationId: get_ext_mcp_server_v1_toolsets__tool_set_id__gateway_mcp_servers__server_id__get
       parameters:
@@ -341,7 +341,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     put:
       tags:
-      - gateway
+      - Gateway
       summary: Update Ext Mcp Server
       operationId: update_ext_mcp_server_v1_toolsets__tool_set_id__gateway_mcp_servers__server_id__put
       parameters:
@@ -452,7 +452,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     delete:
       tags:
-      - gateway
+      - Gateway
       summary: Delete Ext Mcp Server
       operationId: delete_ext_mcp_server_v1_toolsets__tool_set_id__gateway_mcp_servers__server_id__delete
       parameters:
@@ -558,7 +558,7 @@ paths:
   /v1/toolsets/{tool_set_id}/gateway/mcp-servers/{server_id}/sync:
     post:
       tags:
-      - gateway
+      - Gateway
       summary: Sync Ext Mcp Server
       operationId: sync_ext_mcp_server_v1_toolsets__tool_set_id__gateway_mcp_servers__server_id__sync_post
       parameters:
@@ -664,7 +664,7 @@ paths:
   /v1/toolsets/{tool_set_id}/gateway/mcp-servers/{server_id}/available-tools:
     get:
       tags:
-      - gateway
+      - Gateway
       summary: List Available Ext Mcp Tools
       description: 'Preview tools available on an external MCP server.
 
@@ -673,7 +673,7 @@ paths:
 
         tool annotated with whether it is currently ``selected`` based on the
 
-        server''s ``tool_filter`` configuration.  Warnings are included for any
+        server''s ``tool_filter`` configuration. Warnings are included for any
 
         tool names in the filter that do not exist on the remote server.'
       operationId: list_available_ext_mcp_tools_v1_toolsets__tool_set_id__gateway_mcp_servers__server_id__available_tools_get
@@ -780,7 +780,7 @@ paths:
   /v1/toolsets/{tool_set_id}/gateway/mcp-servers/{server_id}/tool-filter:
     put:
       tags:
-      - gateway
+      - Gateway
       summary: Update Ext Mcp Server Tool Filter
       description: 'Update (or clear) the tool filter for an external MCP server.
 
@@ -898,7 +898,7 @@ paths:
   /v1/toolsets/{tool_set_id}/gateway/tools:
     get:
       tags:
-      - gateway
+      - Gateway
       summary: List Gateway Tools
       operationId: list_gateway_tools_v1_toolsets__tool_set_id__gateway_tools_get
       parameters:
@@ -1037,7 +1037,7 @@ paths:
   /v1/toolsets/{tool_set_id}/gateway/tools:search:
     post:
       tags:
-      - gateway
+      - Gateway
       summary: Semantic Search Gateway Tools
       operationId: semantic_search_gateway_tools_v1_toolsets__tool_set_id__gateway_tools_search_post
       parameters:
@@ -1143,7 +1143,7 @@ paths:
   /v1/toolsets/{tool_set_id}/gateway/tools/{tool_name}:
     get:
       tags:
-      - gateway
+      - Gateway
       summary: Get Gateway Tool
       operationId: get_gateway_tool_v1_toolsets__tool_set_id__gateway_tools__tool_name__get
       parameters:
@@ -1249,7 +1249,7 @@ paths:
   /v1/toolsets/{tool_set_id}/gateway/sync-logs:
     get:
       tags:
-      - gateway
+      - Gateway
       summary: List Gateway Sync Logs For Toolset
       operationId: list_gateway_sync_logs_for_toolset_v1_toolsets__tool_set_id__gateway_sync_logs_get
       parameters:
@@ -1387,7 +1387,7 @@ paths:
   /v1/gateway/sync/vendor-tools:
     post:
       tags:
-      - gateway
+      - Gateway
       summary: Trigger Vendor Sync
       operationId: trigger_vendor_sync_v1_gateway_sync_vendor_tools_post
       parameters:
@@ -1481,7 +1481,7 @@ paths:
   /v1/gateway/sync-logs:
     get:
       tags:
-      - gateway
+      - Gateway
       summary: List Gateway Sync Logs
       operationId: list_gateway_sync_logs_v1_gateway_sync_logs_get
       parameters:
@@ -1612,6 +1612,32 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     ExtMcpServerUpdateIn:
       properties:
         server_name:
@@ -1657,32 +1683,6 @@ components:
       additionalProperties: false
       type: object
       title: ExtMcpServerUpdateIn
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     GatewaySearchIn:
       properties:
         search_term:
@@ -1701,39 +1701,6 @@ components:
       required:
       - search_term
       title: GatewaySearchIn
-    ToolFilterIn:
-      properties:
-        mode:
-          type: string
-          enum:
-          - include
-          - exclude
-          title: Mode
-          description: 'Filter mode: ''include'' syncs only matching tools, ''exclude'' syncs all except matching.'
-          default: include
-        tool_names:
-          items:
-            type: string
-          type: array
-          title: Tool Names
-          description: Exact original tool names (as reported by the remote MCP server) to match.
-        patterns:
-          items:
-            type: string
-          type: array
-          title: Patterns
-          description: 'Glob patterns matched against original tool names. Supported wildcards: ''*'' matches any sequence of characters, ''?'' matches exactly one character. Bracket expressions like ''[abc]'' are NOT supported. Examples: ''github_*'', ''*_readonly'', ''tool_?''.'
-      additionalProperties: false
-      type: object
-      title: ToolFilterIn
-      description: 'Optional filter for selecting a subset of tools from an external MCP server.
-
-
-        When ``mode`` is ``"include"``, only tools matching ``tool_names`` or
-
-        ``patterns`` are synced.  When ``mode`` is ``"exclude"``, all tools
-
-        *except* those matching are synced.'
     ExtMcpServerCreateIn:
       properties:
         server_name:
@@ -1777,3 +1744,36 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    ToolFilterIn:
+      properties:
+        mode:
+          type: string
+          enum:
+          - include
+          - exclude
+          title: Mode
+          description: 'Filter mode: ''include'' syncs only matching tools, ''exclude'' syncs all except matching.'
+          default: include
+        tool_names:
+          items:
+            type: string
+          type: array
+          title: Tool Names
+          description: Exact original tool names (as reported by the remote MCP server) to match.
+        patterns:
+          items:
+            type: string
+          type: array
+          title: Patterns
+          description: 'Glob patterns matched against original tool names. Supported wildcards: ''*'' matches any sequence of characters, ''?'' matches exactly one character. Bracket expressions like ''[abc]'' are NOT supported. Examples: ''github_*'', ''*_readonly'', ''tool_?''.'
+      additionalProperties: false
+      type: object
+      title: ToolFilterIn
+      description: 'Optional filter for selecting a subset of tools from an external MCP server.
+
+
+        When ``mode`` is ``"include"``, only tools matching ``tool_names`` or
+
+        ``patterns`` are synced.  When ``mode`` is ``"exclude"``, all tools
+
+        *except* those matching are synced.'

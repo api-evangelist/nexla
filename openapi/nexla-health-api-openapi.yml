@@ -4,12 +4,12 @@ info:
   description: Combined Nexla GenAI RAG API Service and MCPaaS
   version: v0.2.3.3-combined
 tags:
-- name: health
+- name: Health
 paths:
   /health:
     get:
       tags:
-      - health
+      - Health
       summary: Health Check
       description: 'Basic liveness probe.
 
@@ -31,7 +31,7 @@ paths:
   /health/ready:
     get:
       tags:
-      - health
+      - Health
       summary: Readiness Check
       description: 'Readiness probe with dependency checks.
 
@@ -50,7 +50,7 @@ paths:
   /v1/metrics:
     get:
       tags:
-      - health
+      - Health
       summary: Metrics
       description: 'Prometheus metrics endpoint.
 
@@ -66,7 +66,7 @@ paths:
   /health/deep:
     get:
       tags:
-      - health
+      - Health
       summary: Deep Health Check
       description: 'Deep health check with all components.
 
@@ -85,7 +85,7 @@ paths:
   /v1/status:
     get:
       tags:
-      - health
+      - Health
       summary: System Status
       description: 'System status dashboard data.
 
@@ -123,6 +123,34 @@ components:
       - status
       title: ComponentHealth
       description: Health status of a single component.
+    HealthStatus:
+      properties:
+        status:
+          type: string
+          title: Status
+        version:
+          type: string
+          title: Version
+        environment:
+          type: string
+          title: Environment
+        components:
+          additionalProperties:
+            $ref: '#/components/schemas/ComponentHealth'
+          type: object
+          title: Components
+        timestamp:
+          type: string
+          format: date-time
+          title: Timestamp
+      type: object
+      required:
+      - status
+      - version
+      - environment
+      - timestamp
+      title: HealthStatus
+      description: System health check response.
     SystemStatus:
       properties:
         status:
@@ -166,31 +194,3 @@ components:
       - timestamp
       title: SystemStatus
       description: System status dashboard data.
-    HealthStatus:
-      properties:
-        status:
-          type: string
-          title: Status
-        version:
-          type: string
-          title: Version
-        environment:
-          type: string
-          title: Environment
-        components:
-          additionalProperties:
-            $ref: '#/components/schemas/ComponentHealth'
-          type: object
-          title: Components
-        timestamp:
-          type: string
-          format: date-time
-          title: Timestamp
-      type: object
-      required:
-      - status
-      - version
-      - environment
-      - timestamp
-      title: HealthStatus
-      description: System health check response.

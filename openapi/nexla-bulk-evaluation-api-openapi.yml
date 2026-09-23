@@ -54,6 +54,12 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    TokenType:
+      type: string
+      enum:
+      - bearer
+      - service_key
+      title: TokenType
     Body_bulk_evaluation_bulk_evaluation_post:
       properties:
         csv_file:
@@ -106,9 +112,3 @@ components:
       - msg
       - type
       title: ValidationError
-    TokenType:
-      type: string
-      enum:
-      - bearer
-      - service_key
-      title: TokenType

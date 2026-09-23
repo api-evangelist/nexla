@@ -78,162 +78,6 @@ paths:
       - Flow
 components:
   schemas:
-    LLMConfig:
-      properties:
-        model:
-          type: string
-          title: Model
-          description: The identifier of the AI model to use for processing the query
-        provider:
-          type: string
-          title: Provider
-          description: The provider of the AI model (e.g., Azure, OpenAI)
-        credential_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Credential Id
-          description: An optional credential ID for accessing the LLM
-        credential_parameters:
-          anyOf:
-          - $ref: '#/components/schemas/LLMCredentialParameters'
-          - type: 'null'
-          description: Optional credential parameters for accessing the LLM
-        reasoning_effort:
-          anyOf:
-          - type: string
-            enum:
-            - none
-            - minimal
-            - low
-            - medium
-            - high
-            - xhigh
-          - type: 'null'
-          title: Reasoning Effort
-          description: Reasoning effort for OpenAI reasoning models (gpt-5*). Controls how much the model thinks. Defaults to 'low' when unset.
-        reasoning_summary:
-          anyOf:
-          - type: string
-            enum:
-            - concise
-            - detailed
-            - auto
-          - type: 'null'
-          title: Reasoning Summary
-          description: Reasoning summary verbosity for OpenAI reasoning models. Controls how much of the chain-of-thought is streamed back as thinking_delta events. 'detailed' produces visibly streaming multi-paragraph summaries. Defaults to 'concise' when unset.
-      type: object
-      required:
-      - model
-      - provider
-      title: LLMConfig
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    UserContext:
-      properties:
-        access_role:
-          items:
-            type: string
-          type: array
-          title: Access Role
-          description: The access roles for the requesting user.
-        user_id:
-          type: string
-          title: User Id
-          description: The unique identifier for the requesting user.
-        session_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Session Id
-          description: Session ID associated with user session. Useful for storing conversation history.
-        access_rules:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Access Rules
-          description: Policy-level gate. Keys and valid values configured at registration.
-        access_scope:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Access Scope
-          description: Data ownership scope. Values are always arrays (IN semantics).
-        filters:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Filters
-          description: Page/session context filters. String = EQ, array = IN.
-      additionalProperties: false
-      type: object
-      required:
-      - user_id
-      title: UserContext
-    RAGFlowRequest:
-      properties:
-        user_prompt:
-          type: string
-          title: User Prompt
-          description: User query for RAG flow
-        user_context:
-          $ref: '#/components/schemas/UserContext'
-          description: User context containing user ID, access roles, and session information
-        llm_config:
-          $ref: '#/components/schemas/LLMConfig'
-          description: LLM configuration details
-        rag_flow:
-          anyOf:
-          - $ref: '#/components/schemas/RAGFlow'
-          - type: 'null'
-          description: Optional RAG flow configuration for build-time processing
-        streaming:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Streaming
-          description: Indicate whether the final response should be streamed
-          default: true
-        debug:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Debug
-          description: Indicate whether the intermediate responses should be returned
-          default: false
-      type: object
-      required:
-      - user_prompt
-      - user_context
-      - llm_config
-      title: RAGFlowRequest
     RAGFlow:
       properties:
         flows:
@@ -360,6 +204,122 @@ components:
           title: Projects
       type: object
       title: RAGFlow
+    RAGFlowRequest:
+      properties:
+        user_prompt:
+          type: string
+          title: User Prompt
+          description: User query for RAG flow
+        user_context:
+          $ref: '#/components/schemas/UserContext'
+          description: User context containing user ID, access roles, and session information
+        llm_config:
+          $ref: '#/components/schemas/LLMConfig'
+          description: LLM configuration details
+        rag_flow:
+          anyOf:
+          - $ref: '#/components/schemas/RAGFlow'
+          - type: 'null'
+          description: Optional RAG flow configuration for build-time processing
+        streaming:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Streaming
+          description: Indicate whether the final response should be streamed
+          default: true
+        debug:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Debug
+          description: Indicate whether the intermediate responses should be returned
+          default: false
+      type: object
+      required:
+      - user_prompt
+      - user_context
+      - llm_config
+      title: RAGFlowRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    UserContext:
+      properties:
+        access_role:
+          items:
+            type: string
+          type: array
+          title: Access Role
+          description: The access roles for the requesting user.
+        user_id:
+          type: string
+          title: User Id
+          description: The unique identifier for the requesting user.
+        session_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Session Id
+          description: Session ID associated with user session. Useful for storing conversation history.
+        access_rules:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Access Rules
+          description: Policy-level gate. Keys and valid values configured at registration.
+        access_scope:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Access Scope
+          description: Data ownership scope. Values are always arrays (IN semantics).
+        filters:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Filters
+          description: Page/session context filters. String = EQ, array = IN.
+      additionalProperties: false
+      type: object
+      required:
+      - user_id
+      title: UserContext
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     LLMCredentialParameters:
       properties:
         model:
@@ -394,12 +354,52 @@ components:
           description: The API version to use with the AI provider
       type: object
       title: LLMCredentialParameters
-    HTTPValidationError:
+    LLMConfig:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        model:
+          type: string
+          title: Model
+          description: The identifier of the AI model to use for processing the query
+        provider:
+          type: string
+          title: Provider
+          description: The provider of the AI model (e.g., Azure, OpenAI)
+        credential_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Credential Id
+          description: An optional credential ID for accessing the LLM
+        credential_parameters:
+          anyOf:
+          - $ref: '#/components/schemas/LLMCredentialParameters'
+          - type: 'null'
+          description: Optional credential parameters for accessing the LLM
+        reasoning_effort:
+          anyOf:
+          - type: string
+            enum:
+            - none
+            - minimal
+            - low
+            - medium
+            - high
+            - xhigh
+          - type: 'null'
+          title: Reasoning Effort
+          description: Reasoning effort for OpenAI reasoning models (gpt-5*). Controls how much the model thinks. Defaults to 'low' when unset.
+        reasoning_summary:
+          anyOf:
+          - type: string
+            enum:
+            - concise
+            - detailed
+            - auto
+          - type: 'null'
+          title: Reasoning Summary
+          description: Reasoning summary verbosity for OpenAI reasoning models. Controls how much of the chain-of-thought is streamed back as thinking_delta events. 'detailed' produces visibly streaming multi-paragraph summaries. Defaults to 'concise' when unset.
       type: object
-      title: HTTPValidationError
+      required:
+      - model
+      - provider
+      title: LLMConfig

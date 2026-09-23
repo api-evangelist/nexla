@@ -16,51 +16,7 @@ info:
   description: '# Introduction
 
 
-    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
-
-
-    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
-
-
-    The API references in this document lists all API endpoints and the corresponding payloads.
-
-
-    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
-
-
-    # API Data Format and Versions
-
-
-    The API uses JSON for all data exchanges.
-
-
-    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
-
-    ```
-
-    Accept: application/vnd.nexla.api.v1+json
-
-    ```
-
-
-    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
-
-
-
-    ```
-
-    Accept: application/json
-
-    ```
-
-
-    # Authentication
-
-
-    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
-
-
-    <SecurityDefinitions />'
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case.'
 servers:
 - url: https://{nexla-api-host}
   variables:
@@ -82,9 +38,7 @@ paths:
       description: 'Create a new user in this environment.
 
 
-        > This requires admin access to the provided organization.
-
-        '
+        > This requires admin access to the provided organization.'
       requestBody:
         content:
           application/json:
@@ -100,9 +54,7 @@ paths:
       - Users
       operationId: get_users
       summary: Get All Users
-      description: 'Returns all users that can be viewed by authenticated user.
-
-        '
+      description: Returns all users that can be viewed by authenticated user.
       parameters:
       - $ref: '#/components/parameters/accept'
       responses:
@@ -116,9 +68,7 @@ paths:
       - Users
       operationId: get_users_expand
       summary: Get All Users with Expanded References
-      description: 'Returns all users that can be viewed by the authenticated user.
-
-        '
+      description: Returns all users that can be viewed by the authenticated user.
       parameters:
       - $ref: '#/components/parameters/accept'
       responses:
@@ -132,9 +82,7 @@ paths:
       - Users
       operationId: update_user
       summary: Modify a User
-      description: 'Modifies a user''s information and settings if a valid ID and body are provided
-
-        '
+      description: Modifies a user's information and settings if a valid ID and body are provided
       parameters:
       - name: user_id
         in: path
@@ -157,9 +105,7 @@ paths:
       - Users
       operationId: get_user
       summary: Get User by ID
-      description: 'Returns a user if a valid ID is provided.
-
-        '
+      description: Returns a user if a valid ID is provided.
       parameters:
       - name: user_id
         in: path
@@ -178,9 +124,7 @@ paths:
       - Users
       operationId: get_user_expand
       summary: Get User by ID with Expanded References
-      description: 'Returns a user if a valid ID is provided.
-
-        '
+      description: Returns a user if a valid ID is provided.
       parameters:
       - name: user_id
         in: path
@@ -207,7 +151,7 @@ paths:
       - Users
       operationId: get_current_user
       summary: Get info on current user
-      description: "Returns the user information of the currently logged-in user, including org memberships and current org info.    \n"
+      description: Returns the user information of the currently logged-in user, including org memberships and current org info.
       responses:
         '200':
           $ref: '#/components/responses/users_transfer'
@@ -219,20 +163,6 @@ paths:
           description: Not Found
 components:
   schemas:
-    UserTransferred:
-      allOf:
-      - $ref: '#/components/schemas/UserTransferable'
-      - type: object
-        properties:
-          transfer_user_resources:
-            type: object
-            properties:
-              previous_owner_id:
-                type: integer
-              new_owner_id:
-                type: integer
-              org_id:
-                type: integer
     UserTransferable:
       type: object
       properties:
@@ -331,6 +261,30 @@ components:
           format: nullable
           items:
             type: integer
+    UserTier:
+      type: string
+      enum:
+      - FREE
+      - TRIAL
+      - PAID
+      - FREE_FOREVER
+      description: 'Indicates whether a user is on a paid, free, or trial account. Used to determine limits on records processed by the account.
+
+        '
+    UserAdmin:
+      oneOf:
+      - type: string
+        enum:
+        - '*'
+      - type: boolean
+      - type: array
+        items:
+          type: object
+          properties:
+            admin:
+              type: boolean
+            org_id:
+              type: integer
     UsersCreateRequired:
       type: object
       required:
@@ -356,69 +310,6 @@ components:
           format: date-time
         admin:
           $ref: '#/components/schemas/UserAdmin'
-    UserExpanded:
-      allOf:
-      - $ref: '#/components/schemas/User'
-      - type: object
-        properties:
-          account_summary:
-            $ref: '#/components/schemas/AccountSummary'
-    UserStatus:
-      type: string
-      enum:
-      - ACTIVE
-      - DEACTIVATED
-      - SOURCE_COUNT_CAPPED
-      - SOURCE_DATA_CAPPED
-      - TRIAL_EXPIRED
-      description: 'Indicates the user''s account status across all organizations they are members of.
-
-        '
-    User:
-      type: object
-      properties:
-        id:
-          type: integer
-        email:
-          type: string
-          format: email
-        full_name:
-          type: string
-        super_user:
-          type: boolean
-        impersonated:
-          type: boolean
-        default_org:
-          type: object
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
-          additionalProperties: false
-        user_tier:
-          $ref: '#/components/schemas/UserTier'
-        status:
-          $ref: '#/components/schemas/UserStatus'
-        account_locked:
-          type: boolean
-        org_memberships:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrgMembership'
-        email_verified_at:
-          type: string
-          format: date-time
-        tos_signed_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        created_at:
-          type: string
-          format: date-time
-      additionalProperties: false
     AccountSummary:
       type: object
       properties:
@@ -509,53 +400,20 @@ components:
                 collaborator:
                   type: integer
                   format: int32
-    OrgMembership:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        name:
-          type: string
-        is_admin?:
-          type: boolean
-        org_membership_status:
-          $ref: '#/components/schemas/OrgMembershipStatus'
-    OrgMembershipStatus:
-      type: string
-      enum:
-      - ACTIVE
-      - DEACTIVATED
-      description: 'Indicates whether the user''s membership in this organization is active or not.
-
-
-        If the membership is DEACTIVATED the user can no longer access the account but the resources owned by them will still be accessible by the organization administrators.
-
-        '
-    UserTier:
-      type: string
-      enum:
-      - FREE
-      - TRIAL
-      - PAID
-      - FREE_FOREVER
-      description: 'Indicates whether a user is on a paid, free, or trial account. Used to determine limits on records processed by the account.
-
-        '
-    UserAdmin:
-      oneOf:
-      - type: string
-        enum:
-        - '*'
-      - type: boolean
-      - type: array
-        items:
-          type: object
-          properties:
-            admin:
-              type: boolean
-            org_id:
-              type: integer
+    UserTransferred:
+      allOf:
+      - $ref: '#/components/schemas/UserTransferable'
+      - type: object
+        properties:
+          transfer_user_resources:
+            type: object
+            properties:
+              previous_owner_id:
+                type: integer
+              new_owner_id:
+                type: integer
+              org_id:
+                type: integer
     UsersUpdate:
       type: object
       properties:
@@ -580,15 +438,111 @@ components:
           format: date-time
         admin:
           $ref: '#/components/schemas/UserAdmin'
+    OrgMembershipStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - DEACTIVATED
+      description: 'Indicates whether the user''s membership in this organization is active or not.
+
+
+        If the membership is DEACTIVATED the user can no longer access the account but the resources owned by them will still be accessible by the organization administrators.
+
+        '
+    UserStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - DEACTIVATED
+      - SOURCE_COUNT_CAPPED
+      - SOURCE_DATA_CAPPED
+      - TRIAL_EXPIRED
+      description: 'Indicates the user''s account status across all organizations they are members of.
+
+        '
+    OrgMembership:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        is_admin?:
+          type: boolean
+        org_membership_status:
+          $ref: '#/components/schemas/OrgMembershipStatus'
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+          format: email
+        full_name:
+          type: string
+        super_user:
+          type: boolean
+        impersonated:
+          type: boolean
+        default_org:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+          additionalProperties: false
+        user_tier:
+          $ref: '#/components/schemas/UserTier'
+        status:
+          $ref: '#/components/schemas/UserStatus'
+        account_locked:
+          type: boolean
+        org_memberships:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrgMembership'
+        email_verified_at:
+          type: string
+          format: date-time
+        tos_signed_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+      additionalProperties: false
+    UserExpanded:
+      allOf:
+      - $ref: '#/components/schemas/User'
+      - type: object
+        properties:
+          account_summary:
+            $ref: '#/components/schemas/AccountSummary'
   responses:
-    users_many_expand:
+    users_transfer:
       description: Success
       content:
         application/json:
           schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/UserExpanded'
+            $ref: '#/components/schemas/UserTransferred'
+    users_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+    users_one_expand:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserExpanded'
     users_many:
       description: Success
       content:
@@ -597,24 +551,14 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/User'
-    users_one_expand:
+    users_many_expand:
       description: Success
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/UserExpanded'
-    users_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/User'
-    users_transfer:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UserTransferred'
+            type: array
+            items:
+              $ref: '#/components/schemas/UserExpanded'
   parameters:
     accept:
       name: Accept

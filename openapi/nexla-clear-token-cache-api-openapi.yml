@@ -9,7 +9,17 @@ paths:
   /clear-token-cache/{api_key}:
     post:
       summary: Clear Token Cache
-      description: "Clear a specific token from the cache.\nArgs:\n    api_key: The API key to remove from the cache\n    auth_response: Authentication response from the request\nReturns:\n    JSONResponse: Response indicating success or failure"
+      description: 'Clear a specific token from the cache.
+
+        Args:
+
+        api_key: The API key to remove from the cache
+
+        auth_response: Authentication response from the request
+
+        Returns:
+
+        JSONResponse: Response indicating success or failure'
       operationId: clear_token_cache_clear_token_cache__api_key__post
       parameters:
       - name: api_key
@@ -49,6 +59,12 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    TokenType:
+      type: string
+      enum:
+      - bearer
+      - service_key
+      title: TokenType
     ValidationError:
       properties:
         loc:
@@ -75,9 +91,3 @@ components:
       - msg
       - type
       title: ValidationError
-    TokenType:
-      type: string
-      enum:
-      - bearer
-      - service_key
-      title: TokenType

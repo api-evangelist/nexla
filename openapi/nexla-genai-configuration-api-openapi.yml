@@ -16,51 +16,7 @@ info:
   description: '# Introduction
 
 
-    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
-
-
-    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
-
-
-    The API references in this document lists all API endpoints and the corresponding payloads.
-
-
-    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
-
-
-    # API Data Format and Versions
-
-
-    The API uses JSON for all data exchanges.
-
-
-    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
-
-    ```
-
-    Accept: application/vnd.nexla.api.v1+json
-
-    ```
-
-
-    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
-
-
-
-    ```
-
-    Accept: application/json
-
-    ```
-
-
-    # Authentication
-
-
-    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
-
-
-    <SecurityDefinitions />'
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case.'
 servers:
 - url: https://{nexla-api-host}
   variables:
@@ -98,59 +54,6 @@ paths:
           description: Not Found
 components:
   schemas:
-    OrgSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email_domain:
-          type: string
-        email:
-          type: string
-        client_identifier:
-          type: string
-        org_webhook_host:
-          type: string
-    GenAiConfig:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        owner:
-          $ref: '#/components/schemas/UserSimplified'
-        org:
-          $ref: '#/components/schemas/OrgSimplified'
-        data_credentials:
-          $ref: '#/components/schemas/DataCredential'
-        name:
-          type: string
-        description:
-          type: string
-        status:
-          type: string
-          enum:
-          - ACTIVE
-          - PAUSED
-        config:
-          type: object
-          additionalProperties: true
-          properties:
-            api_version:
-              type: string
-            openai_model:
-              type: string
-            google_ai_model:
-              type: string
-            enable_doc_recommendations:
-              type: boolean
-        type:
-          type: string
-          enum:
-          - genai_openai
-          - genai_googleai
     GenAiOrgSetting:
       type: object
       properties:
@@ -169,6 +72,21 @@ components:
         gen_ai_config:
           description: GenAI configuration (only if accessible)
           $ref: '#/components/schemas/GenAiConfig'
+    OrgSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: string
+        client_identifier:
+          type: string
+        org_webhook_host:
+          type: string
     DataCredential:
       type: object
       properties:
@@ -245,6 +163,44 @@ components:
         email_verified_at:
           type: string
           format: date-time
+    GenAiConfig:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        owner:
+          $ref: '#/components/schemas/UserSimplified'
+        org:
+          $ref: '#/components/schemas/OrgSimplified'
+        data_credentials:
+          $ref: '#/components/schemas/DataCredential'
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum:
+          - ACTIVE
+          - PAUSED
+        config:
+          type: object
+          additionalProperties: true
+          properties:
+            api_version:
+              type: string
+            openai_model:
+              type: string
+            google_ai_model:
+              type: string
+            enable_doc_recommendations:
+              type: boolean
+        type:
+          type: string
+          enum:
+          - genai_openai
+          - genai_googleai
   parameters:
     accept:
       name: Accept

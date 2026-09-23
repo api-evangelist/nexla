@@ -16,51 +16,7 @@ info:
   description: '# Introduction
 
 
-    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case. It can be used to configure and monitor data flows for different data-integration use cases and to perform all aspects of data engineering automation offered by the Nexla platform.
-
-
-    The Nexla API supports all data flow-creation and -management actions in the platform, as well as administrative user- and organization-level account-management tasks. Note that all other client packages, such as the Nexla CLI and Nexla UI, also connect to the overall Nexla infrastructure through the Nexla API.
-
-
-    The API references in this document lists all API endpoints and the corresponding payloads.
-
-
-    Check out the [API Developer Guides](https://developers.nexla.com/docs/nexla-api) to view guides and tutorials for recommended use cases for different endpoints.
-
-
-    # API Data Format and Versions
-
-
-    The API uses JSON for all data exchanges.
-
-
-    You __should__ specify the API version that should be used in the Accept header of each request. For example, to access Version 1 of the API, the Accept header should be the following:
-
-    ```
-
-    Accept: application/vnd.nexla.api.v1+json
-
-    ```
-
-
-    The Nexla API also supports a generic version header, which will default your access to the latest version of the data source/destination API.
-
-
-
-    ```
-
-    Accept: application/json
-
-    ```
-
-
-    # Authentication
-
-
-    Most Nexla API endpoints require `Bearer Token` authentication mechanism for making an authenticated request to the API. While this token can be generated programmatically outside Nexla UI by starting a session with an `api_key`, unless unavoidable, we recommend starting your session from the Nexla UI and using the `Nexla Session Token` from the Nexla UI as the Authorization header for calls to the Nexla API.
-
-
-    <SecurityDefinitions />'
+    The Nexla API is a REST-ful API used to easily create and manage resources in Nexla in ways that best fit any use case.'
 servers:
 - url: https://{nexla-api-host}
   variables:
@@ -79,9 +35,7 @@ paths:
       - Projects
       operationId: get_projects
       summary: Get all Projects
-      description: 'Retrieves a list of all projects accessible to the authenticated user.
-
-        '
+      description: Retrieves a list of all projects accessible to the authenticated user.
       parameters:
       - $ref: '#/components/parameters/access_roles'
       - $ref: '#/components/parameters/accept'
@@ -97,9 +51,7 @@ paths:
       - Projects
       operationId: create_project
       summary: Create a project
-      description: 'Creates a project with the specified configuration. Note that flows can also be attached to the project later by calling endpoints to update the project.
-
-        '
+      description: Creates a project with the specified configuration. Note that flows can also be attached to the project later by calling endpoints to update the project.
       requestBody:
         content:
           application/vnd.nexla.api.v1+json:
@@ -118,9 +70,7 @@ paths:
       - Projects
       operationId: get_project
       summary: Get Project by ID
-      description: 'Returns a project if a valid ID is provided.
-
-        '
+      description: Returns a project if a valid ID is provided.
       parameters:
       - name: project_id
         in: path
@@ -142,9 +92,7 @@ paths:
       - Projects
       operationId: delete_project
       summary: Delete Project by ID
-      description: 'Deletes a project if a valid ID is provided. Note that flows belonging to the project will only be removed from the project and will not be deleted.
-
-        '
+      description: Deletes a project if a valid ID is provided. Note that flows belonging to the project will only be removed from the project and will not be deleted.
       parameters:
       - name: project_id
         in: path
@@ -166,9 +114,7 @@ paths:
       - Projects
       operationId: update_project
       summary: Modify a Project
-      description: 'Modifies a project''s information and settings if a valid ID and body are provided.
-
-        '
+      description: Modifies a project's information and settings if a valid ID and body are provided.
       parameters:
       - name: project_id
         in: path
@@ -196,9 +142,7 @@ paths:
       - Projects
       operationId: get_project_flows
       summary: Get Project Flows
-      description: 'Returns a list of flows belonging to a project.
-
-        '
+      description: Returns a list of flows belonging to a project.
       parameters:
       - name: project_id
         in: path
@@ -220,9 +164,7 @@ paths:
       - Projects
       operationId: replace_project_flows
       summary: Replace Project Flows List
-      description: 'Replaces the list of flows belonging to a project. Existing flows are removed from the project.
-
-        '
+      description: Replaces the list of flows belonging to a project. Existing flows are removed from the project.
       parameters:
       - name: project_id
         in: path
@@ -249,9 +191,7 @@ paths:
       - Projects
       operationId: add_project_flows
       summary: Add Flows to Project
-      description: 'Adds a list of flows to a project. The existing flow list is retained and merged with the new flow list.
-
-        '
+      description: Adds a list of flows to a project. The existing flow list is retained and merged with the new flow list.
       parameters:
       - name: project_id
         in: path
@@ -278,9 +218,7 @@ paths:
       - Projects
       operationId: remove_project_flows
       summary: Remove Flows From A Project
-      description: 'Removes data flows from a project. If no request body is provided, all flows belonging to the project will be removed. The flows themselves will not be deleted, but they will no longer belong to the project.
-
-        '
+      description: Removes data flows from a project. If no request body is provided, all flows belonging to the project will be removed. The flows themselves will not be deleted, but they will no longer belong to the project.
       parameters:
       - name: project_id
         in: path
@@ -310,7 +248,10 @@ paths:
       - Projects
       operationId: get_project_flows_(deprecated)
       summary: Get Project Flows (Deprecated)
-      description: "Returns a list of flows belonging to a project.\n\n> **Note**: This version of the endpoint has been deprecated. The returned flow response does not reference the new unique flow ids, instead references composite data flow ids of the type `{resource_type}/{resource_id}`. See get_project_flows for a new version of this endpoint that references unique `flow_id`.   \n"
+      description: 'Returns a list of flows belonging to a project.
+
+
+        > **Note**: This version of the endpoint has been deprecated. The returned flow response does not reference the new unique flow ids, instead references composite data flow ids of the type `{resource_type}/{resource_id}`. See get_project_flows for a new version of this endpoint that references unique `flow_id`.'
       parameters:
       - name: project_id
         in: path
@@ -332,7 +273,10 @@ paths:
       - Projects
       operationId: replace_project_flows_(deprecated)
       summary: Replace Project Flows List (Deprecated)
-      description: "Replaces the list of flows belonging to a project. Existing flows are removed from the project.\n\n> **Note**: This version of the endpoint has been deprecated. The request body and response does not reference flows with new unique flow_ids, instead references composite data flow ids of the type `{resource_type}/{resource_id}`. See replace_project_flows for a new version of this endpoint that references unique `flow_id`.   \n"
+      description: 'Replaces the list of flows belonging to a project. Existing flows are removed from the project.
+
+
+        > **Note**: This version of the endpoint has been deprecated. The request body and response does not reference flows with new unique flow_ids, instead references composite data flow ids of the type `{resource_type}/{resource_id}`. See replace_project_flows for a new version of this endpoint that references unique `flow_id`.'
       parameters:
       - name: project_id
         in: path
@@ -362,9 +306,7 @@ paths:
       description: 'Adds a list of flows to a project. The existing flow list is retained and merged with the new flow list.
 
 
-        > **Note**: This version of the endpoint has been deprecated. The request body and response does not reference flows with new unique flow_ids, instead references composite data flow ids of the type `{resource_type}/{resource_id}`. See add_project_flows for a new version of this endpoint that references unique `flow_id`.
-
-        '
+        > **Note**: This version of the endpoint has been deprecated. The request body and response does not reference flows with new unique flow_ids, instead references composite data flow ids of the type `{resource_type}/{resource_id}`. See add_project_flows for a new version of this endpoint that references unique `flow_id`.'
       parameters:
       - name: project_id
         in: path
@@ -394,9 +336,7 @@ paths:
       description: 'Removes data flows from a project. If no request body is provided, all flows belonging to the project will be removed. The flows themselves will not be deleted, but they will no longer belong to the project.
 
 
-        > **Note**: This version of the endpoint has been deprecated. The request body and response does not reference flows with new unique flow_ids, instead references composite data flow ids of the type `{resource_type}/{resource_id}`. See remove_project_flows for a new version of this endpoint that references unique `flow_id`.
-
-        '
+        > **Note**: This version of the endpoint has been deprecated. The request body and response does not reference flows with new unique flow_ids, instead references composite data flow ids of the type `{resource_type}/{resource_id}`. See remove_project_flows for a new version of this endpoint that references unique `flow_id`.'
       parameters:
       - name: project_id
         in: path
@@ -422,34 +362,6 @@ paths:
           description: Not Found
 components:
   schemas:
-    ProjectFlowListFlowNodes:
-      type: object
-      properties:
-        flows:
-          type: array
-          items:
-            type: integer
-            description: 'Unique ID of the flow node.
-
-              '
-    ProjectFlowList:
-      type: object
-      properties:
-        data_flows:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectFlowIdentifier'
-    ProjectMutable:
-      allOf:
-      - type: object
-        properties:
-          name:
-            type: string
-            example: test project
-          description:
-            type: string
-            example: it's a test project
-      - $ref: '#/components/schemas/ProjectFlowList'
     org:
       type: object
       properties:
@@ -473,22 +385,65 @@ components:
         email:
           type: string
           format: email
-    FlowNodes:
+    FlowOriginNode:
+      type: object
+      properties:
+        id:
+          type: integer
+        parent_node_id:
+          type: integer
+          format: nullable
+          description: "Flow id of the parent flow node if this node is not the root node in the flow chain. This will usually be `null` as most flow definitions will originate in the node for `data_source`. \n"
+        origin_node_id:
+          type: integer
+          description: "Flow id of the root node in the flow chain.           \n"
+        data_source_id:
+          type: integer
+          format: nullable
+          description: 'The ID of the data source this flow node is linked to if this is a flow node for a data source.
+
+            '
+        data_set_id:
+          type: integer
+          format: nullable
+          description: "The ID of the Nexset this flow node is linked to if this is flow node for a Nexset. \n"
+        data_sink_id:
+          type: integer
+          format: nullable
+          description: "The ID of the data sink this flow node is linked to if this is a flow node for a data sink.                             \n"
+        shared_origin_node_id:
+          type: integer
+          format: nullable
+        status:
+          type: string
+        project_id:
+          type: integer
+          format: nullable
+        flow_type:
+          type: string
+        ingestion_mode:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        children:
+          type: array
+          description: 'Each element of this array is a flow node that is directly linked to this flow node.
+
+            '
+          items:
+            $ref: '#/components/schemas/FlowChildNode'
+    AccessRoles:
       type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
       items:
-        $ref: '#/components/schemas/FlowOriginNode'
-    ProjectFlowIdentifier:
-      anyOf:
-      - type: object
-        properties:
-          data_source_id:
-            type: integer
-            description: "The ID of the data source which is the root node of this flow chain.\n\nUnless the flow chain has been created from a shared Nexset, flow definitions start from the source as the root node. This property reflects the source that is the root node of this flow.          \n"
-      - type: object
-        properties:
-          data_set_id:
-            type: integer
-            description: "The ID of the Nexset which is the root node of this flow chain.\n\nThis property is not null only if the flow was created from a shared Nexset. In that case, this value reflects the ID of the derived dataset created from the shared Nexset.           \n"
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
     FlowChildNode:
       type: object
       properties:
@@ -824,46 +779,18 @@ components:
                 type: string
               access_roles:
                 type: array
-    AccessRoles:
-      type: array
-      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
-      items:
-        type: string
-        enum:
-        - owner
-        - collaborator
-        - operator
-        - admin
-    ProjectDataFlow:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: 'Unique identifier of this flow.
-
-            '
-        project_id:
-          type: integer
-          description: "Unique identifier of the project this flow belongs to.      \n"
-        data_source_id:
-          type: integer
-          format: nullable
-          description: 'The ID of the data source which is the root node of this flow chain.
-
-
-            Unless the flow chain has been created from a shared Nexset, flow definitions start from the source as the root node. This property reflects the source that is the root node of this flow.
-
-            '
-        data_set_id:
-          type: integer
-          format: nullable
-          description: "The ID of the Nexset which is the root node of this flow chain.\n\nThis property is not null only if the flow was created from a shared Nexset. In that case, this value reflects the ID of the derived dataset created from the shared Nexset.  \n"
-        updated_at:
-          type: string
-          example: '2023-01-31T01:39:54.000Z'
-        created_at:
-          type: string
-          example: '2023-01-31T01:39:54.000Z'
+    ProjectFlowIdentifier:
+      anyOf:
+      - type: object
+        properties:
+          data_source_id:
+            type: integer
+            description: "The ID of the data source which is the root node of this flow chain.\n\nUnless the flow chain has been created from a shared Nexset, flow definitions start from the source as the root node. This property reflects the source that is the root node of this flow.          \n"
+      - type: object
+        properties:
+          data_set_id:
+            type: integer
+            description: "The ID of the Nexset which is the root node of this flow chain.\n\nThis property is not null only if the flow was created from a shared Nexset. In that case, this value reflects the ID of the derived dataset created from the shared Nexset.           \n"
     Project:
       type: object
       properties:
@@ -943,61 +870,119 @@ components:
           type: string
           format: date-time
           example: '2023-01-31T01:39:54.000Z'
-    FlowOriginNode:
+    ProjectFlowList:
+      type: object
+      properties:
+        data_flows:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectFlowIdentifier'
+    ProjectFlowListFlowNodes:
+      type: object
+      properties:
+        flows:
+          type: array
+          items:
+            type: integer
+            description: 'Unique ID of the flow node.
+
+              '
+    ProjectDataFlow:
       type: object
       properties:
         id:
           type: integer
-        parent_node_id:
+          description: 'Unique identifier of this flow.
+
+            '
+        project_id:
           type: integer
-          format: nullable
-          description: "Flow id of the parent flow node if this node is not the root node in the flow chain. This will usually be `null` as most flow definitions will originate in the node for `data_source`. \n"
-        origin_node_id:
-          type: integer
-          description: "Flow id of the root node in the flow chain.           \n"
+          description: "Unique identifier of the project this flow belongs to.      \n"
         data_source_id:
           type: integer
           format: nullable
-          description: 'The ID of the data source this flow node is linked to if this is a flow node for a data source.
+          description: 'The ID of the data source which is the root node of this flow chain.
+
+
+            Unless the flow chain has been created from a shared Nexset, flow definitions start from the source as the root node. This property reflects the source that is the root node of this flow.
 
             '
         data_set_id:
           type: integer
           format: nullable
-          description: "The ID of the Nexset this flow node is linked to if this is flow node for a Nexset. \n"
-        data_sink_id:
-          type: integer
-          format: nullable
-          description: "The ID of the data sink this flow node is linked to if this is a flow node for a data sink.                             \n"
-        shared_origin_node_id:
-          type: integer
-          format: nullable
-        status:
+          description: "The ID of the Nexset which is the root node of this flow chain.\n\nThis property is not null only if the flow was created from a shared Nexset. In that case, this value reflects the ID of the derived dataset created from the shared Nexset.  \n"
+        updated_at:
           type: string
-        project_id:
-          type: integer
-          format: nullable
-        flow_type:
+          example: '2023-01-31T01:39:54.000Z'
+        created_at:
           type: string
-        ingestion_mode:
-          type: string
-        name:
-          type: string
-        description:
-          type: string
-        children:
-          type: array
-          description: 'Each element of this array is a flow node that is directly linked to this flow node.
-
-            '
-          items:
-            $ref: '#/components/schemas/FlowChildNode'
+          example: '2023-01-31T01:39:54.000Z'
     ProjectCreate:
       allOf:
       - $ref: '#/components/schemas/ProjectMutable'
       - required:
         - name
+    ProjectMutable:
+      allOf:
+      - type: object
+        properties:
+          name:
+            type: string
+            example: test project
+          description:
+            type: string
+            example: it's a test project
+      - $ref: '#/components/schemas/ProjectFlowList'
+    FlowNodes:
+      type: array
+      items:
+        $ref: '#/components/schemas/FlowOriginNode'
+  responses:
+    projects_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Project'
+    ProjectFlowsOld:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ProjectDataFlow'
+    FlowsMany:
+      description: Success
+      content:
+        application/json:
+          schema:
+            allOf:
+            - type: object
+              properties:
+                flows:
+                  $ref: '#/components/schemas/FlowNodes'
+            - $ref: '#/components/schemas/FlowElements'
+    projects_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Project'
   parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
     access_roles:
       name: access_role
       in: query
@@ -1012,51 +997,6 @@ components:
         externalDocs:
           description: Nexla API access roles
           url: https://developers.nexla.com/docs/access-modes
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
-
-          '
-  responses:
-    FlowsMany:
-      description: Success
-      content:
-        application/json:
-          schema:
-            allOf:
-            - type: object
-              properties:
-                flows:
-                  $ref: '#/components/schemas/FlowNodes'
-            - $ref: '#/components/schemas/FlowElements'
-    projects_many:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/Project'
-    projects_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Project'
-    ProjectFlowsOld:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/ProjectDataFlow'
   securitySchemes:
     NexlaSessionToken:
       type: http
