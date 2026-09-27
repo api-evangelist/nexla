@@ -79,7 +79,7 @@ paths:
     get:
       tags:
       - Org authentication configs
-      operationId: get_api_auth_configs
+      operationId: getApiAuthConfigsByAuthConfigId
       summary: Get auth configs
       description: Get the authentication configurations by it's ID.
       parameters:
@@ -95,6 +95,8 @@ paths:
           $ref: '#/components/responses/auth_config_one'
         '403':
           description: Forbidden
+      x-operation-id-source: normalized
+      x-operation-id-original: get_api_auth_configs
     put:
       tags:
       - Org authentication configs
@@ -162,7 +164,7 @@ paths:
     put:
       tags:
       - Org authentication configs
-      operationId: update_api_auth_config
+      operationId: putOrgsByOrgIdAuthSettingsByAuthSettingId
       summary: Update auth config (enable/disable)
       description: Update an authentication configuration for the API.
       parameters:
@@ -193,37 +195,62 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
+      x-operation-id-source: normalized
+      x-operation-id-original: update_api_auth_config
 components:
-  responses:
-    auth_config_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AuthConfig'
-    auth_configs_many:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/AuthConfig'
-    auth_settings_many:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/AuthSetting'
-    auth_setting_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AuthSetting'
   schemas:
+    UserSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+        email_verified_at:
+          type: string
+          format: date-time
+    AuthSettingPayload:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+    AuthSetting:
+      type: object
+      properties:
+        id:
+          type: integer
+        org:
+          $ref: '#/components/schemas/OrgSimplified'
+        auth_config:
+          type: object
+          properties:
+            id:
+              type: integer
+            uid:
+              type: string
+            protocol:
+              type: string
+              enum:
+              - saml
+              - oidc
+              - google
+              - password
+            name:
+              type: string
+            description:
+              type: string
+            global:
+              type: boolean
+        enabled:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
     AuthConfigPayload:
       type: object
       additionalProperties: false
@@ -303,58 +330,6 @@ components:
           type: string
         org_webhook_host:
           type: string
-    UserSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        full_name:
-          type: string
-        email:
-          type: string
-        email_verified_at:
-          type: string
-          format: date-time
-    AuthSettingPayload:
-      type: object
-      properties:
-        enabled:
-          type: boolean
-    AuthSetting:
-      type: object
-      properties:
-        id:
-          type: integer
-        org:
-          $ref: '#/components/schemas/OrgSimplified'
-        auth_config:
-          type: object
-          properties:
-            id:
-              type: integer
-            uid:
-              type: string
-            protocol:
-              type: string
-              enum:
-              - saml
-              - oidc
-              - google
-              - password
-            name:
-              type: string
-            description:
-              type: string
-            global:
-              type: boolean
-        enabled:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
     AuthConfig:
       type: object
       properties:
@@ -449,6 +424,35 @@ components:
         description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
 
           '
+  responses:
+    auth_settings_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AuthSetting'
+    auth_setting_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthSetting'
+    auth_config_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthConfig'
+    auth_configs_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AuthConfig'
   securitySchemes:
     NexlaSessionToken:
       type: http

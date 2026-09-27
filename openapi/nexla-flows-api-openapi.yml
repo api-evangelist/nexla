@@ -494,22 +494,6 @@ paths:
           description: Not found
 components:
   parameters:
-    page:
-      name: page
-      in: query
-      schema:
-        type: integer
-        description: 'Add this parameter to a resource fetch request to fetch a specific page of data.
-
-          '
-    per_page:
-      name: per_page
-      in: query
-      schema:
-        type: integer
-        description: 'Add this parameter to a resource fetch request to set the number of items that should be returned in each request.
-
-          '
     accept:
       name: Accept
       in: header
@@ -535,17 +519,72 @@ components:
         externalDocs:
           description: Nexla API access roles
           url: https://developers.nexla.com/docs/access-modes
+    page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        description: 'Add this parameter to a resource fetch request to fetch a specific page of data.
+
+          '
+    per_page:
+      name: per_page
+      in: query
+      schema:
+        type: integer
+        description: 'Add this parameter to a resource fetch request to set the number of items that should be returned in each request.
+
+          '
   schemas:
-    owner:
+    FlowOriginNode:
       type: object
       properties:
         id:
           type: integer
-        full_name:
+        parent_node_id:
+          type: integer
+          format: nullable
+          description: "Flow id of the parent flow node if this node is not the root node in the flow chain. This will usually be `null` as most flow definitions will originate in the node for `data_source`. \n"
+        origin_node_id:
+          type: integer
+          description: "Flow id of the root node in the flow chain.           \n"
+        data_source_id:
+          type: integer
+          format: nullable
+          description: 'The ID of the data source this flow node is linked to if this is a flow node for a data source.
+
+            '
+        data_set_id:
+          type: integer
+          format: nullable
+          description: "The ID of the Nexset this flow node is linked to if this is flow node for a Nexset. \n"
+        data_sink_id:
+          type: integer
+          format: nullable
+          description: "The ID of the data sink this flow node is linked to if this is a flow node for a data sink.                             \n"
+        shared_origin_node_id:
+          type: integer
+          format: nullable
+        status:
           type: string
-        email:
+        project_id:
+          type: integer
+          format: nullable
+        flow_type:
           type: string
-          format: email
+        ingestion_mode:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        children:
+          type: array
+          description: 'Each element of this array is a flow node that is directly linked to this flow node.
+
+            '
+          items:
+            $ref: '#/components/schemas/FlowChildNode'
     FlowElements:
       type: object
       properties:
@@ -849,6 +888,23 @@ components:
                 type: string
               access_roles:
                 type: array
+    org:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: 'null'
+        client_identifier:
+          type: 'null'
+    FlowNodes:
+      type: array
+      items:
+        $ref: '#/components/schemas/FlowOriginNode'
     flow_one_with_async:
       oneOf:
       - allOf:
@@ -862,6 +918,48 @@ components:
                 $ref: '#/components/schemas/FlowOriginNode'
         - $ref: '#/components/schemas/FlowElements'
       - $ref: '#/components/schemas/AsyncResponse'
+    owner:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+          format: email
+    FlowChildNode:
+      type: object
+      properties:
+        id:
+          type: integer
+        parent_node_id:
+          type: integer
+          description: 'The flow id of the flow node this node is a direct descendant of.
+
+            '
+        origin_node_id:
+          type: integer
+          description: "The flow id of the flow node at the root of this flow chain.      \n"
+        data_source_id:
+          type: integer
+          format: nullable
+          description: 'The ID of the data source this flow node is linked to if this is a flow node for a data source.
+
+            '
+        data_set_id:
+          type: integer
+          format: nullable
+          description: "The ID of the Nexset this flow node is linked to if this is flow node for a Nexset. \n"
+        data_sink_id:
+          type: integer
+          format: nullable
+          description: "The ID of the data sink this flow node is linked to if this is a flow node for a data sink.         \n"
+        children:
+          type: array
+          description: 'Each element is a flow node that is directly linked to this node.
+
+            '
     AsyncResponse:
       type: object
       description: 'This object represents the response of an asynchronous operation. The response can be a dictionary or an array of dictionaries. The format of the response depends on the operation that was executed.
@@ -910,132 +1008,22 @@ components:
           description: 'The date and time when the request was completed. This field is only present if the request has been completed successfully.
 
             '
-    FlowNodes:
-      type: array
-      items:
-        $ref: '#/components/schemas/FlowOriginNode'
-    org:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email_domain:
-          type: string
-        email:
-          type: 'null'
-        client_identifier:
-          type: 'null'
-    FlowOriginNode:
-      type: object
-      properties:
-        id:
-          type: integer
-        parent_node_id:
-          type: integer
-          format: nullable
-          description: "Flow id of the parent flow node if this node is not the root node in the flow chain. This will usually be `null` as most flow definitions will originate in the node for `data_source`. \n"
-        origin_node_id:
-          type: integer
-          description: "Flow id of the root node in the flow chain.           \n"
-        data_source_id:
-          type: integer
-          format: nullable
-          description: 'The ID of the data source this flow node is linked to if this is a flow node for a data source.
-
-            '
-        data_set_id:
-          type: integer
-          format: nullable
-          description: "The ID of the Nexset this flow node is linked to if this is flow node for a Nexset. \n"
-        data_sink_id:
-          type: integer
-          format: nullable
-          description: "The ID of the data sink this flow node is linked to if this is a flow node for a data sink.                             \n"
-        shared_origin_node_id:
-          type: integer
-          format: nullable
-        status:
-          type: string
-        project_id:
-          type: integer
-          format: nullable
-        flow_type:
-          type: string
-        ingestion_mode:
-          type: string
-        name:
-          type: string
-        description:
-          type: string
-        children:
-          type: array
-          description: 'Each element of this array is a flow node that is directly linked to this flow node.
-
-            '
-          items:
-            $ref: '#/components/schemas/FlowChildNode'
-    FlowChildNode:
-      type: object
-      properties:
-        id:
-          type: integer
-        parent_node_id:
-          type: integer
-          description: 'The flow id of the flow node this node is a direct descendant of.
-
-            '
-        origin_node_id:
-          type: integer
-          description: "The flow id of the flow node at the root of this flow chain.      \n"
-        data_source_id:
-          type: integer
-          format: nullable
-          description: 'The ID of the data source this flow node is linked to if this is a flow node for a data source.
-
-            '
-        data_set_id:
-          type: integer
-          format: nullable
-          description: "The ID of the Nexset this flow node is linked to if this is flow node for a Nexset. \n"
-        data_sink_id:
-          type: integer
-          format: nullable
-          description: "The ID of the data sink this flow node is linked to if this is a flow node for a data sink.         \n"
-        children:
-          type: array
-          description: 'Each element is a flow node that is directly linked to this node.
-
-            '
   responses:
-    genai_recommendation_response:
-      description: Either success or failure
+    FlowsOne:
+      description: Success
       content:
         application/json:
           schema:
-            type: object
-            required:
-            - status
-            properties:
-              status:
-                type: string
-                description: Should be 200 or "ok" for normal response. If GenAI service is not available, you will get another status code.
-                example: ok
-              output:
-                type: object
-                properties:
-                  response:
-                    type: string
-                    description: The response message from GenAI service. Contains Markdown text.  If there is an error, this field will not be present.
-                  statusCode:
-                    type: integer
-                    description: The status code from external GenAI service.
-                    example: 200
-                  errorMessage:
-                    type: string
-                    description: If there is an error, this field will contain the error message, and 'response' field will not be present.
-                    example: GenAI Integration has not been enabled for your Nexla organization. Please contact your organization admin or Nexla support for enabling the integration.
+            allOf:
+            - type: object
+              properties:
+                flows:
+                  type: array
+                  minItems: 1
+                  maxItems: 1
+                  items:
+                    $ref: '#/components/schemas/FlowOriginNode'
+            - $ref: '#/components/schemas/FlowElements'
     FlowsManyWithMetric:
       description: Success
       content:
@@ -1067,21 +1055,33 @@ components:
                         format: date-time
                       run_id:
                         type: integer
-    FlowsOne:
-      description: Success
+    genai_recommendation_response:
+      description: Either success or failure
       content:
         application/json:
           schema:
-            allOf:
-            - type: object
-              properties:
-                flows:
-                  type: array
-                  minItems: 1
-                  maxItems: 1
-                  items:
-                    $ref: '#/components/schemas/FlowOriginNode'
-            - $ref: '#/components/schemas/FlowElements'
+            type: object
+            required:
+            - status
+            properties:
+              status:
+                type: string
+                description: Should be 200 or "ok" for normal response. If GenAI service is not available, you will get another status code.
+                example: ok
+              output:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    description: The response message from GenAI service. Contains Markdown text.  If there is an error, this field will not be present.
+                  statusCode:
+                    type: integer
+                    description: The status code from external GenAI service.
+                    example: 200
+                  errorMessage:
+                    type: string
+                    description: If there is an error, this field will contain the error message, and 'response' field will not be present.
+                    example: GenAI Integration has not been enabled for your Nexla organization. Please contact your organization admin or Nexla support for enabling the integration.
   securitySchemes:
     NexlaSessionToken:
       type: http

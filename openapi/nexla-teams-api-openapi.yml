@@ -243,22 +243,33 @@ paths:
         '404':
           description: Not Found
 components:
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
+    access_roles:
+      name: access_role
+      in: query
+      schema:
+        type: string
+        enum:
+        - collaborator
+        - operator
+        - admin
+        - owner
+        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
+        externalDocs:
+          description: Nexla API access roles
+          url: https://developers.nexla.com/docs/access-modes
   schemas:
-    OrgSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email_domain:
-          type: string
-        email:
-          type: string
-        client_identifier:
-          type: string
-        org_webhook_host:
-          type: string
     AccessRoles:
       type: array
       description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
@@ -269,6 +280,24 @@ components:
         - collaborator
         - operator
         - admin
+    TeamMutable:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamMemberRequestSchema'
+    TeamMemberList:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamMemberResponseSchema'
     TeamMemberRequestSchema:
       oneOf:
       - type: object
@@ -323,42 +352,27 @@ components:
           type: array
           items:
             type: string
-    UserSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        full_name:
-          type: string
-        email:
-          type: string
-        email_verified_at:
-          type: string
-          format: date-time
     TeamCreate:
       allOf:
       - $ref: '#/components/schemas/TeamMutable'
       - type: object
         required:
         - name
-    TeamMemberList:
+    OrgSimplified:
       type: object
       properties:
-        members:
-          type: array
-          items:
-            $ref: '#/components/schemas/TeamMemberResponseSchema'
-    TeamMutable:
-      type: object
-      properties:
+        id:
+          type: integer
         name:
           type: string
-        description:
+        email_domain:
           type: string
-        members:
-          type: array
-          items:
-            $ref: '#/components/schemas/TeamMemberRequestSchema'
+        email:
+          type: string
+        client_identifier:
+          type: string
+        org_webhook_host:
+          type: string
     TeamMemberResponseSchema:
       type: object
       properties:
@@ -374,21 +388,19 @@ components:
           description: 'Reflects whether the user is an administrator of this team or not.
 
             '
+    UserSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+        email_verified_at:
+          type: string
+          format: date-time
   responses:
-    teams_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Team'
-    team_members:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/TeamMemberList'
     teams_many:
       description: Success
       content:
@@ -397,32 +409,20 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/Team'
-  parameters:
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
-
-          '
-    access_roles:
-      name: access_role
-      in: query
-      schema:
-        type: string
-        enum:
-        - collaborator
-        - operator
-        - admin
-        - owner
-        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
-        externalDocs:
-          description: Nexla API access roles
-          url: https://developers.nexla.com/docs/access-modes
+    team_members:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/TeamMemberList'
+    teams_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Team'
   securitySchemes:
     NexlaSessionToken:
       type: http

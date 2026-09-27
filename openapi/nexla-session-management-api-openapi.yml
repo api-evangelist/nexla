@@ -82,6 +82,27 @@ paths:
           description: Bad Request
 components:
   schemas:
+    UserSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+        email_verified_at:
+          type: string
+          format: date-time
+    OrgMembershipToken:
+      type: object
+      properties:
+        api_key:
+          type: string
+        status:
+          $ref: '#/components/schemas/OrgMembershipStatus'
+        is_admin?:
+          type: boolean
     UserTransferable:
       type: object
       properties:
@@ -180,23 +201,20 @@ components:
           format: nullable
           items:
             type: integer
-    Token:
-      type: object
-      properties:
-        access_token:
-          type: string
-        token_type:
-          type: string
-          enum:
-          - Bearer
-        expires_in:
-          type: integer
-        user:
-          $ref: '#/components/schemas/UserBrief'
-        org_membership:
-          $ref: '#/components/schemas/OrgMembershipToken'
-        org:
-          $ref: '#/components/schemas/OrgSimplified'
+    UserTransferred:
+      allOf:
+      - $ref: '#/components/schemas/UserTransferable'
+      - type: object
+        properties:
+          transfer_user_resources:
+            type: object
+            properties:
+              previous_owner_id:
+                type: integer
+              new_owner_id:
+                type: integer
+              org_id:
+                type: integer
     OrgSimplified:
       type: object
       properties:
@@ -212,27 +230,6 @@ components:
           type: string
         org_webhook_host:
           type: string
-    OrgMembershipToken:
-      type: object
-      properties:
-        api_key:
-          type: string
-        status:
-          $ref: '#/components/schemas/OrgMembershipStatus'
-        is_admin?:
-          type: boolean
-    UserSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        full_name:
-          type: string
-        email:
-          type: string
-        email_verified_at:
-          type: string
-          format: date-time
     OrgMembershipStatus:
       type: string
       enum:
@@ -264,20 +261,23 @@ components:
             properties:
               org:
                 type: integer
-    UserTransferred:
-      allOf:
-      - $ref: '#/components/schemas/UserTransferable'
-      - type: object
-        properties:
-          transfer_user_resources:
-            type: object
-            properties:
-              previous_owner_id:
-                type: integer
-              new_owner_id:
-                type: integer
-              org_id:
-                type: integer
+    Token:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          enum:
+          - Bearer
+        expires_in:
+          type: integer
+        user:
+          $ref: '#/components/schemas/UserBrief'
+        org_membership:
+          $ref: '#/components/schemas/OrgMembershipToken'
+        org:
+          $ref: '#/components/schemas/OrgSimplified'
   responses:
     users_transfer:
       description: Success

@@ -232,32 +232,6 @@ components:
       - msg
       - type
       title: ValidationError
-    TextContent:
-      properties:
-        type:
-          type: string
-          const: text
-          title: Type
-        text:
-          type: string
-          title: Text
-        annotations:
-          anyOf:
-          - $ref: '#/components/schemas/Annotations'
-          - type: 'null'
-        _meta:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Meta
-      additionalProperties: true
-      type: object
-      required:
-      - type
-      - text
-      title: TextContent
-      description: Text content for a message.
     Body_Nexla-Query-Service:
       properties:
         user_query:
@@ -290,6 +264,32 @@ components:
       additionalProperties: true
       type: object
       title: Annotations
+    TextContent:
+      properties:
+        type:
+          type: string
+          const: text
+          title: Type
+        text:
+          type: string
+          title: Text
+        annotations:
+          anyOf:
+          - $ref: '#/components/schemas/Annotations'
+          - type: 'null'
+        _meta:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Meta
+      additionalProperties: true
+      type: object
+      required:
+      - type
+      - text
+      title: TextContent
+      description: Text content for a message.
     HTTPValidationError:
       properties:
         detail:

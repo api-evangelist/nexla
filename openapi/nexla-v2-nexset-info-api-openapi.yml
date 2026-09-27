@@ -105,6 +105,12 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    TokenType:
+      type: string
+      enum:
+      - bearer
+      - service_key
+      title: TokenType
     NexsetInfoPatchRequest:
       properties:
         name:
@@ -139,12 +145,6 @@ components:
         fields left ``None`` are not forwarded to the Admin API. The handler
 
         rejects a fully empty payload with 400.'
-    TokenType:
-      type: string
-      enum:
-      - bearer
-      - service_key
-      title: TokenType
     ValidationError:
       properties:
         loc:

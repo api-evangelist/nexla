@@ -272,16 +272,6 @@ paths:
           description: Not found
 components:
   parameters:
-    expand:
-      name: expand
-      in: query
-      schema:
-        type: integer
-        enum:
-        - 1
-        description: 'Add this parameter to a resource fetch request to receive details about related resources in the response.
-
-          '
     accept:
       name: Accept
       in: header
@@ -307,7 +297,201 @@ components:
         externalDocs:
           description: Nexla API access roles
           url: https://developers.nexla.com/docs/access-modes
+    expand:
+      name: expand
+      in: query
+      schema:
+        type: integer
+        enum:
+        - 1
+        description: 'Add this parameter to a resource fetch request to receive details about related resources in the response.
+
+          '
   responses:
+    data_source_one_expand:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              owner:
+                $ref: '#/components/schemas/owner'
+              org:
+                $ref: '#/components/schemas/org'
+              access_roles:
+                $ref: '#/components/schemas/AccessRoles'
+              name:
+                type: string
+              description:
+                type: 'null'
+              status:
+                type: string
+              data_sets:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    version:
+                      type: integer
+                    id:
+                      type: integer
+                    owner_id:
+                      type: integer
+                    org_id:
+                      type: integer
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    updated_at:
+                      type: string
+                      format: date-time
+                    created_at:
+                      type: string
+                      format: date-time
+                    sample_service_id:
+                      type:
+                      - 'null'
+                    source_schema:
+                      $ref: '#/components/schemas/data_set_schema'
+                    transform:
+                      type: object
+                      properties:
+                        version:
+                          type: integer
+                        data_maps:
+                          type: array
+                        transforms:
+                          type: array
+                        custom_config:
+                          type: object
+                    output_schema:
+                      $ref: '#/components/schemas/data_set_schema'
+              ingest_method:
+                type: string
+              source_format:
+                type: string
+              source_config:
+                type: object
+                additionalProperties:
+                  type: string
+              poll_schedule:
+                type: 'null'
+              managed:
+                type: boolean
+              code_container_id:
+                type: 'null'
+              source_type:
+                type: string
+              connector_type:
+                type: string
+              connector:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  type:
+                    type: string
+                  connection_type:
+                    type: string
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  nexset_api_compatible:
+                    type: boolean
+              api_keys:
+                type: array
+              auto_generated:
+                type: boolean
+              data_credentials:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  owner:
+                    $ref: '#/components/schemas/owner'
+                  org:
+                    $ref: '#/components/schemas/org'
+                  access_roles:
+                    $ref: '#/components/schemas/AccessRoles'
+                  credentials_version:
+                    type: string
+                  managed:
+                    type: boolean
+                  credentials_type:
+                    type: string
+                  connector:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      type:
+                        type: string
+                      connection_type:
+                        type: string
+                      name:
+                        type: string
+                      description:
+                        type: string
+                      nexset_api_compatible:
+                        type: boolean
+                  api_keys:
+                    type: array
+                  credentials_non_secure_data:
+                    type: object
+                    additionalProperties:
+                      type:
+                      - string
+                      - object
+                      - integer
+                      x-additionalPropertiesName: credential_property
+                  verified_status:
+                    type: string
+                  verified_at:
+                    type: string
+                    format: date-time
+                  copied_from_id:
+                    type: 'null'
+                  updated_at:
+                    type: string
+                    format: date-time
+                  created_at:
+                    type: string
+                    format: date-time
+                  tags:
+                    type: array
+              run_ids:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    created_at:
+                      type: string
+                      format: date-time
+              copied_from_id:
+                type: 'null'
+              updated_at:
+                type: string
+                format: date-time
+              created_at:
+                type: string
+                format: date-time
+              flow_type:
+                type: string
+              ingestion_mode:
+                type: string
+              tags:
+                type: array
     data_source_many:
       description: Success
       content:
@@ -576,201 +760,17 @@ components:
                 type: string
               ingestion_mode:
                 type: string
-    data_source_one_expand:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              id:
-                type: integer
-              owner:
-                $ref: '#/components/schemas/owner'
-              org:
-                $ref: '#/components/schemas/org'
-              access_roles:
-                $ref: '#/components/schemas/AccessRoles'
-              name:
-                type: string
-              description:
-                type: 'null'
-              status:
-                type: string
-              data_sets:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    version:
-                      type: integer
-                    id:
-                      type: integer
-                    owner_id:
-                      type: integer
-                    org_id:
-                      type: integer
-                    name:
-                      type: string
-                    description:
-                      type: string
-                    updated_at:
-                      type: string
-                      format: date-time
-                    created_at:
-                      type: string
-                      format: date-time
-                    sample_service_id:
-                      type:
-                      - 'null'
-                    source_schema:
-                      $ref: '#/components/schemas/data_set_schema'
-                    transform:
-                      type: object
-                      properties:
-                        version:
-                          type: integer
-                        data_maps:
-                          type: array
-                        transforms:
-                          type: array
-                        custom_config:
-                          type: object
-                    output_schema:
-                      $ref: '#/components/schemas/data_set_schema'
-              ingest_method:
-                type: string
-              source_format:
-                type: string
-              source_config:
-                type: object
-                additionalProperties:
-                  type: string
-              poll_schedule:
-                type: 'null'
-              managed:
-                type: boolean
-              code_container_id:
-                type: 'null'
-              source_type:
-                type: string
-              connector_type:
-                type: string
-              connector:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  type:
-                    type: string
-                  connection_type:
-                    type: string
-                  name:
-                    type: string
-                  description:
-                    type: string
-                  nexset_api_compatible:
-                    type: boolean
-              api_keys:
-                type: array
-              auto_generated:
-                type: boolean
-              data_credentials:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  description:
-                    type: string
-                  owner:
-                    $ref: '#/components/schemas/owner'
-                  org:
-                    $ref: '#/components/schemas/org'
-                  access_roles:
-                    $ref: '#/components/schemas/AccessRoles'
-                  credentials_version:
-                    type: string
-                  managed:
-                    type: boolean
-                  credentials_type:
-                    type: string
-                  connector:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      type:
-                        type: string
-                      connection_type:
-                        type: string
-                      name:
-                        type: string
-                      description:
-                        type: string
-                      nexset_api_compatible:
-                        type: boolean
-                  api_keys:
-                    type: array
-                  credentials_non_secure_data:
-                    type: object
-                    additionalProperties:
-                      type:
-                      - string
-                      - object
-                      - integer
-                      x-additionalPropertiesName: credential_property
-                  verified_status:
-                    type: string
-                  verified_at:
-                    type: string
-                    format: date-time
-                  copied_from_id:
-                    type: 'null'
-                  updated_at:
-                    type: string
-                    format: date-time
-                  created_at:
-                    type: string
-                    format: date-time
-                  tags:
-                    type: array
-              run_ids:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    created_at:
-                      type: string
-                      format: date-time
-              copied_from_id:
-                type: 'null'
-              updated_at:
-                type: string
-                format: date-time
-              created_at:
-                type: string
-                format: date-time
-              flow_type:
-                type: string
-              ingestion_mode:
-                type: string
-              tags:
-                type: array
   schemas:
-    owner:
-      type: object
-      properties:
-        id:
-          type: integer
-        full_name:
-          type: string
-        email:
-          type: string
-          format: email
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
     org:
       type: object
       properties:
@@ -784,29 +784,6 @@ components:
           type: 'null'
         client_identifier:
           type: 'null'
-    data_set_schema:
-      type: object
-      properties:
-        properties:
-          type: object
-          additionalProperties:
-            type: string
-            x-additionalPropertiesName: nexset_attribute_name
-        $schema:
-          type: string
-          format: url
-        $schema-id:
-          type: integer
-    AccessRoles:
-      type: array
-      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
-      items:
-        type: string
-        enum:
-        - owner
-        - collaborator
-        - operator
-        - admin
     data_source:
       type: object
       properties:
@@ -934,6 +911,29 @@ components:
           teradata: '#/components/schemas/teradata_data_source'
           tibco: '#/components/schemas/tibco_data_source'
           webdav: '#/components/schemas/webdav_data_source'
+    owner:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+          format: email
+    data_set_schema:
+      type: object
+      properties:
+        properties:
+          type: object
+          additionalProperties:
+            type: string
+            x-additionalPropertiesName: nexset_attribute_name
+        $schema:
+          type: string
+          format: url
+        $schema-id:
+          type: integer
   securitySchemes:
     NexlaSessionToken:
       type: http

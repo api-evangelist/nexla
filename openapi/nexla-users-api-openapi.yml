@@ -162,7 +162,204 @@ paths:
         '404':
           description: Not Found
 components:
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
   schemas:
+    UserAdmin:
+      oneOf:
+      - type: string
+        enum:
+        - '*'
+      - type: boolean
+      - type: array
+        items:
+          type: object
+          properties:
+            admin:
+              type: boolean
+            org_id:
+              type: integer
+    UsersCreateRequired:
+      type: object
+      required:
+      - full_name
+      - email
+      properties:
+        full_name:
+          type: string
+        email:
+          type: string
+        default_org_id:
+          type: integer
+        status:
+          $ref: '#/components/schemas/UserStatus'
+        user_tier_id:
+          type: integer
+        user_tier:
+          type: string
+        password:
+          type: string
+        tos_signed_at:
+          type: string
+          format: date-time
+        admin:
+          $ref: '#/components/schemas/UserAdmin'
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+          format: email
+        full_name:
+          type: string
+        super_user:
+          type: boolean
+        impersonated:
+          type: boolean
+        default_org:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+          additionalProperties: false
+        user_tier:
+          $ref: '#/components/schemas/UserTier'
+        status:
+          $ref: '#/components/schemas/UserStatus'
+        account_locked:
+          type: boolean
+        org_memberships:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrgMembership'
+        email_verified_at:
+          type: string
+          format: date-time
+        tos_signed_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+      additionalProperties: false
+    UserStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - DEACTIVATED
+      - SOURCE_COUNT_CAPPED
+      - SOURCE_DATA_CAPPED
+      - TRIAL_EXPIRED
+      description: 'Indicates the user''s account status across all organizations they are members of.
+
+        '
+    AccountSummary:
+      type: object
+      properties:
+        data_sources:
+          type: object
+          properties:
+            counts:
+              type: object
+              properties:
+                total:
+                  type: integer
+                  format: int32
+                owner:
+                  type: integer
+                  format: int32
+                collaborator:
+                  type: integer
+                  format: int32
+                active:
+                  type: integer
+                  format: int32
+                paused:
+                  type: integer
+                  format: int32
+                draft:
+                  type: integer
+                  format: int32
+        data_sets:
+          type: object
+          properties:
+            counts:
+              type: object
+              properties:
+                total:
+                  type: integer
+                  format: int32
+                owner:
+                  type: integer
+                  format: int32
+                collaborator:
+                  type: integer
+                  format: int32
+                active:
+                  type: integer
+                  format: int32
+                paused:
+                  type: integer
+                  format: int32
+                draft:
+                  type: integer
+                  format: int32
+        data_sinks:
+          type: object
+          properties:
+            counts:
+              type: object
+              properties:
+                total:
+                  type: integer
+                  format: int32
+                owner:
+                  type: integer
+                  format: int32
+                collaborator:
+                  type: integer
+                  format: int32
+                active:
+                  type: integer
+                  format: int32
+                paused:
+                  type: integer
+                  format: int32
+                draft:
+                  type: integer
+                  format: int32
+        data_maps:
+          type: object
+          properties:
+            counts:
+              type: object
+              properties:
+                total:
+                  type: integer
+                  format: int32
+                owner:
+                  type: integer
+                  format: int32
+                collaborator:
+                  type: integer
+                  format: int32
     UserTransferable:
       type: object
       properties:
@@ -261,145 +458,6 @@ components:
           format: nullable
           items:
             type: integer
-    UserTier:
-      type: string
-      enum:
-      - FREE
-      - TRIAL
-      - PAID
-      - FREE_FOREVER
-      description: 'Indicates whether a user is on a paid, free, or trial account. Used to determine limits on records processed by the account.
-
-        '
-    UserAdmin:
-      oneOf:
-      - type: string
-        enum:
-        - '*'
-      - type: boolean
-      - type: array
-        items:
-          type: object
-          properties:
-            admin:
-              type: boolean
-            org_id:
-              type: integer
-    UsersCreateRequired:
-      type: object
-      required:
-      - full_name
-      - email
-      properties:
-        full_name:
-          type: string
-        email:
-          type: string
-        default_org_id:
-          type: integer
-        status:
-          $ref: '#/components/schemas/UserStatus'
-        user_tier_id:
-          type: integer
-        user_tier:
-          type: string
-        password:
-          type: string
-        tos_signed_at:
-          type: string
-          format: date-time
-        admin:
-          $ref: '#/components/schemas/UserAdmin'
-    AccountSummary:
-      type: object
-      properties:
-        data_sources:
-          type: object
-          properties:
-            counts:
-              type: object
-              properties:
-                total:
-                  type: integer
-                  format: int32
-                owner:
-                  type: integer
-                  format: int32
-                collaborator:
-                  type: integer
-                  format: int32
-                active:
-                  type: integer
-                  format: int32
-                paused:
-                  type: integer
-                  format: int32
-                draft:
-                  type: integer
-                  format: int32
-        data_sets:
-          type: object
-          properties:
-            counts:
-              type: object
-              properties:
-                total:
-                  type: integer
-                  format: int32
-                owner:
-                  type: integer
-                  format: int32
-                collaborator:
-                  type: integer
-                  format: int32
-                active:
-                  type: integer
-                  format: int32
-                paused:
-                  type: integer
-                  format: int32
-                draft:
-                  type: integer
-                  format: int32
-        data_sinks:
-          type: object
-          properties:
-            counts:
-              type: object
-              properties:
-                total:
-                  type: integer
-                  format: int32
-                owner:
-                  type: integer
-                  format: int32
-                collaborator:
-                  type: integer
-                  format: int32
-                active:
-                  type: integer
-                  format: int32
-                paused:
-                  type: integer
-                  format: int32
-                draft:
-                  type: integer
-                  format: int32
-        data_maps:
-          type: object
-          properties:
-            counts:
-              type: object
-              properties:
-                total:
-                  type: integer
-                  format: int32
-                owner:
-                  type: integer
-                  format: int32
-                collaborator:
-                  type: integer
-                  format: int32
     UserTransferred:
       allOf:
       - $ref: '#/components/schemas/UserTransferable'
@@ -414,6 +472,39 @@ components:
                 type: integer
               org_id:
                 type: integer
+    OrgMembership:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        is_admin?:
+          type: boolean
+        org_membership_status:
+          $ref: '#/components/schemas/OrgMembershipStatus'
+    UserTier:
+      type: string
+      enum:
+      - FREE
+      - TRIAL
+      - PAID
+      - FREE_FOREVER
+      description: 'Indicates whether a user is on a paid, free, or trial account. Used to determine limits on records processed by the account.
+
+        '
+    OrgMembershipStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - DEACTIVATED
+      description: 'Indicates whether the user''s membership in this organization is active or not.
+
+
+        If the membership is DEACTIVATED the user can no longer access the account but the resources owned by them will still be accessible by the organization administrators.
+
+        '
     UsersUpdate:
       type: object
       properties:
@@ -438,85 +529,6 @@ components:
           format: date-time
         admin:
           $ref: '#/components/schemas/UserAdmin'
-    OrgMembershipStatus:
-      type: string
-      enum:
-      - ACTIVE
-      - DEACTIVATED
-      description: 'Indicates whether the user''s membership in this organization is active or not.
-
-
-        If the membership is DEACTIVATED the user can no longer access the account but the resources owned by them will still be accessible by the organization administrators.
-
-        '
-    UserStatus:
-      type: string
-      enum:
-      - ACTIVE
-      - DEACTIVATED
-      - SOURCE_COUNT_CAPPED
-      - SOURCE_DATA_CAPPED
-      - TRIAL_EXPIRED
-      description: 'Indicates the user''s account status across all organizations they are members of.
-
-        '
-    OrgMembership:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        name:
-          type: string
-        is_admin?:
-          type: boolean
-        org_membership_status:
-          $ref: '#/components/schemas/OrgMembershipStatus'
-    User:
-      type: object
-      properties:
-        id:
-          type: integer
-        email:
-          type: string
-          format: email
-        full_name:
-          type: string
-        super_user:
-          type: boolean
-        impersonated:
-          type: boolean
-        default_org:
-          type: object
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
-          additionalProperties: false
-        user_tier:
-          $ref: '#/components/schemas/UserTier'
-        status:
-          $ref: '#/components/schemas/UserStatus'
-        account_locked:
-          type: boolean
-        org_memberships:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrgMembership'
-        email_verified_at:
-          type: string
-          format: date-time
-        tos_signed_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        created_at:
-          type: string
-          format: date-time
-      additionalProperties: false
     UserExpanded:
       allOf:
       - $ref: '#/components/schemas/User'
@@ -543,14 +555,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/UserExpanded'
-    users_many:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/User'
     users_many_expand:
       description: Success
       content:
@@ -559,18 +563,14 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/UserExpanded'
-  parameters:
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
-
-          '
+    users_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
   securitySchemes:
     NexlaSessionToken:
       type: http

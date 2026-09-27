@@ -1315,15 +1315,56 @@ paths:
           description: Not Found
 components:
   schemas:
-    ResponseTeamAccessor:
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
+    RequestUserAccessor:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - USER
+          description: "Choose this option if the access permissions should be granted to a user. \n\n>  Note: Users can belong to multiple organizations. The platform allows granting access permission across organization boundaries only for Nexset `sharer` access role. \n"
+        id:
+          type: integer
+          description: "Unique ID of the user that should be granted this permission. \n"
+        email:
+          type: string
+          example: example@nexla.com
+          description: "`Optional`: Only user-id or email is required to identify the user who should be granted this access permission.  \n"
+        org_id:
+          type: integer
+          description: 'Users can belong to multiple organizations. Specify the org_id to explicitly set the organization context for this access permission. If this is not specified the platform will try to automatically assign the permission to the user''s default organization (when granting sharer access on a Nexset) or to the current organization (for all other access roles).
+
+            '
+    RequestTeamAccessor:
       type: object
       properties:
         type:
           type: string
           enum:
           - TEAM
-        name:
-          type: string
+          description: "Choose this option if the access permissions should be granted to a team.       \n"
+        id:
+          type: integer
+          description: 'Unique ID of the team that should be granted this permission.
+
+            '
+    AccessorsRequestSchema:
+      type: object
+      properties:
+        accessors:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessorsMutable'
     RequestOrgAccessor:
       type: object
       properties:
@@ -1337,16 +1378,19 @@ components:
           description: 'Unique ID of the organization that should be granted this permission.
 
             '
-    AccessRoles:
-      type: array
-      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
-      items:
-        type: string
-        enum:
-        - owner
-        - collaborator
-        - operator
-        - admin
+    ResponseOrgAccessor:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - ORG
+        email_domain:
+          type: string
+          example: nexla.com
+        client_identifier:
+          type: string
+          format: nullable
     AccessorsResponseSchema:
       allOf:
       - oneOf:
@@ -1375,26 +1419,6 @@ components:
         properties:
           access_roles:
             $ref: '#/components/schemas/AccessRoles'
-    RequestUserAccessor:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - USER
-          description: "Choose this option if the access permissions should be granted to a user. \n\n>  Note: Users can belong to multiple organizations. The platform allows granting access permission across organization boundaries only for Nexset `sharer` access role. \n"
-        id:
-          type: integer
-          description: "Unique ID of the user that should be granted this permission. \n"
-        email:
-          type: string
-          example: example@nexla.com
-          description: "`Optional`: Only user-id or email is required to identify the user who should be granted this access permission.  \n"
-        org_id:
-          type: integer
-          description: 'Users can belong to multiple organizations. Specify the org_id to explicitly set the organization context for this access permission. If this is not specified the platform will try to automatically assign the permission to the user''s default organization (when granting sharer access on a Nexset) or to the current organization (for all other access roles).
-
-            '
     ResponseUserAccessor:
       type: object
       properties:
@@ -1405,39 +1429,15 @@ components:
         email:
           type: string
           example: example@nexla.com
-    AccessorsRequestSchema:
-      type: object
-      properties:
-        accessors:
-          type: array
-          items:
-            $ref: '#/components/schemas/AccessorsMutable'
-    ResponseOrgAccessor:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - ORG
-        email_domain:
-          type: string
-          example: nexla.com
-        client_identifier:
-          type: string
-          format: nullable
-    RequestTeamAccessor:
+    ResponseTeamAccessor:
       type: object
       properties:
         type:
           type: string
           enum:
           - TEAM
-          description: "Choose this option if the access permissions should be granted to a team.       \n"
-        id:
-          type: integer
-          description: 'Unique ID of the team that should be granted this permission.
-
-            '
+        name:
+          type: string
   responses:
     accessors_list:
       description: Success

@@ -66,16 +66,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    Body_generate_sop_generate_document_post:
-      properties:
-        file:
-          type: string
-          contentMediaType: application/octet-stream
-          title: File
-      type: object
-      required:
-      - file
-      title: Body_generate_sop_generate_document_post
     ValidationError:
       properties:
         loc:
@@ -102,3 +92,13 @@ components:
       - msg
       - type
       title: ValidationError
+    Body_generate_sop_generate_document_post:
+      properties:
+        file:
+          type: string
+          contentMediaType: application/octet-stream
+          title: File
+      type: object
+      required:
+      - file
+      title: Body_generate_sop_generate_document_post

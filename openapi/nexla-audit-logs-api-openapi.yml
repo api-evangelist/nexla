@@ -450,67 +450,13 @@ paths:
         '404':
           description: Not found
 components:
-  parameters:
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
-
-          '
   schemas:
-    AsyncResponse:
-      type: object
-      description: 'This object represents the response of an asynchronous operation. The response can be a dictionary or an array of dictionaries. The format of the response depends on the operation that was executed.
-
-        '
-      properties:
-        request_id:
-          type: integer
-          description: 'The unique ID of the request that was executed. This ID can be used to track the status of the request.
-
-            '
-        status:
-          type: string
-          enum:
-          - pending
-          - running
-          - completed
-          - failed
-          - cancelled
-        request_started_at:
-          type: string
-          format: date-time
-          description: 'The date and time when the request was started.
-
-            '
-        progress:
-          type: integer
-          description: 'The progress of the request (value from 0 to 100). This value is a percentage of the total progress of the request. Applicable only to certain types of async operations.
-
-            '
-        result:
-          type: object
-          description: 'The result of the async operation. Format depends on the task type.
-
-            '
-          additionalProperties: true
-        request_stopped_at:
-          type: string
-          format: date-time
-          description: 'The date and time when the request was stopped. This field is only present if the request has been stopped (due to cancellation or error).
-
-            '
-        request_completed_at:
-          type: string
-          format: date-time
-          description: 'The date and time when the request was completed. This field is only present if the request has been completed successfully.
-
-            '
+    audit_log_response:
+      oneOf:
+      - type: array
+        items:
+          $ref: '#/components/schemas/LogEntry'
+      - $ref: '#/components/schemas/AsyncResponse'
     LogEntry:
       type: object
       properties:
@@ -632,12 +578,66 @@ components:
           type: string
           format: date-time
           example: '2022-11-08T22:51:47.720Z'
-    audit_log_response:
-      oneOf:
-      - type: array
-        items:
-          $ref: '#/components/schemas/LogEntry'
-      - $ref: '#/components/schemas/AsyncResponse'
+    AsyncResponse:
+      type: object
+      description: 'This object represents the response of an asynchronous operation. The response can be a dictionary or an array of dictionaries. The format of the response depends on the operation that was executed.
+
+        '
+      properties:
+        request_id:
+          type: integer
+          description: 'The unique ID of the request that was executed. This ID can be used to track the status of the request.
+
+            '
+        status:
+          type: string
+          enum:
+          - pending
+          - running
+          - completed
+          - failed
+          - cancelled
+        request_started_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was started.
+
+            '
+        progress:
+          type: integer
+          description: 'The progress of the request (value from 0 to 100). This value is a percentage of the total progress of the request. Applicable only to certain types of async operations.
+
+            '
+        result:
+          type: object
+          description: 'The result of the async operation. Format depends on the task type.
+
+            '
+          additionalProperties: true
+        request_stopped_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was stopped. This field is only present if the request has been stopped (due to cancellation or error).
+
+            '
+        request_completed_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was completed. This field is only present if the request has been completed successfully.
+
+            '
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
   securitySchemes:
     NexlaSessionToken:
       type: http

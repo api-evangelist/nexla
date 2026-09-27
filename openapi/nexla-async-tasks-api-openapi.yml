@@ -307,51 +307,6 @@ components:
       - ChownUserResources
       - DeactivateUser
       - GetAuditLogs
-    owner:
-      type: object
-      properties:
-        id:
-          type: integer
-        full_name:
-          type: string
-        email:
-          type: string
-          format: email
-    org:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email_domain:
-          type: string
-        email:
-          type: 'null'
-        client_identifier:
-          type: 'null'
-    AsyncTaskPayload:
-      type: object
-      additionalProperties: false
-      properties:
-        type:
-          type: string
-          description: The type of the task.
-          enum:
-          - BulkDeleteNotifications
-          - BulkMarkAsReadNotifications
-          - BulkPauseFlows
-          - CallProbe
-          - ChownUserResources
-          - DeactivateUser
-          - GetAuditLogs
-        priority:
-          type: integer
-          description: The priority of the task. At the moment doesn't have any effect.
-        arguments:
-          type: object
-          additionalProperties: true
-          description: The arguments for the task. Use `GET /async_tasks/explain_arguments/{task_type}` to get the list of possible arguments for task.
     AsyncTask:
       description: Success
       type: object
@@ -391,6 +346,51 @@ components:
           $ref: '#/components/schemas/owner'
         org:
           $ref: '#/components/schemas/org'
+    org:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: 'null'
+        client_identifier:
+          type: 'null'
+    AsyncTaskPayload:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          description: The type of the task.
+          enum:
+          - BulkDeleteNotifications
+          - BulkMarkAsReadNotifications
+          - BulkPauseFlows
+          - CallProbe
+          - ChownUserResources
+          - DeactivateUser
+          - GetAuditLogs
+        priority:
+          type: integer
+          description: The priority of the task. At the moment doesn't have any effect.
+        arguments:
+          type: object
+          additionalProperties: true
+          description: The arguments for the task. Use `GET /async_tasks/explain_arguments/{task_type}` to get the list of possible arguments for task.
+    owner:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+          format: email
     async_task_statuses:
       type: string
       enum:
@@ -400,21 +400,6 @@ components:
       - failed
       - cancelled
       description: The status of the task.
-  responses:
-    async_task_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AsyncTask'
-    async_tasks_many:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/AsyncTask'
   parameters:
     accept:
       name: Accept
@@ -427,6 +412,21 @@ components:
         description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
 
           '
+  responses:
+    async_tasks_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AsyncTask'
+    async_task_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AsyncTask'
   securitySchemes:
     NexlaSessionToken:
       type: http

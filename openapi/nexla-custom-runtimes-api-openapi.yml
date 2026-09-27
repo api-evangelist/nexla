@@ -171,16 +171,6 @@ paths:
           description: Forbidden
 components:
   schemas:
-    owner:
-      type: object
-      properties:
-        id:
-          type: integer
-        full_name:
-          type: string
-        email:
-          type: string
-          format: email
     Runtime:
       type: object
       properties:
@@ -231,6 +221,16 @@ components:
           type: 'null'
         client_identifier:
           type: 'null'
+    owner:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+          format: email
     RuntimePayload:
       type: object
       properties:

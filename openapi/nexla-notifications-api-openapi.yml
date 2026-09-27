@@ -600,157 +600,6 @@ paths:
           description: Forbidden
 components:
   schemas:
-    NotificationEventType:
-      type: string
-      enum:
-      - SHARE
-      - CREATE
-      - DELETE
-      - UPDATE
-      - ACTIVATE
-      - PAUSE
-      - METRICS
-      - RESETPASS
-      - ERROR_AGGREGATED
-      - ERROR
-      - MONITOR
-      - WRITE
-      - EMPTY_DATA
-      - READ_START
-      - READ_DONE
-      - WRITE_START
-      - WRITE_DONE
-    OrgSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email_domain:
-          type: string
-        email:
-          type: string
-        client_identifier:
-          type: string
-        org_webhook_host:
-          type: string
-    UserSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        full_name:
-          type: string
-        email:
-          type: string
-        email_verified_at:
-          type: string
-          format: date-time
-    NotificationChannelSettingUpdate:
-      type: object
-      properties:
-        channel:
-          $ref: '#/components/schemas/NotificationChannel'
-        config:
-          type: object
-          additionalProperties:
-            type: string
-            x-additionalPropertiesName: config_property
-            description: "Set the relevant configuration properties based on the type of notification channel. \n"
-    NotificationType:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-        category:
-          $ref: '#/components/schemas/NotificationTypeCategory'
-        default:
-          type: boolean
-        status:
-          type: boolean
-        event_type:
-          $ref: '#/components/schemas/NotificationEventType'
-        resource_type:
-          $ref: '#/components/schemas/NotificationResourceType'
-    NotificationSettingCreateRequired:
-      allOf:
-      - $ref: '#/components/schemas/NotificationSettingUpdate'
-      - type: object
-        required:
-        - channel
-        - notification_type_id
-    NotificationChannelSettingCreateRequired:
-      allOf:
-      - $ref: '#/components/schemas/NotificationChannelSettingUpdate'
-      - type: object
-        required:
-        - channel
-        - config
-    NotificationSettingUpdate:
-      type: object
-      properties:
-        channel:
-          $ref: '#/components/schemas/NotificationChannel'
-        status:
-          $ref: '#/components/schemas/NotificationSettingStatus'
-        config:
-          type: object
-          description: 'Configuration properties for customizing the criteria for firing the event.
-
-            '
-          additionalProperties:
-            type: string
-            x-additionalPropertiesName: config_property
-            description: "Set the relevant configuration properties if you want to override the default platform settings.    \n"
-        notification_resource_type:
-          $ref: '#/components/schemas/NotificationResourceType'
-        resource_id:
-          type: integer
-        checked:
-          type: boolean
-        notification_channel_setting_id:
-          type: integer
-        notification_type_id:
-          type: integer
-    NotificationSettingStatus:
-      type: string
-      description: 'Whether or not the user should be notified about this event for this resource on the selected channel.
-
-        '
-      enum:
-      - PAUSED
-      - ACTIVE
-    AccessRoles:
-      type: array
-      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
-      items:
-        type: string
-        enum:
-        - owner
-        - collaborator
-        - operator
-        - admin
-    NotificationTypeCategory:
-      type: string
-      enum:
-      - PLATFORM
-      - SYSTEM
-      - DATA
-    NotificationResourceType:
-      type: string
-      enum:
-      - ORG
-      - USER
-      - DATA_FLOW
-      - CUSTOM_DATA_FLOW
-      - SOURCE
-      - DATASET
-      - SINK
     NotificationSetting:
       type: object
       properties:
@@ -786,62 +635,134 @@ components:
           $ref: '#/components/schemas/NotificationEventType'
         resource_type:
           $ref: '#/components/schemas/NotificationResourceType'
-    NotificationChannel:
+    NotificationEventType:
       type: string
       enum:
-      - APP
-      - EMAIL
-      - SMS
-      - SLACK
-      - WEBHOOKS
-    AsyncResponse:
-      type: object
-      description: 'This object represents the response of an asynchronous operation. The response can be a dictionary or an array of dictionaries. The format of the response depends on the operation that was executed.
+      - SHARE
+      - CREATE
+      - DELETE
+      - UPDATE
+      - ACTIVATE
+      - PAUSE
+      - METRICS
+      - RESETPASS
+      - ERROR_AGGREGATED
+      - ERROR
+      - MONITOR
+      - WRITE
+      - EMPTY_DATA
+      - READ_START
+      - READ_DONE
+      - WRITE_START
+      - WRITE_DONE
+    NotificationSettingStatus:
+      type: string
+      description: 'Whether or not the user should be notified about this event for this resource on the selected channel.
 
         '
+      enum:
+      - PAUSED
+      - ACTIVE
+    NotificationType:
+      type: object
       properties:
-        request_id:
+        id:
           type: integer
-          description: 'The unique ID of the request that was executed. This ID can be used to track the status of the request.
-
-            '
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          $ref: '#/components/schemas/NotificationTypeCategory'
+        default:
+          type: boolean
         status:
-          type: string
-          enum:
-          - pending
-          - running
-          - completed
-          - failed
-          - cancelled
-        request_started_at:
-          type: string
-          format: date-time
-          description: 'The date and time when the request was started.
-
-            '
-        progress:
+          type: boolean
+        event_type:
+          $ref: '#/components/schemas/NotificationEventType'
+        resource_type:
+          $ref: '#/components/schemas/NotificationResourceType'
+    NotificationSettingResourceStatus:
+      type: string
+      enum:
+      - INIT
+      - PAUSED
+      - ACTIVE
+      - RATE_LIMITED
+    NotificationChannelSetting:
+      type: object
+      properties:
+        id:
           type: integer
-          description: 'The progress of the request (value from 0 to 100). This value is a percentage of the total progress of the request. Applicable only to certain types of async operations.
-
-            '
-        result:
+        owner_id:
+          type: integer
+        org_id:
+          type: integer
+        channel:
+          $ref: '#/components/schemas/NotificationChannel'
+        config:
           type: object
-          description: 'The result of the async operation. Format depends on the task type.
+          additionalProperties:
+            type: string
+            x-additionalPropertiesName: config_property
+            description: "Set the relevant configuration properties based on the type of notification channel.    \n"
+    NotificationSettingUpdate:
+      type: object
+      properties:
+        channel:
+          $ref: '#/components/schemas/NotificationChannel'
+        status:
+          $ref: '#/components/schemas/NotificationSettingStatus'
+        config:
+          type: object
+          description: 'Configuration properties for customizing the criteria for firing the event.
 
             '
-          additionalProperties: true
-        request_stopped_at:
+          additionalProperties:
+            type: string
+            x-additionalPropertiesName: config_property
+            description: "Set the relevant configuration properties if you want to override the default platform settings.    \n"
+        notification_resource_type:
+          $ref: '#/components/schemas/NotificationResourceType'
+        resource_id:
+          type: integer
+        checked:
+          type: boolean
+        notification_channel_setting_id:
+          type: integer
+        notification_type_id:
+          type: integer
+    NotificationTypeCategory:
+      type: string
+      enum:
+      - PLATFORM
+      - SYSTEM
+      - DATA
+    NotificationResourceType:
+      type: string
+      enum:
+      - ORG
+      - USER
+      - DATA_FLOW
+      - CUSTOM_DATA_FLOW
+      - SOURCE
+      - DATASET
+      - SINK
+    OrgSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
           type: string
-          format: date-time
-          description: 'The date and time when the request was stopped. This field is only present if the request has been stopped (due to cancellation or error).
-
-            '
-        request_completed_at:
+        email_domain:
           type: string
-          format: date-time
-          description: 'The date and time when the request was completed. This field is only present if the request has been completed successfully.
-
-            '
+        email:
+          type: string
+        client_identifier:
+          type: string
+        org_webhook_host:
+          type: string
     Notification:
       type: object
       properties:
@@ -872,34 +793,25 @@ components:
         created_at:
           type: string
           format: date-time
-    NotificationChannelSetting:
+    UserSimplified:
       type: object
       properties:
         id:
           type: integer
-        owner_id:
-          type: integer
-        org_id:
-          type: integer
-        channel:
-          $ref: '#/components/schemas/NotificationChannel'
-        config:
-          type: object
-          additionalProperties:
-            type: string
-            x-additionalPropertiesName: config_property
-            description: "Set the relevant configuration properties based on the type of notification channel.    \n"
-    async_or_null:
-      oneOf:
-      - $ref: '#/components/schemas/AsyncResponse'
-      - type: 'null'
-    NotificationSettingResourceStatus:
-      type: string
-      enum:
-      - INIT
-      - PAUSED
-      - ACTIVE
-      - RATE_LIMITED
+        full_name:
+          type: string
+        email:
+          type: string
+        email_verified_at:
+          type: string
+          format: date-time
+    NotificationSettingCreateRequired:
+      allOf:
+      - $ref: '#/components/schemas/NotificationSettingUpdate'
+      - type: object
+        required:
+        - channel
+        - notification_type_id
     NotificationSettingTypeView:
       type: object
       properties:
@@ -957,15 +869,109 @@ components:
           type: string
         resource_status:
           $ref: '#/components/schemas/NotificationSettingResourceStatus'
+    NotificationChannelSettingCreateRequired:
+      allOf:
+      - $ref: '#/components/schemas/NotificationChannelSettingUpdate'
+      - type: object
+        required:
+        - channel
+        - config
+    NotificationChannelSettingUpdate:
+      type: object
+      properties:
+        channel:
+          $ref: '#/components/schemas/NotificationChannel'
+        config:
+          type: object
+          additionalProperties:
+            type: string
+            x-additionalPropertiesName: config_property
+            description: "Set the relevant configuration properties based on the type of notification channel. \n"
+    AsyncResponse:
+      type: object
+      description: 'This object represents the response of an asynchronous operation. The response can be a dictionary or an array of dictionaries. The format of the response depends on the operation that was executed.
+
+        '
+      properties:
+        request_id:
+          type: integer
+          description: 'The unique ID of the request that was executed. This ID can be used to track the status of the request.
+
+            '
+        status:
+          type: string
+          enum:
+          - pending
+          - running
+          - completed
+          - failed
+          - cancelled
+        request_started_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was started.
+
+            '
+        progress:
+          type: integer
+          description: 'The progress of the request (value from 0 to 100). This value is a percentage of the total progress of the request. Applicable only to certain types of async operations.
+
+            '
+        result:
+          type: object
+          description: 'The result of the async operation. Format depends on the task type.
+
+            '
+          additionalProperties: true
+        request_stopped_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was stopped. This field is only present if the request has been stopped (due to cancellation or error).
+
+            '
+        request_completed_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was completed. This field is only present if the request has been completed successfully.
+
+            '
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
+    async_or_null:
+      oneOf:
+      - $ref: '#/components/schemas/AsyncResponse'
+      - type: 'null'
+    NotificationChannel:
+      type: string
+      enum:
+      - APP
+      - EMAIL
+      - SMS
+      - SLACK
+      - WEBHOOKS
   responses:
-    notification_channel_settings_many:
+    notification_types_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotificationType'
+    notification_settings_many_type:
       description: Success
       content:
         application/json:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/NotificationChannelSetting'
+              $ref: '#/components/schemas/NotificationSettingTypeView'
     notifications_many:
       description: Success
       content:
@@ -974,26 +980,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/Notification'
-    notification_settings_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotificationSetting'
-    notification_types_many:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/NotificationType'
-    notifications_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Notification'
     notifications_count:
       description: Success
       content:
@@ -1003,20 +989,34 @@ components:
             properties:
               count:
                 type: integer
-    notification_settings_many_type:
+    notification_channel_settings_many:
       description: Success
       content:
         application/json:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/NotificationSettingTypeView'
-    notification_types_one:
+              $ref: '#/components/schemas/NotificationChannelSetting'
+    notification_types_many:
       description: Success
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/NotificationType'
+            type: array
+            items:
+              $ref: '#/components/schemas/NotificationType'
+    notification_channel_settings_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotificationChannelSetting'
+    notification_settings_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotificationSetting'
     notification_settings_many:
       description: Success
       content:
@@ -1025,12 +1025,12 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/NotificationSetting'
-    notification_channel_settings_one:
+    notifications_one:
       description: Success
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/NotificationChannelSetting'
+            $ref: '#/components/schemas/Notification'
   securitySchemes:
     NexlaSessionToken:
       type: http

@@ -119,16 +119,6 @@ components:
       - ai_model
       - llm_provider
       title: QueryRequest
-    Dataset:
-      properties:
-        id:
-          type: string
-          title: Id
-          description: The unique identifier for the dataset.
-      type: object
-      required:
-      - id
-      title: Dataset
     TokenType:
       type: string
       enum:
@@ -144,3 +134,13 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    Dataset:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: The unique identifier for the dataset.
+      type: object
+      required:
+      - id
+      title: Dataset

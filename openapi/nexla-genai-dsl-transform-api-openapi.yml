@@ -32,6 +32,75 @@ paths:
       - Genai Dsl Transform
 components:
   schemas:
+    LLMCredentialParameters:
+      properties:
+        model:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Model
+          description: The model to use for the credential
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+          description: The provider to use for the credential
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: The endpoint URL for the AI provider
+        api_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Api Key
+          description: The API key for the AI provider
+        api_version:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Api Version
+          description: The API version to use with the AI provider
+      type: object
+      title: LLMCredentialParameters
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     TransformRequest:
       properties:
         user_query:
@@ -82,75 +151,6 @@ components:
       - session_id
       - nexset_id
       title: TransformRequest
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    LLMCredentialParameters:
-      properties:
-        model:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Model
-          description: The model to use for the credential
-        provider:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Provider
-          description: The provider to use for the credential
-        url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Url
-          description: The endpoint URL for the AI provider
-        api_key:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Api Key
-          description: The API key for the AI provider
-        api_version:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Api Version
-          description: The API version to use with the AI provider
-      type: object
-      title: LLMCredentialParameters
     LLMConfig:
       properties:
         model:

@@ -32,6 +32,20 @@ paths:
       - Docs
 components:
   schemas:
+    GenaiIntegrationConfig:
+      properties:
+        configs:
+          additionalProperties: true
+          type: object
+          title: Configs
+        data_credentials:
+          $ref: '#/components/schemas/DataCredentialModel'
+      additionalProperties: true
+      type: object
+      required:
+      - configs
+      - data_credentials
+      title: GenaiIntegrationConfig
     ValidationError:
       properties:
         loc:
@@ -58,42 +72,6 @@ components:
       - msg
       - type
       title: ValidationError
-    ConnectorModel:
-      properties:
-        id:
-          type: integer
-          title: Id
-        type:
-          type: string
-          enum:
-          - genai_googleai
-          - genai_openai
-          - genai_azure_openai
-          title: Type
-        connection_type:
-          type: string
-          title: Connection Type
-      additionalProperties: true
-      type: object
-      required:
-      - id
-      - type
-      - connection_type
-      title: ConnectorModel
-    GenaiIntegrationConfig:
-      properties:
-        configs:
-          additionalProperties: true
-          type: object
-          title: Configs
-        data_credentials:
-          $ref: '#/components/schemas/DataCredentialModel'
-      additionalProperties: true
-      type: object
-      required:
-      - configs
-      - data_credentials
-      title: GenaiIntegrationConfig
     RequestSerializer:
       properties:
         resource_type:
@@ -119,15 +97,6 @@ components:
       - genai_integration_config
       - resource_data
       title: RequestSerializer
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     DataCredentialModel:
       properties:
         id:
@@ -149,3 +118,34 @@ components:
       - credentials_enc_iv
       - credentials_enc
       title: DataCredentialModel
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ConnectorModel:
+      properties:
+        id:
+          type: integer
+          title: Id
+        type:
+          type: string
+          enum:
+          - genai_googleai
+          - genai_openai
+          - genai_azure_openai
+          title: Type
+        connection_type:
+          type: string
+          title: Connection Type
+      additionalProperties: true
+      type: object
+      required:
+      - id
+      - type
+      - connection_type
+      title: ConnectorModel

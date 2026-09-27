@@ -35,6 +35,32 @@ paths:
       - Marketing Chat
 components:
   schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     HTTPValidationError:
       properties:
         detail:
@@ -44,16 +70,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    Dataset:
-      properties:
-        id:
-          type: string
-          title: Id
-          description: The unique identifier for the dataset.
-      type: object
-      required:
-      - id
-      title: Dataset
     MarketingChatRequest:
       properties:
         user_query:
@@ -97,29 +113,13 @@ components:
       - ai_model
       - llm_provider
       title: MarketingChatRequest
-    ValidationError:
+    Dataset:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
+        id:
           type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+          title: Id
+          description: The unique identifier for the dataset.
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - id
+      title: Dataset

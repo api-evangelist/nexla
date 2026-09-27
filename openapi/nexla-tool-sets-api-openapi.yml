@@ -2925,75 +2925,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ToolSetUpdateIn:
-      properties:
-        name:
-          anyOf:
-          - type: string
-            maxLength: 512
-          - type: 'null'
-          title: Name
-        description:
-          anyOf:
-          - type: string
-            maxLength: 1024
-          - type: 'null'
-          title: Description
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-        access_scope:
-          anyOf:
-          - $ref: '#/components/schemas/AccessScope'
-          - type: 'null'
-          description: Owner-only. Changing this requires the caller to be the toolset's owner_id; any other org member gets 403 TOOLSET_NOT_OWNER.
-        mcp_gateway_enabled:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Mcp Gateway Enabled
-      additionalProperties: false
-      type: object
-      title: ToolSetUpdateIn
-      description: Input for updating a tool set.
-    ExportEnvironment:
-      type: string
-      enum:
-      - dev
-      - stage
-      - prod
-      title: ExportEnvironment
-      description: Deployment environment for an export.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     ToolSetCreateIn:
       properties:
         name:
@@ -3050,34 +2981,32 @@ components:
       - name
       title: ToolSetCreateIn
       description: Input for creating a tool set.
-    ToolSetFromNexsetsIn:
+    ValidationError:
       properties:
-        name:
-          type: string
-          maxLength: 512
-          minLength: 1
-          title: Name
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        nexset_ids:
+        loc:
           items:
-            type: integer
+            anyOf:
+            - type: string
+            - type: integer
           type: array
-          minItems: 1
-          title: Nexset Ids
-        mcp_gateway_enabled:
-          type: boolean
-          title: Mcp Gateway Enabled
-          default: false
-      additionalProperties: false
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
       type: object
       required:
-      - name
-      - nexset_ids
-      title: ToolSetFromNexsetsIn
+      - loc
+      - msg
+      - type
+      title: ValidationError
     AccessScope:
       type: string
       enum:
@@ -3104,6 +3033,20 @@ components:
         toolset needs no per-user setup. A caller with no credential for the connector gets
 
         an actionable ``credential_required`` result instead.'
+    ToolsUpdateIn:
+      properties:
+        tool_ids:
+          items:
+            type: integer
+          type: array
+          minItems: 1
+          title: Tool Ids
+      additionalProperties: false
+      type: object
+      required:
+      - tool_ids
+      title: ToolsUpdateIn
+      description: Input for adding/removing tools from a toolset.
     ExportUpdateIn:
       properties:
         public_name:
@@ -3133,6 +3076,114 @@ components:
       type: object
       title: ExportUpdateIn
       description: Input for updating an export.
+    ToolSetUpdateIn:
+      properties:
+        name:
+          anyOf:
+          - type: string
+            maxLength: 512
+          - type: 'null'
+          title: Name
+        description:
+          anyOf:
+          - type: string
+            maxLength: 1024
+          - type: 'null'
+          title: Description
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        access_scope:
+          anyOf:
+          - $ref: '#/components/schemas/AccessScope'
+          - type: 'null'
+          description: Owner-only. Changing this requires the caller to be the toolset's owner_id; any other org member gets 403 TOOLSET_NOT_OWNER.
+        mcp_gateway_enabled:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Mcp Gateway Enabled
+      additionalProperties: false
+      type: object
+      title: ToolSetUpdateIn
+      description: Input for updating a tool set.
+    ToolSetFromNexsetsIn:
+      properties:
+        name:
+          type: string
+          maxLength: 512
+          minLength: 1
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        nexset_ids:
+          items:
+            type: integer
+          type: array
+          minItems: 1
+          title: Nexset Ids
+        mcp_gateway_enabled:
+          type: boolean
+          title: Mcp Gateway Enabled
+          default: false
+      additionalProperties: false
+      type: object
+      required:
+      - name
+      - nexset_ids
+      title: ToolSetFromNexsetsIn
+    ExportType:
+      type: string
+      enum:
+      - mcp_server
+      - copilot_connector
+      - sdk_bundle
+      - http_catalog
+      title: ExportType
+      description: Type of export for a tool set.
+    ToolSetCloneIn:
+      properties:
+        name:
+          type: string
+          maxLength: 512
+          minLength: 1
+          title: Name
+        description:
+          anyOf:
+          - type: string
+            maxLength: 1024
+          - type: 'null'
+          title: Description
+      additionalProperties: false
+      type: object
+      required:
+      - name
+      title: ToolSetCloneIn
+      description: Input for cloning a toolset.
+    ExportEnvironment:
+      type: string
+      enum:
+      - dev
+      - stage
+      - prod
+      title: ExportEnvironment
+      description: Deployment environment for an export.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ExportCreateIn:
       properties:
         export_type:
@@ -3167,54 +3218,3 @@ components:
       additionalProperties: false
       type: object
       title: ExportCreateIn
-    ToolSetCloneIn:
-      properties:
-        name:
-          type: string
-          maxLength: 512
-          minLength: 1
-          title: Name
-        description:
-          anyOf:
-          - type: string
-            maxLength: 1024
-          - type: 'null'
-          title: Description
-      additionalProperties: false
-      type: object
-      required:
-      - name
-      title: ToolSetCloneIn
-      description: Input for cloning a toolset.
-    ToolsUpdateIn:
-      properties:
-        tool_ids:
-          items:
-            type: integer
-          type: array
-          minItems: 1
-          title: Tool Ids
-      additionalProperties: false
-      type: object
-      required:
-      - tool_ids
-      title: ToolsUpdateIn
-      description: Input for adding/removing tools from a toolset.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ExportType:
-      type: string
-      enum:
-      - mcp_server
-      - copilot_connector
-      - sdk_bundle
-      - http_catalog
-      title: ExportType
-      description: Type of export for a tool set.

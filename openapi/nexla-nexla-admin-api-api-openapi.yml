@@ -33,7 +33,7 @@ paths:
       - Nexla Admin Api
     head:
       summary: Proxy To Admin Api
-      operationId: proxy_to_admin_api_nexla_admin_api__path__post
+      operationId: headNexlaAdminApiByPath
       parameters:
       - name: path
         in: path
@@ -55,9 +55,11 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
       - Nexla Admin Api
+      x-operation-id-source: normalized
+      x-operation-id-original: proxy_to_admin_api_nexla_admin_api__path__post
     delete:
       summary: Proxy To Admin Api
-      operationId: proxy_to_admin_api_nexla_admin_api__path__post
+      operationId: deleteNexlaAdminApiByPath
       parameters:
       - name: path
         in: path
@@ -79,9 +81,11 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
       - Nexla Admin Api
+      x-operation-id-source: normalized
+      x-operation-id-original: proxy_to_admin_api_nexla_admin_api__path__post
     patch:
       summary: Proxy To Admin Api
-      operationId: proxy_to_admin_api_nexla_admin_api__path__post
+      operationId: patchNexlaAdminApiByPath
       parameters:
       - name: path
         in: path
@@ -103,9 +107,11 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
       - Nexla Admin Api
+      x-operation-id-source: normalized
+      x-operation-id-original: proxy_to_admin_api_nexla_admin_api__path__post
     put:
       summary: Proxy To Admin Api
-      operationId: proxy_to_admin_api_nexla_admin_api__path__post
+      operationId: putNexlaAdminApiByPath
       parameters:
       - name: path
         in: path
@@ -127,9 +133,11 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
       - Nexla Admin Api
+      x-operation-id-source: normalized
+      x-operation-id-original: proxy_to_admin_api_nexla_admin_api__path__post
     options:
       summary: Proxy To Admin Api
-      operationId: proxy_to_admin_api_nexla_admin_api__path__post
+      operationId: optionsNexlaAdminApiByPath
       parameters:
       - name: path
         in: path
@@ -151,9 +159,11 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
       - Nexla Admin Api
+      x-operation-id-source: normalized
+      x-operation-id-original: proxy_to_admin_api_nexla_admin_api__path__post
     get:
       summary: Proxy To Admin Api
-      operationId: proxy_to_admin_api_nexla_admin_api__path__post
+      operationId: getNexlaAdminApiByPath
       parameters:
       - name: path
         in: path
@@ -175,17 +185,10 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
       - Nexla Admin Api
+      x-operation-id-source: normalized
+      x-operation-id-original: proxy_to_admin_api_nexla_admin_api__path__post
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -212,3 +215,12 @@ components:
       - msg
       - type
       title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError

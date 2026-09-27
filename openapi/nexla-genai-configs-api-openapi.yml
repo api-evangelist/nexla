@@ -83,71 +83,19 @@ paths:
         '404':
           description: Not Found
 components:
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
   schemas:
-    GenAiConfigCreatePayload:
-      allOf:
-      - $ref: '#/components/schemas/GenAiConfigPayload'
-      - required:
-        - name
-        - type
-        - config
-        - data_credentials_id
-    OrgSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email_domain:
-          type: string
-        email:
-          type: string
-        client_identifier:
-          type: string
-        org_webhook_host:
-          type: string
-    GenAiConfigPayload:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type:
-          - string
-          - 'null'
-        status:
-          anyOf:
-          - type: string
-            enum:
-            - active
-            - paused
-          - type: 'null'
-        config:
-          type: object
-          additionalProperties: true
-          properties:
-            api_version:
-              type:
-              - string
-              - 'null'
-            openai_model:
-              type:
-              - string
-              - 'null'
-            google_ai_model:
-              type:
-              - string
-              - 'null'
-            enable_doc_recommendations:
-              type: boolean
-        type:
-          type: string
-          enum:
-          - genai_openai
-          - genai_googleai
-        data_credentials_id:
-          type: integer
     DataCredential:
       type: object
       properties:
@@ -212,18 +160,6 @@ components:
           format: date-time
         tags:
           type: array
-    UserSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        full_name:
-          type: string
-        email:
-          type: string
-        email_verified_at:
-          type: string
-          format: date-time
     GenAiConfig:
       type: object
       properties:
@@ -262,6 +198,82 @@ components:
           enum:
           - genai_openai
           - genai_googleai
+    OrgSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: string
+        client_identifier:
+          type: string
+        org_webhook_host:
+          type: string
+    GenAiConfigPayload:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type:
+          - string
+          - 'null'
+        status:
+          anyOf:
+          - type: string
+            enum:
+            - active
+            - paused
+          - type: 'null'
+        config:
+          type: object
+          additionalProperties: true
+          properties:
+            api_version:
+              type:
+              - string
+              - 'null'
+            openai_model:
+              type:
+              - string
+              - 'null'
+            google_ai_model:
+              type:
+              - string
+              - 'null'
+            enable_doc_recommendations:
+              type: boolean
+        type:
+          type: string
+          enum:
+          - genai_openai
+          - genai_googleai
+        data_credentials_id:
+          type: integer
+    GenAiConfigCreatePayload:
+      allOf:
+      - $ref: '#/components/schemas/GenAiConfigPayload'
+      - required:
+        - name
+        - type
+        - config
+        - data_credentials_id
+    UserSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+        email_verified_at:
+          type: string
+          format: date-time
   responses:
     gen_ai_configs_one:
       description: Success
@@ -269,18 +281,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/GenAiConfig'
-  parameters:
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
-
-          '
   securitySchemes:
     NexlaSessionToken:
       type: http

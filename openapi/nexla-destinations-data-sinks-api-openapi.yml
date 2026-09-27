@@ -264,159 +264,149 @@ paths:
         '404':
           description: Not found
 components:
-  parameters:
-    expand:
-      name: expand
-      in: query
-      schema:
-        type: integer
-        enum:
-        - 1
-        description: 'Add this parameter to a resource fetch request to receive details about related resources in the response.
-
-          '
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
-
-          '
-    access_roles:
-      name: access_role
-      in: query
-      schema:
-        type: string
-        enum:
-        - collaborator
-        - operator
-        - admin
-        - owner
-        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
-        externalDocs:
-          description: Nexla API access roles
-          url: https://developers.nexla.com/docs/access-modes
-  schemas:
-    data_sink:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        data_credentials_id:
-          type: integer
-          description: '__Credential ID__: Nexla data credential that contains all authentication information for this destination.
-
-            '
-        data_set_id:
-          type: integer
-          description: "__Nexset ID__: Set the Nexset ID whose output records will be written out to this destination.   \n"
-        sink_type:
-          type: string
-          description: '__Connector Type__: Connector codename.
-
-            '
-      discriminator:
-        propertyName: sink_type
-        mapping:
-          as400: '#/components/schemas/as400_data_sink'
-          azure_blb: '#/components/schemas/azure_blb_data_sink'
-          azure_data_lake: '#/components/schemas/azure_data_lake_data_sink'
-          azure_synapse: '#/components/schemas/azure_synapse_data_sink'
-          bigquery: '#/components/schemas/bigquery_data_sink'
-          box: '#/components/schemas/box_data_sink'
-          cloudsql_mysql: '#/components/schemas/cloudsql_mysql_data_sink'
-          cloudsql_postgres: '#/components/schemas/cloudsql_postgres_data_sink'
-          cloudsql_sqlserver: '#/components/schemas/cloudsql_sqlserver_data_sink'
-          confluent_kafka: '#/components/schemas/confluent_kafka_data_sink'
-          data_map: '#/components/schemas/data_map_data_sink'
-          databricks: '#/components/schemas/databricks_data_sink'
-          delta_lake_azure_blb: '#/components/schemas/delta_lake_azure_blb_data_sink'
-          delta_lake_azure_data_lake: '#/components/schemas/delta_lake_azure_data_lake_data_sink'
-          delta_lake_s3: '#/components/schemas/delta_lake_s3_data_sink'
-          dropbox: '#/components/schemas/dropbox_data_sink'
-          dynamodb: '#/components/schemas/dynamodb_data_sink'
-          email: '#/components/schemas/email_data_sink'
-          firebase: '#/components/schemas/firebase_data_sink'
-          firebolt: '#/components/schemas/firebolt_data_sink'
-          ftp: '#/components/schemas/ftp_data_sink'
-          gcp_alloydb: '#/components/schemas/gcp_alloydb_data_sink'
-          gcp_spanner: '#/components/schemas/gcp_spanner_data_sink'
-          gcs: '#/components/schemas/gcs_data_sink'
-          gdrive: '#/components/schemas/gdrive_data_sink'
-          google_pubsub: '#/components/schemas/google_pubsub_data_sink'
-          jms: '#/components/schemas/jms_data_sink'
-          kafka: '#/components/schemas/kafka_data_sink'
-          min_io_s3: '#/components/schemas/min_io_s3_data_sink'
-          mongo: '#/components/schemas/mongo_data_sink'
-          mysql: '#/components/schemas/mysql_data_sink'
-          netsuite_jdbc: '#/components/schemas/netsuite_jdbc_data_sink'
-          oracle: '#/components/schemas/oracle_data_sink'
-          oracle_autonomous: '#/components/schemas/oracle_autonomous_data_sink'
-          pinecone: '#/components/schemas/pinecone_data_sink'
-          postgres: '#/components/schemas/postgres_data_sink'
-          redshift: '#/components/schemas/redshift_data_sink'
-          rest: '#/components/schemas/rest_data_sink'
-          s3: '#/components/schemas/s3_data_sink'
-          s3_iceberg: '#/components/schemas/s3_iceberg_data_sink'
-          sharepoint: '#/components/schemas/sharepoint_data_sink'
-          snowflake: '#/components/schemas/snowflake_data_sink'
-          snowflake_dcr: '#/components/schemas/snowflake_dcr_data_sink'
-          sqlserver: '#/components/schemas/sqlserver_data_sink'
-          teradata: '#/components/schemas/teradata_data_sink'
-          tibco: '#/components/schemas/tibco_data_sink'
-    owner:
-      type: object
-      properties:
-        id:
-          type: integer
-        full_name:
-          type: string
-        email:
-          type: string
-          format: email
-    org:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email_domain:
-          type: string
-        email:
-          type: 'null'
-        client_identifier:
-          type: 'null'
-    data_set_schema:
-      type: object
-      properties:
-        properties:
-          type: object
-          additionalProperties:
-            type: string
-            x-additionalPropertiesName: nexset_attribute_name
-        $schema:
-          type: string
-          format: url
-        $schema-id:
-          type: integer
-    AccessRoles:
-      type: array
-      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
-      items:
-        type: string
-        enum:
-        - owner
-        - collaborator
-        - operator
-        - admin
   responses:
+    data_sink_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              owner:
+                $ref: '#/components/schemas/owner'
+              org:
+                $ref: '#/components/schemas/org'
+              access_roles:
+                $ref: '#/components/schemas/AccessRoles'
+              name:
+                type: string
+              description:
+                type: 'null'
+              status:
+                type: string
+              data_set_id:
+                type: integer
+              data_map_id:
+                type: 'null'
+              data_source_id:
+                type: 'null'
+              sink_format:
+                type: 'null'
+              sink_config:
+                type: object
+                description: 'The destination configuration properties that were set as `sink_config` in the payload-to-destination create/update API calls.
+
+                  '
+                additionalProperties:
+                  type: string
+                  x-additionalPropertiesName: sink_config_property
+              sink_schedule:
+                type: 'null'
+              in_memory:
+                type: boolean
+              managed:
+                type: boolean
+              sink_type:
+                type: string
+              connector_type:
+                type: string
+              connector:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  type:
+                    type: string
+                  connection_type:
+                    type: string
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  nexset_api_compatible:
+                    type: boolean
+              data_set:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+              data_credentials:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  owner:
+                    $ref: '#/components/schemas/owner'
+                  org:
+                    $ref: '#/components/schemas/org'
+                  access_roles:
+                    $ref: '#/components/schemas/AccessRoles'
+                  credentials_version:
+                    type: string
+                  managed:
+                    type: boolean
+                  credentials_type:
+                    type: string
+                  connector:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      type:
+                        type: string
+                      connection_type:
+                        type: string
+                      name:
+                        type: string
+                      description:
+                        type: string
+                      nexset_api_compatible:
+                        type: boolean
+                  api_keys:
+                    type: array
+                  credentials_non_secure_data:
+                    type: object
+                    additionalProperties:
+                      type:
+                      - string
+                      - object
+                      - integer
+                      x-additionalPropertiesName: credential_property
+                  verified_status:
+                    type: string
+                  verified_at:
+                    type: string
+                    format: date-time
+                  copied_from_id:
+                    type: 'null'
+                  updated_at:
+                    type: string
+                    format: date-time
+                  created_at:
+                    type: string
+                    format: date-time
+                  tags:
+                    type: array
+              copied_from_id:
+                type: 'null'
+              updated_at:
+                type: string
+                format: date-time
+              created_at:
+                type: string
+                format: date-time
+              tags:
+                type: array
+              flow_type:
+                type: string
     data_sink_many:
       description: Success
       content:
@@ -568,148 +558,6 @@ components:
                       type: string
                     connection_type:
                       type: string
-    data_sink_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              id:
-                type: integer
-              owner:
-                $ref: '#/components/schemas/owner'
-              org:
-                $ref: '#/components/schemas/org'
-              access_roles:
-                $ref: '#/components/schemas/AccessRoles'
-              name:
-                type: string
-              description:
-                type: 'null'
-              status:
-                type: string
-              data_set_id:
-                type: integer
-              data_map_id:
-                type: 'null'
-              data_source_id:
-                type: 'null'
-              sink_format:
-                type: 'null'
-              sink_config:
-                type: object
-                description: 'The destination configuration properties that were set as `sink_config` in the payload-to-destination create/update API calls.
-
-                  '
-                additionalProperties:
-                  type: string
-                  x-additionalPropertiesName: sink_config_property
-              sink_schedule:
-                type: 'null'
-              in_memory:
-                type: boolean
-              managed:
-                type: boolean
-              sink_type:
-                type: string
-              connector_type:
-                type: string
-              connector:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  type:
-                    type: string
-                  connection_type:
-                    type: string
-                  name:
-                    type: string
-                  description:
-                    type: string
-                  nexset_api_compatible:
-                    type: boolean
-              data_set:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-              data_credentials:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  description:
-                    type: string
-                  owner:
-                    $ref: '#/components/schemas/owner'
-                  org:
-                    $ref: '#/components/schemas/org'
-                  access_roles:
-                    $ref: '#/components/schemas/AccessRoles'
-                  credentials_version:
-                    type: string
-                  managed:
-                    type: boolean
-                  credentials_type:
-                    type: string
-                  connector:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      type:
-                        type: string
-                      connection_type:
-                        type: string
-                      name:
-                        type: string
-                      description:
-                        type: string
-                      nexset_api_compatible:
-                        type: boolean
-                  api_keys:
-                    type: array
-                  credentials_non_secure_data:
-                    type: object
-                    additionalProperties:
-                      type:
-                      - string
-                      - object
-                      - integer
-                      x-additionalPropertiesName: credential_property
-                  verified_status:
-                    type: string
-                  verified_at:
-                    type: string
-                    format: date-time
-                  copied_from_id:
-                    type: 'null'
-                  updated_at:
-                    type: string
-                    format: date-time
-                  created_at:
-                    type: string
-                    format: date-time
-                  tags:
-                    type: array
-              copied_from_id:
-                type: 'null'
-              updated_at:
-                type: string
-                format: date-time
-              created_at:
-                type: string
-                format: date-time
-              tags:
-                type: array
-              flow_type:
-                type: string
     data_sink_one_expand:
       description: Success
       content:
@@ -864,6 +712,158 @@ components:
                 format: date-time
               tags:
                 type: array
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
+    access_roles:
+      name: access_role
+      in: query
+      schema:
+        type: string
+        enum:
+        - collaborator
+        - operator
+        - admin
+        - owner
+        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
+        externalDocs:
+          description: Nexla API access roles
+          url: https://developers.nexla.com/docs/access-modes
+    expand:
+      name: expand
+      in: query
+      schema:
+        type: integer
+        enum:
+        - 1
+        description: 'Add this parameter to a resource fetch request to receive details about related resources in the response.
+
+          '
+  schemas:
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
+    org:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: 'null'
+        client_identifier:
+          type: 'null'
+    data_sink:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        data_credentials_id:
+          type: integer
+          description: '__Credential ID__: Nexla data credential that contains all authentication information for this destination.
+
+            '
+        data_set_id:
+          type: integer
+          description: "__Nexset ID__: Set the Nexset ID whose output records will be written out to this destination.   \n"
+        sink_type:
+          type: string
+          description: '__Connector Type__: Connector codename.
+
+            '
+      discriminator:
+        propertyName: sink_type
+        mapping:
+          as400: '#/components/schemas/as400_data_sink'
+          azure_blb: '#/components/schemas/azure_blb_data_sink'
+          azure_data_lake: '#/components/schemas/azure_data_lake_data_sink'
+          azure_synapse: '#/components/schemas/azure_synapse_data_sink'
+          bigquery: '#/components/schemas/bigquery_data_sink'
+          box: '#/components/schemas/box_data_sink'
+          cloudsql_mysql: '#/components/schemas/cloudsql_mysql_data_sink'
+          cloudsql_postgres: '#/components/schemas/cloudsql_postgres_data_sink'
+          cloudsql_sqlserver: '#/components/schemas/cloudsql_sqlserver_data_sink'
+          confluent_kafka: '#/components/schemas/confluent_kafka_data_sink'
+          data_map: '#/components/schemas/data_map_data_sink'
+          databricks: '#/components/schemas/databricks_data_sink'
+          delta_lake_azure_blb: '#/components/schemas/delta_lake_azure_blb_data_sink'
+          delta_lake_azure_data_lake: '#/components/schemas/delta_lake_azure_data_lake_data_sink'
+          delta_lake_s3: '#/components/schemas/delta_lake_s3_data_sink'
+          dropbox: '#/components/schemas/dropbox_data_sink'
+          dynamodb: '#/components/schemas/dynamodb_data_sink'
+          email: '#/components/schemas/email_data_sink'
+          firebase: '#/components/schemas/firebase_data_sink'
+          firebolt: '#/components/schemas/firebolt_data_sink'
+          ftp: '#/components/schemas/ftp_data_sink'
+          gcp_alloydb: '#/components/schemas/gcp_alloydb_data_sink'
+          gcp_spanner: '#/components/schemas/gcp_spanner_data_sink'
+          gcs: '#/components/schemas/gcs_data_sink'
+          gdrive: '#/components/schemas/gdrive_data_sink'
+          google_pubsub: '#/components/schemas/google_pubsub_data_sink'
+          jms: '#/components/schemas/jms_data_sink'
+          kafka: '#/components/schemas/kafka_data_sink'
+          min_io_s3: '#/components/schemas/min_io_s3_data_sink'
+          mongo: '#/components/schemas/mongo_data_sink'
+          mysql: '#/components/schemas/mysql_data_sink'
+          netsuite_jdbc: '#/components/schemas/netsuite_jdbc_data_sink'
+          oracle: '#/components/schemas/oracle_data_sink'
+          oracle_autonomous: '#/components/schemas/oracle_autonomous_data_sink'
+          pinecone: '#/components/schemas/pinecone_data_sink'
+          postgres: '#/components/schemas/postgres_data_sink'
+          redshift: '#/components/schemas/redshift_data_sink'
+          rest: '#/components/schemas/rest_data_sink'
+          s3: '#/components/schemas/s3_data_sink'
+          s3_iceberg: '#/components/schemas/s3_iceberg_data_sink'
+          sharepoint: '#/components/schemas/sharepoint_data_sink'
+          snowflake: '#/components/schemas/snowflake_data_sink'
+          snowflake_dcr: '#/components/schemas/snowflake_dcr_data_sink'
+          sqlserver: '#/components/schemas/sqlserver_data_sink'
+          teradata: '#/components/schemas/teradata_data_sink'
+          tibco: '#/components/schemas/tibco_data_sink'
+    owner:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+          format: email
+    data_set_schema:
+      type: object
+      properties:
+        properties:
+          type: object
+          additionalProperties:
+            type: string
+            x-additionalPropertiesName: nexset_attribute_name
+        $schema:
+          type: string
+          format: url
+        $schema-id:
+          type: integer
   securitySchemes:
     NexlaSessionToken:
       type: http

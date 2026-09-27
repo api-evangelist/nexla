@@ -63,28 +63,20 @@ paths:
       - Code
 components:
   schemas:
-    ConnectorModel:
+    GenaiIntegrationConfig:
       properties:
-        id:
-          type: integer
-          title: Id
-        type:
-          type: string
-          enum:
-          - genai_googleai
-          - genai_openai
-          - genai_azure_openai
-          title: Type
-        connection_type:
-          type: string
-          title: Connection Type
+        configs:
+          additionalProperties: true
+          type: object
+          title: Configs
+        data_credentials:
+          $ref: '#/components/schemas/DataCredentialModel'
       additionalProperties: true
       type: object
       required:
-      - id
-      - type
-      - connection_type
-      title: ConnectorModel
+      - configs
+      - data_credentials
+      title: GenaiIntegrationConfig
     ValidationError:
       properties:
         loc:
@@ -111,20 +103,6 @@ components:
       - msg
       - type
       title: ValidationError
-    GenaiIntegrationConfig:
-      properties:
-        configs:
-          additionalProperties: true
-          type: object
-          title: Configs
-        data_credentials:
-          $ref: '#/components/schemas/DataCredentialModel'
-      additionalProperties: true
-      type: object
-      required:
-      - configs
-      - data_credentials
-      title: GenaiIntegrationConfig
     RAGFlowCodeExecutionRequest:
       properties:
         code:
@@ -143,15 +121,18 @@ components:
       - parameter_1
       - parameter_2
       title: RAGFlowCodeExecutionRequest
-    HTTPValidationError:
+    CodeSafetySerializer:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        code_snippet:
+          type: string
+          title: Code Snippet
+        genai_integration_config:
+          $ref: '#/components/schemas/GenaiIntegrationConfig'
       type: object
-      title: HTTPValidationError
+      required:
+      - code_snippet
+      - genai_integration_config
+      title: CodeSafetySerializer
     DataCredentialModel:
       properties:
         id:
@@ -173,15 +154,34 @@ components:
       - credentials_enc_iv
       - credentials_enc
       title: DataCredentialModel
-    CodeSafetySerializer:
+    HTTPValidationError:
       properties:
-        code_snippet:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ConnectorModel:
+      properties:
+        id:
+          type: integer
+          title: Id
+        type:
           type: string
-          title: Code Snippet
-        genai_integration_config:
-          $ref: '#/components/schemas/GenaiIntegrationConfig'
+          enum:
+          - genai_googleai
+          - genai_openai
+          - genai_azure_openai
+          title: Type
+        connection_type:
+          type: string
+          title: Connection Type
+      additionalProperties: true
       type: object
       required:
-      - code_snippet
-      - genai_integration_config
-      title: CodeSafetySerializer
+      - id
+      - type
+      - connection_type
+      title: ConnectorModel

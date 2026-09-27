@@ -276,7 +276,99 @@ paths:
         '403':
           description: Forbidden
 components:
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
   schemas:
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
+    UserStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - DEACTIVATED
+      - SOURCE_COUNT_CAPPED
+      - SOURCE_DATA_CAPPED
+      - TRIAL_EXPIRED
+      description: 'Indicates the user''s account status across all organizations they are members of.
+
+        '
+    OrgMemberList:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrgMemberMutable'
+    OrgMember:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Nexla User ID of this user.
+        full_name:
+          type: string
+        email:
+          type: string
+        is_admin?:
+          type: boolean
+          description: 'Indicates whether this user is an administrator for the organization or not.
+
+            '
+        access_role:
+          $ref: '#/components/schemas/AccessRoles'
+        org_membership_status:
+          $ref: '#/components/schemas/OrgMembershipStatus'
+        user_status:
+          $ref: '#/components/schemas/UserStatus'
+    CustodiansPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          email:
+            type: string
+    OrgMemberMutable:
+      oneOf:
+      - type: object
+        required:
+        - id
+        properties:
+          id:
+            type: integer
+            description: Nexla User ID of the user to be added or updated.
+          access_role:
+            $ref: '#/components/schemas/AccessRoles'
+      - type: object
+        required:
+        - email
+        properties:
+          email:
+            type: string
+            description: 'Email ID of the user to be added or updated. If a user with this Email ID already exists on the platform then the API will update that account with this membership rule.
+
+              '
+          access_role:
+            $ref: '#/components/schemas/AccessRoles'
     CustodiansResponse:
       type: array
       items:
@@ -287,22 +379,6 @@ components:
           email:
             type: string
           full_name:
-            type: string
-    OrgMemberList:
-      type: object
-      properties:
-        members:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrgMemberMutable'
-    CustodiansPayload:
-      type: array
-      items:
-        type: object
-        properties:
-          id:
-            type: integer
-          email:
             type: string
     OrgsUpdate:
       type: object
@@ -328,81 +404,6 @@ components:
             '
         custodians:
           $ref: '#/components/schemas/CustodiansPayload'
-    OrgMemberMutable:
-      oneOf:
-      - type: object
-        required:
-        - id
-        properties:
-          id:
-            type: integer
-            description: Nexla User ID of the user to be added or updated.
-          access_role:
-            $ref: '#/components/schemas/AccessRoles'
-      - type: object
-        required:
-        - email
-        properties:
-          email:
-            type: string
-            description: 'Email ID of the user to be added or updated. If a user with this Email ID already exists on the platform then the API will update that account with this membership rule.
-
-              '
-          access_role:
-            $ref: '#/components/schemas/AccessRoles'
-    OrgMember:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: Nexla User ID of this user.
-        full_name:
-          type: string
-        email:
-          type: string
-        is_admin?:
-          type: boolean
-          description: 'Indicates whether this user is an administrator for the organization or not.
-
-            '
-        access_role:
-          $ref: '#/components/schemas/AccessRoles'
-        org_membership_status:
-          $ref: '#/components/schemas/OrgMembershipStatus'
-        user_status:
-          $ref: '#/components/schemas/UserStatus'
-    UserStatus:
-      type: string
-      enum:
-      - ACTIVE
-      - DEACTIVATED
-      - SOURCE_COUNT_CAPPED
-      - SOURCE_DATA_CAPPED
-      - TRIAL_EXPIRED
-      description: 'Indicates the user''s account status across all organizations they are members of.
-
-        '
-    OrgMembershipStatus:
-      type: string
-      enum:
-      - ACTIVE
-      - DEACTIVATED
-      description: 'Indicates whether the user''s membership in this organization is active or not.
-
-
-        If the membership is DEACTIVATED the user can no longer access the account but the resources owned by them will still be accessible by the organization administrators.
-
-        '
-    AccessRoles:
-      type: array
-      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
-      items:
-        type: string
-        enum:
-        - owner
-        - collaborator
-        - operator
-        - admin
     OrgMemberDelete:
       type: object
       properties:
@@ -424,6 +425,17 @@ components:
                 email:
                   type: string
                   description: "Email ID of the user who should be removed.      \n"
+    OrgMembershipStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - DEACTIVATED
+      description: 'Indicates whether the user''s membership in this organization is active or not.
+
+
+        If the membership is DEACTIVATED the user can no longer access the account but the resources owned by them will still be accessible by the organization administrators.
+
+        '
   responses:
     org_members:
       description: Success
@@ -433,6 +445,12 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/OrgMember'
+    custodians_many:
+      description: List of custodians
+      content:
+        application/vnd.nexla.api.v1+json:
+          schema:
+            $ref: '#/components/schemas/CustodiansResponse'
     orgs_one:
       description: Success
       content:
@@ -784,24 +802,6 @@ components:
                 created_at:
                   type: string
                   format: date-time
-    custodians_many:
-      description: List of custodians
-      content:
-        application/vnd.nexla.api.v1+json:
-          schema:
-            $ref: '#/components/schemas/CustodiansResponse'
-  parameters:
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
-
-          '
   securitySchemes:
     NexlaSessionToken:
       type: http

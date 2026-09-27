@@ -1638,6 +1638,57 @@ components:
       - msg
       - type
       title: ValidationError
+    ToolFilterIn:
+      properties:
+        mode:
+          type: string
+          enum:
+          - include
+          - exclude
+          title: Mode
+          description: 'Filter mode: ''include'' syncs only matching tools, ''exclude'' syncs all except matching.'
+          default: include
+        tool_names:
+          items:
+            type: string
+          type: array
+          title: Tool Names
+          description: Exact original tool names (as reported by the remote MCP server) to match.
+        patterns:
+          items:
+            type: string
+          type: array
+          title: Patterns
+          description: 'Glob patterns matched against original tool names. Supported wildcards: ''*'' matches any sequence of characters, ''?'' matches exactly one character. Bracket expressions like ''[abc]'' are NOT supported. Examples: ''github_*'', ''*_readonly'', ''tool_?''.'
+      additionalProperties: false
+      type: object
+      title: ToolFilterIn
+      description: 'Optional filter for selecting a subset of tools from an external MCP server.
+
+
+        When ``mode`` is ``"include"``, only tools matching ``tool_names`` or
+
+        ``patterns`` are synced.  When ``mode`` is ``"exclude"``, all tools
+
+        *except* those matching are synced.'
+    GatewaySearchIn:
+      properties:
+        search_term:
+          type: string
+          maxLength: 2048
+          minLength: 1
+          title: Search Term
+        limit:
+          type: integer
+          maximum: 50.0
+          minimum: 1.0
+          title: Limit
+          default: 10
+      additionalProperties: false
+      type: object
+      required:
+      - search_term
+      title: GatewaySearchIn
     ExtMcpServerUpdateIn:
       properties:
         server_name:
@@ -1683,24 +1734,15 @@ components:
       additionalProperties: false
       type: object
       title: ExtMcpServerUpdateIn
-    GatewaySearchIn:
+    HTTPValidationError:
       properties:
-        search_term:
-          type: string
-          maxLength: 2048
-          minLength: 1
-          title: Search Term
-        limit:
-          type: integer
-          maximum: 50.0
-          minimum: 1.0
-          title: Limit
-          default: 10
-      additionalProperties: false
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
       type: object
-      required:
-      - search_term
-      title: GatewaySearchIn
+      title: HTTPValidationError
     ExtMcpServerCreateIn:
       properties:
         server_name:
@@ -1735,45 +1777,3 @@ components:
       - server_name
       - mcp_config
       title: ExtMcpServerCreateIn
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ToolFilterIn:
-      properties:
-        mode:
-          type: string
-          enum:
-          - include
-          - exclude
-          title: Mode
-          description: 'Filter mode: ''include'' syncs only matching tools, ''exclude'' syncs all except matching.'
-          default: include
-        tool_names:
-          items:
-            type: string
-          type: array
-          title: Tool Names
-          description: Exact original tool names (as reported by the remote MCP server) to match.
-        patterns:
-          items:
-            type: string
-          type: array
-          title: Patterns
-          description: 'Glob patterns matched against original tool names. Supported wildcards: ''*'' matches any sequence of characters, ''?'' matches exactly one character. Bracket expressions like ''[abc]'' are NOT supported. Examples: ''github_*'', ''*_readonly'', ''tool_?''.'
-      additionalProperties: false
-      type: object
-      title: ToolFilterIn
-      description: 'Optional filter for selecting a subset of tools from an external MCP server.
-
-
-        When ``mode`` is ``"include"``, only tools matching ``tool_names`` or
-
-        ``patterns`` are synced.  When ``mode`` is ``"exclude"``, all tools
-
-        *except* those matching are synced.'

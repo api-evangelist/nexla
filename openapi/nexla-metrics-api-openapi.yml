@@ -474,386 +474,7 @@ paths:
         '404':
           description: Not found error
 components:
-  parameters:
-    page:
-      name: page
-      in: query
-      schema:
-        type: integer
-        description: 'Add this parameter to a resource fetch request to fetch a specific page of data.
-
-          '
-    per_page:
-      name: per_page
-      in: query
-      schema:
-        type: integer
-        description: 'Add this parameter to a resource fetch request to set the number of items that should be returned in each request.
-
-          '
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
-
-          '
-    access_roles:
-      name: access_role
-      in: query
-      schema:
-        type: string
-        enum:
-        - collaborator
-        - operator
-        - admin
-        - owner
-        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
-        externalDocs:
-          description: Nexla API access roles
-          url: https://developers.nexla.com/docs/access-modes
-    size:
-      name: size
-      in: query
-      schema:
-        type: integer
-        description: 'Add this parameter to a resource fetch request to set the number of items that should be returned in each request.
-
-          '
-  responses:
-    flows_dashboard:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: integer
-                format: int32
-                description: "Status of the report request. This must be `200` or `Ok` for the metrics object in the response to be considered valid.          \n"
-              metrics:
-                type: object
-                properties:
-                  sources:
-                    type: object
-                    additionalProperties:
-                      $ref: '#/components/schemas/DashboardMetricSet'
-                      x-additionalPropertiesName: data_source_id
-                  sinks:
-                    type: object
-                    additionalProperties:
-                      $ref: '#/components/schemas/DashboardMetricSet'
-                      x-additionalPropertiesName: data_sink_id
-                  datasets:
-                    type: object
-                    additionalProperties:
-                      $ref: '#/components/schemas/DashboardMetricSet'
-                      x-additionalPropertiesName: data_set_id
-                  start_time:
-                    type: string
-                    format: date-time
-                  end_time:
-                    type: string
-                    format: date-time
-    FlowLogsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: integer
-                description: "Status of the report request. This must be 200 for the data object in the response to be considered valid.               \n"
-              message:
-                type: string
-                description: "Message signifying status of the report request. This must be `Ok` for the data object in the response to be considered valid.            \n"
-              logs:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/FlowLogEntry'
-                  meta:
-                    type: object
-                    description: 'A special metadata object that indicates the relevant response Nexla metadata for the responses. This is useful for iterating through multiple pages of valid data.
-
-                      '
-                    properties:
-                      current_page:
-                        type: integer
-                        description: 'Current page that this response corresponds to.
-
-                          '
-                      pages_count:
-                        type: integer
-                        description: "Total number of valid pages of logs data given the current page size.  \n"
-                      total_count:
-                        type: integer
-                        description: 'Total number of log entries that are available for this resource.
-
-                          '
-                      org_id:
-                        type: integer
-                        description: "The id of the organization this flow belongs to.  \n"
-                      run_id:
-                        type: integer
-                        description: "The run id (denoting ingestion cycle) that these log were generated as part of.                      \n"
-    ResourceMetricsByRuns:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              metrics:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ResourceMetricByRun'
-                  meta:
-                    type: object
-                    description: 'A special metadata object that indicates the relevant response Nexla metadata for the metrics  responses. This is useful for iterating through multiple pages of valid data.
-
-                      '
-                    properties:
-                      currentPage:
-                        type: integer
-                        description: 'Current page that this response corresponds to.
-
-                          '
-                      pageCount:
-                        type: integer
-                        description: "Total number of valid pages of metrics data given the current page size.  \n"
-                      totalCount:
-                        type: integer
-                        description: "Total number of metrics entries that are available for this resource.                                              \n"
-              status:
-                type: integer
-                format: int32
-                description: "Status of the report request. This must be `200` or `Ok` for the metrics object in the response to be considered valid. \n"
-    flows_account_metrics:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: integer
-                format: int32
-                description: 'Status of the report request. This must be `200` or `Ok` for the metrics object in the response to be considered valid.
-
-                  '
-              metrics:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    data:
-                      type: object
-                      properties:
-                        records:
-                          type: integer
-                          format: int32
-                          description: "The total number of records processed during the specified time range. \n"
-                        size:
-                          type: integer
-                          format: int32
-                          description: "The total volume of records processed (in bytes) during the specified time range.                     \n"
-                    start_time:
-                      type: string
-                      format: date-time
-                    end_time:
-                      type: string
-                      format: date-time
-    user_metrics:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              metrics:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    time:
-                      type: string
-                      format: date
-                      description: 'The date (in UTC) that the metrics in this entry are applicable for.
-
-                        '
-                    records:
-                      type: integer
-                      format: int32
-                      description: "The total number of records that were processed on the date indicated by the `time` property.                 \n"
-                    size:
-                      type: integer
-                      format: int32
-                      description: "The total volume (in bytes) of records that were processed on the date indicated by the `time` property.           \n"
-                    errors:
-                      type: integer
-                      format: int32
-                      description: "The total number of data processing errors that occurred on the date indicated by the `time` property. \n"
-              status:
-                type: integer
-                format: int32
-                description: "Status of the report request. This must be `200` or `Ok` for the metrics object in the response to be considered valid.          \n"
-    FlowMetricsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: integer
-                description: "Status of the report request. This must be 200 for the data object in the response to be considered valid.               \n"
-              message:
-                type: string
-                description: "Message signifying status of the report request. This must be `Ok` for the data object in the response to be considered valid.       \n"
-              metrics:
-                type: object
-                properties:
-                  data:
-                    description: 'Flow metrics data aggregated by resource id for the time period specified. If the request includes `groupby=runId` then the metrics are further grouped by `runId` to separate number of records processed per run id per resource.
-
-                      '
-                    oneOf:
-                    - type: object
-                      additionalProperties:
-                        x-additionalPropertiesName: run_id
-                        description: 'Response format if request includes `groupby=runId`.
-
-                          '
-                        type: object
-                        properties:
-                          data_sources:
-                            type: array
-                            items:
-                              $ref: '#/components/schemas/FlowResourceMetric'
-                          data_sets:
-                            type: array
-                            items:
-                              $ref: '#/components/schemas/FlowResourceMetric'
-                          data_sinks:
-                            type: array
-                            items:
-                              $ref: '#/components/schemas/FlowResourceMetric'
-                    - type: object
-                      properties:
-                        data_sources:
-                          type: array
-                          items:
-                            $ref: '#/components/schemas/FlowResourceMetric'
-                        data_sets:
-                          type: array
-                          items:
-                            $ref: '#/components/schemas/FlowResourceMetric'
-                        data_sinks:
-                          type: array
-                          items:
-                            $ref: '#/components/schemas/FlowResourceMetric'
-                  meta:
-                    type: object
-                    description: 'A special metadata object that indicates the relevant response Nexla metadata for the metrics  responses. This is useful for iterating through multiple pages of valid data.
-
-                      '
-                    properties:
-                      currentPage:
-                        type: integer
-                        description: 'Current page that this response corresponds to.
-
-                          '
-                      pageCount:
-                        type: integer
-                        description: "Total number of valid pages of metrics data given the current page size.  \n"
-                      totalCount:
-                        type: integer
-                        description: "Total number of metrics entries that are available for this resource. \n"
-    ResourceMetricsDaily:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              metrics:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ResourceMetricDaily'
-              status:
-                type: integer
-                format: int32
-                description: "Status of the report request. This must be `200` or `Ok` for the metrics object in the response to be considered valid.          \n"
   schemas:
-    DashboardMetricSet:
-      type: object
-      properties:
-        records:
-          type: integer
-          format: int32
-          description: "The total number of records that were processed for this resource during the past 24 hours.           \n"
-        size:
-          type: integer
-          format: int32
-          description: "The total volume (in bytes) of records that were processed for this resource during the past 24 hours.            \n"
-        errors:
-          type: integer
-          format: int32
-          description: "The total number of data processing errors that occurred on this resource during the past 24 hours.         \n"
-        status:
-          type: string
-          enum:
-          - OK
-          - WARNING
-          - ERROR
-          description: "Indicates whether the platform identified this resource's performance during the last 24 hours as something that might require attention or not. \n"
-    ResourceMetricDaily:
-      type: object
-      properties:
-        time:
-          type: string
-          format: date
-          description: 'The date (in UTC) that the metrics in this entry are applicable for.
-
-            '
-        records:
-          type: integer
-          format: int32
-          description: "The total number of records that were processed on the date indicated by the `time` property.                 \n"
-        size:
-          type: integer
-          format: int32
-          description: "The total volume (in bytes) of records that were processed on the date indicated by the `time` property.           \n"
-        errors:
-          type: integer
-          format: int32
-          description: "The total number of data processing errors that occurred on the date indicated by the `time` property. \n"
-    FlowResourceMetric:
-      type: object
-      properties:
-        id:
-          type: integer
-        metric:
-          type: object
-          properties:
-            records:
-              type: integer
-            size:
-              type: integer
-            errors:
-              type: integer
     ResourceMetricByRun:
       type: object
       properties:
@@ -930,6 +551,385 @@ components:
           - INFO
           - WARNING
           - ERROR
+    DashboardMetricSet:
+      type: object
+      properties:
+        records:
+          type: integer
+          format: int32
+          description: "The total number of records that were processed for this resource during the past 24 hours.           \n"
+        size:
+          type: integer
+          format: int32
+          description: "The total volume (in bytes) of records that were processed for this resource during the past 24 hours.            \n"
+        errors:
+          type: integer
+          format: int32
+          description: "The total number of data processing errors that occurred on this resource during the past 24 hours.         \n"
+        status:
+          type: string
+          enum:
+          - OK
+          - WARNING
+          - ERROR
+          description: "Indicates whether the platform identified this resource's performance during the last 24 hours as something that might require attention or not. \n"
+    ResourceMetricDaily:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date
+          description: 'The date (in UTC) that the metrics in this entry are applicable for.
+
+            '
+        records:
+          type: integer
+          format: int32
+          description: "The total number of records that were processed on the date indicated by the `time` property.                 \n"
+        size:
+          type: integer
+          format: int32
+          description: "The total volume (in bytes) of records that were processed on the date indicated by the `time` property.           \n"
+        errors:
+          type: integer
+          format: int32
+          description: "The total number of data processing errors that occurred on the date indicated by the `time` property. \n"
+    FlowResourceMetric:
+      type: object
+      properties:
+        id:
+          type: integer
+        metric:
+          type: object
+          properties:
+            records:
+              type: integer
+            size:
+              type: integer
+            errors:
+              type: integer
+  responses:
+    user_metrics:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metrics:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    time:
+                      type: string
+                      format: date
+                      description: 'The date (in UTC) that the metrics in this entry are applicable for.
+
+                        '
+                    records:
+                      type: integer
+                      format: int32
+                      description: "The total number of records that were processed on the date indicated by the `time` property.                 \n"
+                    size:
+                      type: integer
+                      format: int32
+                      description: "The total volume (in bytes) of records that were processed on the date indicated by the `time` property.           \n"
+                    errors:
+                      type: integer
+                      format: int32
+                      description: "The total number of data processing errors that occurred on the date indicated by the `time` property. \n"
+              status:
+                type: integer
+                format: int32
+                description: "Status of the report request. This must be `200` or `Ok` for the metrics object in the response to be considered valid.          \n"
+    flows_account_metrics:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                format: int32
+                description: 'Status of the report request. This must be `200` or `Ok` for the metrics object in the response to be considered valid.
+
+                  '
+              metrics:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        records:
+                          type: integer
+                          format: int32
+                          description: "The total number of records processed during the specified time range. \n"
+                        size:
+                          type: integer
+                          format: int32
+                          description: "The total volume of records processed (in bytes) during the specified time range.                     \n"
+                    start_time:
+                      type: string
+                      format: date-time
+                    end_time:
+                      type: string
+                      format: date-time
+    FlowLogsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                description: "Status of the report request. This must be 200 for the data object in the response to be considered valid.               \n"
+              message:
+                type: string
+                description: "Message signifying status of the report request. This must be `Ok` for the data object in the response to be considered valid.            \n"
+              logs:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FlowLogEntry'
+                  meta:
+                    type: object
+                    description: 'A special metadata object that indicates the relevant response Nexla metadata for the responses. This is useful for iterating through multiple pages of valid data.
+
+                      '
+                    properties:
+                      current_page:
+                        type: integer
+                        description: 'Current page that this response corresponds to.
+
+                          '
+                      pages_count:
+                        type: integer
+                        description: "Total number of valid pages of logs data given the current page size.  \n"
+                      total_count:
+                        type: integer
+                        description: 'Total number of log entries that are available for this resource.
+
+                          '
+                      org_id:
+                        type: integer
+                        description: "The id of the organization this flow belongs to.  \n"
+                      run_id:
+                        type: integer
+                        description: "The run id (denoting ingestion cycle) that these log were generated as part of.                      \n"
+    ResourceMetricsDaily:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metrics:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResourceMetricDaily'
+              status:
+                type: integer
+                format: int32
+                description: "Status of the report request. This must be `200` or `Ok` for the metrics object in the response to be considered valid.          \n"
+    ResourceMetricsByRuns:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metrics:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResourceMetricByRun'
+                  meta:
+                    type: object
+                    description: 'A special metadata object that indicates the relevant response Nexla metadata for the metrics  responses. This is useful for iterating through multiple pages of valid data.
+
+                      '
+                    properties:
+                      currentPage:
+                        type: integer
+                        description: 'Current page that this response corresponds to.
+
+                          '
+                      pageCount:
+                        type: integer
+                        description: "Total number of valid pages of metrics data given the current page size.  \n"
+                      totalCount:
+                        type: integer
+                        description: "Total number of metrics entries that are available for this resource.                                              \n"
+              status:
+                type: integer
+                format: int32
+                description: "Status of the report request. This must be `200` or `Ok` for the metrics object in the response to be considered valid. \n"
+    flows_dashboard:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                format: int32
+                description: "Status of the report request. This must be `200` or `Ok` for the metrics object in the response to be considered valid.          \n"
+              metrics:
+                type: object
+                properties:
+                  sources:
+                    type: object
+                    additionalProperties:
+                      $ref: '#/components/schemas/DashboardMetricSet'
+                      x-additionalPropertiesName: data_source_id
+                  sinks:
+                    type: object
+                    additionalProperties:
+                      $ref: '#/components/schemas/DashboardMetricSet'
+                      x-additionalPropertiesName: data_sink_id
+                  datasets:
+                    type: object
+                    additionalProperties:
+                      $ref: '#/components/schemas/DashboardMetricSet'
+                      x-additionalPropertiesName: data_set_id
+                  start_time:
+                    type: string
+                    format: date-time
+                  end_time:
+                    type: string
+                    format: date-time
+    FlowMetricsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                description: "Status of the report request. This must be 200 for the data object in the response to be considered valid.               \n"
+              message:
+                type: string
+                description: "Message signifying status of the report request. This must be `Ok` for the data object in the response to be considered valid.       \n"
+              metrics:
+                type: object
+                properties:
+                  data:
+                    description: 'Flow metrics data aggregated by resource id for the time period specified. If the request includes `groupby=runId` then the metrics are further grouped by `runId` to separate number of records processed per run id per resource.
+
+                      '
+                    oneOf:
+                    - type: object
+                      additionalProperties:
+                        x-additionalPropertiesName: run_id
+                        description: 'Response format if request includes `groupby=runId`.
+
+                          '
+                        type: object
+                        properties:
+                          data_sources:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/FlowResourceMetric'
+                          data_sets:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/FlowResourceMetric'
+                          data_sinks:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/FlowResourceMetric'
+                    - type: object
+                      properties:
+                        data_sources:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/FlowResourceMetric'
+                        data_sets:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/FlowResourceMetric'
+                        data_sinks:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/FlowResourceMetric'
+                  meta:
+                    type: object
+                    description: 'A special metadata object that indicates the relevant response Nexla metadata for the metrics  responses. This is useful for iterating through multiple pages of valid data.
+
+                      '
+                    properties:
+                      currentPage:
+                        type: integer
+                        description: 'Current page that this response corresponds to.
+
+                          '
+                      pageCount:
+                        type: integer
+                        description: "Total number of valid pages of metrics data given the current page size.  \n"
+                      totalCount:
+                        type: integer
+                        description: "Total number of metrics entries that are available for this resource. \n"
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
+    size:
+      name: size
+      in: query
+      schema:
+        type: integer
+        description: 'Add this parameter to a resource fetch request to set the number of items that should be returned in each request.
+
+          '
+    access_roles:
+      name: access_role
+      in: query
+      schema:
+        type: string
+        enum:
+        - collaborator
+        - operator
+        - admin
+        - owner
+        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
+        externalDocs:
+          description: Nexla API access roles
+          url: https://developers.nexla.com/docs/access-modes
+    page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        description: 'Add this parameter to a resource fetch request to fetch a specific page of data.
+
+          '
+    per_page:
+      name: per_page
+      in: query
+      schema:
+        type: integer
+        description: 'Add this parameter to a resource fetch request to set the number of items that should be returned in each request.
+
+          '
   securitySchemes:
     NexlaSessionToken:
       type: http

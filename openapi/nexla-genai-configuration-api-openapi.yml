@@ -53,40 +53,19 @@ paths:
         '404':
           description: Not Found
 components:
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
   schemas:
-    GenAiOrgSetting:
-      type: object
-      properties:
-        id:
-          type: integer
-        org_id:
-          type: integer
-        gen_ai_usage:
-          type: string
-          enum:
-          - gen_docs
-          - check_code
-          - all
-        get_ai_config_id:
-          type: integer
-        gen_ai_config:
-          description: GenAI configuration (only if accessible)
-          $ref: '#/components/schemas/GenAiConfig'
-    OrgSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email_domain:
-          type: string
-        email:
-          type: string
-        client_identifier:
-          type: string
-        org_webhook_host:
-          type: string
     DataCredential:
       type: object
       properties:
@@ -151,18 +130,6 @@ components:
           format: date-time
         tags:
           type: array
-    UserSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        full_name:
-          type: string
-        email:
-          type: string
-        email_verified_at:
-          type: string
-          format: date-time
     GenAiConfig:
       type: object
       properties:
@@ -201,18 +168,51 @@ components:
           enum:
           - genai_openai
           - genai_googleai
-  parameters:
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
-
-          '
+    OrgSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: string
+        client_identifier:
+          type: string
+        org_webhook_host:
+          type: string
+    GenAiOrgSetting:
+      type: object
+      properties:
+        id:
+          type: integer
+        org_id:
+          type: integer
+        gen_ai_usage:
+          type: string
+          enum:
+          - gen_docs
+          - check_code
+          - all
+        get_ai_config_id:
+          type: integer
+        gen_ai_config:
+          description: GenAI configuration (only if accessible)
+          $ref: '#/components/schemas/GenAiConfig'
+    UserSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+        email_verified_at:
+          type: string
+          format: date-time
   responses:
     gen_ai_org_settings_one:
       description: Success
