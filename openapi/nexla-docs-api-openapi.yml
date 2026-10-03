@@ -32,6 +32,40 @@ paths:
       - Docs
 components:
   schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    RequestSerializer:
+      properties:
+        resource_type:
+          type: string
+          enum:
+          - data_set
+          - flows
+          title: Resource Type
+        resource_id:
+          type: integer
+          title: Resource Id
+        genai_integration_config:
+          $ref: '#/components/schemas/GenaiIntegrationConfig'
+        resource_data:
+          additionalProperties: true
+          type: object
+          title: Resource Data
+      additionalProperties: true
+      type: object
+      required:
+      - resource_type
+      - resource_id
+      - genai_integration_config
+      - resource_data
+      title: RequestSerializer
     GenaiIntegrationConfig:
       properties:
         configs:
@@ -46,6 +80,27 @@ components:
       - configs
       - data_credentials
       title: GenaiIntegrationConfig
+    DataCredentialModel:
+      properties:
+        id:
+          type: integer
+          title: Id
+        connector:
+          $ref: '#/components/schemas/ConnectorModel'
+        credentials_enc_iv:
+          type: string
+          title: Credentials Enc Iv
+        credentials_enc:
+          type: string
+          title: Credentials Enc
+      additionalProperties: true
+      type: object
+      required:
+      - id
+      - connector
+      - credentials_enc_iv
+      - credentials_enc
+      title: DataCredentialModel
     ValidationError:
       properties:
         loc:
@@ -72,61 +127,6 @@ components:
       - msg
       - type
       title: ValidationError
-    RequestSerializer:
-      properties:
-        resource_type:
-          type: string
-          enum:
-          - data_set
-          - flows
-          title: Resource Type
-        resource_id:
-          type: integer
-          title: Resource Id
-        genai_integration_config:
-          $ref: '#/components/schemas/GenaiIntegrationConfig'
-        resource_data:
-          additionalProperties: true
-          type: object
-          title: Resource Data
-      additionalProperties: true
-      type: object
-      required:
-      - resource_type
-      - resource_id
-      - genai_integration_config
-      - resource_data
-      title: RequestSerializer
-    DataCredentialModel:
-      properties:
-        id:
-          type: integer
-          title: Id
-        connector:
-          $ref: '#/components/schemas/ConnectorModel'
-        credentials_enc_iv:
-          type: string
-          title: Credentials Enc Iv
-        credentials_enc:
-          type: string
-          title: Credentials Enc
-      additionalProperties: true
-      type: object
-      required:
-      - id
-      - connector
-      - credentials_enc_iv
-      - credentials_enc
-      title: DataCredentialModel
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ConnectorModel:
       properties:
         id:

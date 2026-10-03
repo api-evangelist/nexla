@@ -83,6 +83,13 @@ paths:
         '404':
           description: Not Found
 components:
+  responses:
+    gen_ai_configs_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenAiConfig'
   parameters:
     accept:
       name: Accept
@@ -160,6 +167,18 @@ components:
           format: date-time
         tags:
           type: array
+    UserSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+        email_verified_at:
+          type: string
+          format: date-time
     GenAiConfig:
       type: object
       properties:
@@ -198,21 +217,14 @@ components:
           enum:
           - genai_openai
           - genai_googleai
-    OrgSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email_domain:
-          type: string
-        email:
-          type: string
-        client_identifier:
-          type: string
-        org_webhook_host:
-          type: string
+    GenAiConfigCreatePayload:
+      allOf:
+      - $ref: '#/components/schemas/GenAiConfigPayload'
+      - required:
+        - name
+        - type
+        - config
+        - data_credentials_id
     GenAiConfigPayload:
       type: object
       properties:
@@ -254,33 +266,21 @@ components:
           - genai_googleai
         data_credentials_id:
           type: integer
-    GenAiConfigCreatePayload:
-      allOf:
-      - $ref: '#/components/schemas/GenAiConfigPayload'
-      - required:
-        - name
-        - type
-        - config
-        - data_credentials_id
-    UserSimplified:
+    OrgSimplified:
       type: object
       properties:
         id:
           type: integer
-        full_name:
+        name:
+          type: string
+        email_domain:
           type: string
         email:
           type: string
-        email_verified_at:
+        client_identifier:
           type: string
-          format: date-time
-  responses:
-    gen_ai_configs_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenAiConfig'
+        org_webhook_host:
+          type: string
   securitySchemes:
     NexlaSessionToken:
       type: http

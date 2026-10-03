@@ -106,6 +106,33 @@ paths:
         '403':
           description: Forbidden
 components:
+  responses:
+    approval_requests_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApprovalRequest'
+    approval_requests_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ApprovalRequest'
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
   schemas:
     ApprovalRequest:
       type: object
@@ -132,33 +159,6 @@ components:
           type: integer
         rejection_reason:
           type: string
-  parameters:
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
-
-          '
-  responses:
-    approval_requests_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApprovalRequest'
-    approval_requests_many:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/ApprovalRequest'
   securitySchemes:
     NexlaSessionToken:
       type: http

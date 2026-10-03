@@ -1361,6 +1361,15 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     FromNexsetIn:
       properties:
         nexset_id:
@@ -1408,6 +1417,43 @@ components:
       type: object
       title: ToolUpdateIn
       description: Input schema for updating a tool.
+    ReconcileIn:
+      properties:
+        mode:
+          type: string
+          const: changed_since
+          title: Mode
+          default: changed_since
+        since:
+          type: string
+          format: date-time
+          title: Since
+      additionalProperties: false
+      type: object
+      required:
+      - since
+      title: ReconcileIn
+    ExecuteIn:
+      properties:
+        version:
+          type: string
+          pattern: ^[0-9]+\.[0-9]+\.[0-9]+$
+          title: Version
+        args:
+          additionalProperties: true
+          type: object
+          title: Args
+        tool_set_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Tool Set Id
+          description: Toolset this call should be attributed to for metrics. Must belong to the caller's org. If omitted, the call is attributed to the org's sandbox toolset instead of every toolset the tool happens to be registered in.
+      additionalProperties: false
+      type: object
+      required:
+      - version
+      title: ExecuteIn
     ValidationError:
       properties:
         loc:
@@ -1434,49 +1480,3 @@ components:
       - msg
       - type
       title: ValidationError
-    ReconcileIn:
-      properties:
-        mode:
-          type: string
-          const: changed_since
-          title: Mode
-          default: changed_since
-        since:
-          type: string
-          format: date-time
-          title: Since
-      additionalProperties: false
-      type: object
-      required:
-      - since
-      title: ReconcileIn
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ExecuteIn:
-      properties:
-        version:
-          type: string
-          pattern: ^[0-9]+\.[0-9]+\.[0-9]+$
-          title: Version
-        args:
-          additionalProperties: true
-          type: object
-          title: Args
-        tool_set_id:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Tool Set Id
-          description: Toolset this call should be attributed to for metrics. Must belong to the caller's org. If omitted, the call is attributed to the org's sandbox toolset instead of every toolset the tool happens to be registered in.
-      additionalProperties: false
-      type: object
-      required:
-      - version
-      title: ExecuteIn

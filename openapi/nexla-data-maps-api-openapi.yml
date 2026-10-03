@@ -301,6 +301,16 @@ components:
         description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
 
           '
+    expand:
+      name: expand
+      in: query
+      schema:
+        type: integer
+        enum:
+        - 1
+        description: 'Add this parameter to a resource fetch request to receive details about related resources in the response.
+
+          '
     access_roles:
       name: access_role
       in: query
@@ -315,46 +325,78 @@ components:
         externalDocs:
           description: Nexla API access roles
           url: https://developers.nexla.com/docs/access-modes
-    expand:
-      name: expand
-      in: query
-      schema:
-        type: integer
-        enum:
-        - 1
-        description: 'Add this parameter to a resource fetch request to receive details about related resources in the response.
-
-          '
-  responses:
-    data_maps_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/DataMap'
-    data_maps_many:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/DataMap'
-    data_map_entries:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              type: object
-              additionalProperties:
-                type:
-                - string
-                - number
-                x-additionalPropertiesName: data_map_entry
-                description: "An array of objects where each object is a row from the data map.          \n  \n"
   schemas:
+    DataMapMutable:
+      allOf:
+      - $ref: '#/components/schemas/DataMapBase'
+    DataMap:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        description:
+          type: string
+        public:
+          type: boolean
+        managed:
+          type: boolean
+        data_type:
+          type: string
+          example: string
+        data_format:
+          type: string
+          format: nullable
+        data_sink_id:
+          type: string
+          format: nullable
+        emit_data_default:
+          type: boolean
+        use_versioning:
+          type: boolean
+        map_primary_key:
+          type: string
+          example: id
+        data_defaults:
+          type: object
+        updated_at:
+          type: string
+          format: date-time
+          example: '2021-07-26T21:29:58.000Z'
+        created_at:
+          type: string
+          format: date-time
+          example: '2021-07-26T21:29:58.000Z'
+        owner:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int32
+            full_name:
+              type: string
+            email:
+              type: string
+              format: email
+        org:
+          $ref: '#/components/schemas/OrgSimplified'
+        access_roles:
+          $ref: '#/components/schemas/AccessRoles'
+        data_set_id:
+          type: integer
+          format: nullable
+        map_entry_count:
+          type: integer
+          format: int32
+          example: 200
+        map_entry_schema:
+          type: object
+        tags:
+          type: array
+          items:
+            type: string
     AccessRoles:
       type: array
       description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
@@ -433,77 +475,35 @@ components:
           type: string
         org_webhook_host:
           type: string
-    DataMapMutable:
-      allOf:
-      - $ref: '#/components/schemas/DataMapBase'
-    DataMap:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        name:
-          type: string
-        description:
-          type: string
-        public:
-          type: boolean
-        managed:
-          type: boolean
-        data_type:
-          type: string
-          example: string
-        data_format:
-          type: string
-          format: nullable
-        data_sink_id:
-          type: string
-          format: nullable
-        emit_data_default:
-          type: boolean
-        use_versioning:
-          type: boolean
-        map_primary_key:
-          type: string
-          example: id
-        data_defaults:
-          type: object
-        updated_at:
-          type: string
-          format: date-time
-          example: '2021-07-26T21:29:58.000Z'
-        created_at:
-          type: string
-          format: date-time
-          example: '2021-07-26T21:29:58.000Z'
-        owner:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int32
-            full_name:
-              type: string
-            email:
-              type: string
-              format: email
-        org:
-          $ref: '#/components/schemas/OrgSimplified'
-        access_roles:
-          $ref: '#/components/schemas/AccessRoles'
-        data_set_id:
-          type: integer
-          format: nullable
-        map_entry_count:
-          type: integer
-          format: int32
-          example: 200
-        map_entry_schema:
-          type: object
-        tags:
-          type: array
-          items:
-            type: string
+  responses:
+    data_map_entries:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              additionalProperties:
+                type:
+                - string
+                - number
+                x-additionalPropertiesName: data_map_entry
+                description: "An array of objects where each object is a row from the data map.          \n  \n"
+    data_maps_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DataMap'
+    data_maps_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/DataMap'
   securitySchemes:
     NexlaSessionToken:
       type: http

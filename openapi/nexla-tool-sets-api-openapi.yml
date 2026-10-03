@@ -2925,114 +2925,51 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ToolSetCreateIn:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ExportType:
+      type: string
+      enum:
+      - mcp_server
+      - copilot_connector
+      - sdk_bundle
+      - http_catalog
+      title: ExportType
+      description: Type of export for a tool set.
+    ExportEnvironment:
+      type: string
+      enum:
+      - dev
+      - stage
+      - prod
+      title: ExportEnvironment
+      description: Deployment environment for an export.
+    ToolSetCloneIn:
       properties:
         name:
           type: string
           maxLength: 512
           minLength: 1
           title: Name
-        key:
-          anyOf:
-          - type: string
-            maxLength: 128
-          - type: 'null'
-          title: Key
         description:
           anyOf:
           - type: string
             maxLength: 1024
           - type: 'null'
           title: Description
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-        tool_ids:
-          anyOf:
-          - items:
-              type: integer
-            type: array
-          - type: 'null'
-          title: Tool Ids
-        access_scope:
-          $ref: '#/components/schemas/AccessScope'
-          description: Who may invoke this toolset's tools. 'private' restricts it to the creator; 'organization' (default) allows any member of the org; 'public' allows any authenticated Nexla user. For both shared scopes non-owners must map their own credential before a tool call succeeds.
-          default: organization
-        mcp_gateway_enabled:
-          type: boolean
-          title: Mcp Gateway Enabled
-          default: false
-        create_export:
-          type: boolean
-          title: Create Export
-          default: true
-        refresh_tools:
-          type: boolean
-          title: Refresh Tools
-          description: When true, re-fetch upstream nexset metadata for any nexset-derived tool in tool_ids and update the local tool row before associating it with the new toolset. Per-tool refresh failures are reported in the response and do not abort toolset creation.
-          default: false
       additionalProperties: false
       type: object
       required:
       - name
-      title: ToolSetCreateIn
-      description: Input for creating a tool set.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    AccessScope:
-      type: string
-      enum:
-      - private
-      - organization
-      - public
-      title: AccessScope
-      description: 'Who may invoke a toolset''s tools.
-
-
-        Unlike the other enums here this one is *enforced*: the MCP request gate
-
-        reads it before resolving tools, and it is the first owner-aware predicate
-
-        in MCPaaS (``owner_id`` was previously stamped but never gated on).
-
-
-        This governs *access*, not identity. Every permitted caller runs as themselves:
-
-        ``runtime_config.credential`` auto-resolution fetches credentials with the caller''s
-
-        own session token and picks their latest match for the connector, so a shared
-
-        toolset needs no per-user setup. A caller with no credential for the connector gets
-
-        an actionable ``credential_required`` result instead.'
+      title: ToolSetCloneIn
+      description: Input for cloning a toolset.
     ToolsUpdateIn:
       properties:
         tool_ids:
@@ -3047,8 +2984,14 @@ components:
       - tool_ids
       title: ToolsUpdateIn
       description: Input for adding/removing tools from a toolset.
-    ExportUpdateIn:
+    ExportCreateIn:
       properties:
+        export_type:
+          $ref: '#/components/schemas/ExportType'
+          default: mcp_server
+        environment:
+          $ref: '#/components/schemas/ExportEnvironment'
+          default: prod
         public_name:
           anyOf:
           - type: string
@@ -3074,8 +3017,7 @@ components:
           title: Endpoint Url
       additionalProperties: false
       type: object
-      title: ExportUpdateIn
-      description: Input for updating an export.
+      title: ExportCreateIn
     ToolSetUpdateIn:
       properties:
         name:
@@ -3139,59 +3081,34 @@ components:
       - name
       - nexset_ids
       title: ToolSetFromNexsetsIn
-    ExportType:
-      type: string
-      enum:
-      - mcp_server
-      - copilot_connector
-      - sdk_bundle
-      - http_catalog
-      title: ExportType
-      description: Type of export for a tool set.
-    ToolSetCloneIn:
+    ValidationError:
       properties:
-        name:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
           type: string
-          maxLength: 512
-          minLength: 1
-          title: Name
-        description:
-          anyOf:
-          - type: string
-            maxLength: 1024
-          - type: 'null'
-          title: Description
-      additionalProperties: false
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
       type: object
       required:
-      - name
-      title: ToolSetCloneIn
-      description: Input for cloning a toolset.
-    ExportEnvironment:
-      type: string
-      enum:
-      - dev
-      - stage
-      - prod
-      title: ExportEnvironment
-      description: Deployment environment for an export.
-    HTTPValidationError:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ExportUpdateIn:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ExportCreateIn:
-      properties:
-        export_type:
-          $ref: '#/components/schemas/ExportType'
-          default: mcp_server
-        environment:
-          $ref: '#/components/schemas/ExportEnvironment'
-          default: prod
         public_name:
           anyOf:
           - type: string
@@ -3217,4 +3134,87 @@ components:
           title: Endpoint Url
       additionalProperties: false
       type: object
-      title: ExportCreateIn
+      title: ExportUpdateIn
+      description: Input for updating an export.
+    AccessScope:
+      type: string
+      enum:
+      - private
+      - organization
+      - public
+      title: AccessScope
+      description: 'Who may invoke a toolset''s tools.
+
+
+        Unlike the other enums here this one is *enforced*: the MCP request gate
+
+        reads it before resolving tools, and it is the first owner-aware predicate
+
+        in MCPaaS (``owner_id`` was previously stamped but never gated on).
+
+
+        This governs *access*, not identity. Every permitted caller runs as themselves:
+
+        ``runtime_config.credential`` auto-resolution fetches credentials with the caller''s
+
+        own session token and picks their latest match for the connector, so a shared
+
+        toolset needs no per-user setup. A caller with no credential for the connector gets
+
+        an actionable ``credential_required`` result instead.'
+    ToolSetCreateIn:
+      properties:
+        name:
+          type: string
+          maxLength: 512
+          minLength: 1
+          title: Name
+        key:
+          anyOf:
+          - type: string
+            maxLength: 128
+          - type: 'null'
+          title: Key
+        description:
+          anyOf:
+          - type: string
+            maxLength: 1024
+          - type: 'null'
+          title: Description
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        tool_ids:
+          anyOf:
+          - items:
+              type: integer
+            type: array
+          - type: 'null'
+          title: Tool Ids
+        access_scope:
+          $ref: '#/components/schemas/AccessScope'
+          description: Who may invoke this toolset's tools. 'private' restricts it to the creator; 'organization' (default) allows any member of the org; 'public' allows any authenticated Nexla user. For both shared scopes non-owners must map their own credential before a tool call succeeds.
+          default: organization
+        mcp_gateway_enabled:
+          type: boolean
+          title: Mcp Gateway Enabled
+          default: false
+        create_export:
+          type: boolean
+          title: Create Export
+          default: true
+        refresh_tools:
+          type: boolean
+          title: Refresh Tools
+          description: When true, re-fetch upstream nexset metadata for any nexset-derived tool in tool_ids and update the local tool row before associating it with the new toolset. Per-tool refresh failures are reported in the response and do not abort toolset creation.
+          default: false
+      additionalProperties: false
+      type: object
+      required:
+      - name
+      title: ToolSetCreateIn
+      description: Input for creating a tool set.

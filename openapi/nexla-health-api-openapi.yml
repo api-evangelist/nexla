@@ -103,54 +103,6 @@ paths:
                 $ref: '#/components/schemas/SystemStatus'
 components:
   schemas:
-    ComponentHealth:
-      properties:
-        status:
-          type: string
-          title: Status
-        latency_ms:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Latency Ms
-        message:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Message
-      type: object
-      required:
-      - status
-      title: ComponentHealth
-      description: Health status of a single component.
-    HealthStatus:
-      properties:
-        status:
-          type: string
-          title: Status
-        version:
-          type: string
-          title: Version
-        environment:
-          type: string
-          title: Environment
-        components:
-          additionalProperties:
-            $ref: '#/components/schemas/ComponentHealth'
-          type: object
-          title: Components
-        timestamp:
-          type: string
-          format: date-time
-          title: Timestamp
-      type: object
-      required:
-      - status
-      - version
-      - environment
-      - timestamp
-      title: HealthStatus
-      description: System health check response.
     SystemStatus:
       properties:
         status:
@@ -194,3 +146,51 @@ components:
       - timestamp
       title: SystemStatus
       description: System status dashboard data.
+    HealthStatus:
+      properties:
+        status:
+          type: string
+          title: Status
+        version:
+          type: string
+          title: Version
+        environment:
+          type: string
+          title: Environment
+        components:
+          additionalProperties:
+            $ref: '#/components/schemas/ComponentHealth'
+          type: object
+          title: Components
+        timestamp:
+          type: string
+          format: date-time
+          title: Timestamp
+      type: object
+      required:
+      - status
+      - version
+      - environment
+      - timestamp
+      title: HealthStatus
+      description: System health check response.
+    ComponentHealth:
+      properties:
+        status:
+          type: string
+          title: Status
+        latency_ms:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Latency Ms
+        message:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Message
+      type: object
+      required:
+      - status
+      title: ComponentHealth
+      description: Health status of a single component.

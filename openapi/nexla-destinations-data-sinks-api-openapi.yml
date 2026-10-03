@@ -749,16 +749,6 @@ components:
 
           '
   schemas:
-    AccessRoles:
-      type: array
-      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
-      items:
-        type: string
-        enum:
-        - owner
-        - collaborator
-        - operator
-        - admin
     org:
       type: object
       properties:
@@ -772,6 +762,29 @@ components:
           type: 'null'
         client_identifier:
           type: 'null'
+    data_set_schema:
+      type: object
+      properties:
+        properties:
+          type: object
+          additionalProperties:
+            type: string
+            x-additionalPropertiesName: nexset_attribute_name
+        $schema:
+          type: string
+          format: url
+        $schema-id:
+          type: integer
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
     data_sink:
       type: object
       properties:
@@ -851,19 +864,6 @@ components:
         email:
           type: string
           format: email
-    data_set_schema:
-      type: object
-      properties:
-        properties:
-          type: object
-          additionalProperties:
-            type: string
-            x-additionalPropertiesName: nexset_attribute_name
-        $schema:
-          type: string
-          format: url
-        $schema-id:
-          type: integer
   securitySchemes:
     NexlaSessionToken:
       type: http

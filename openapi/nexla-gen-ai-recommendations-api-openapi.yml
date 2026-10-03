@@ -78,6 +78,18 @@ paths:
         '404':
           description: Not Found
 components:
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
   responses:
     genai_recommendation_response:
       description: Either success or failure
@@ -106,18 +118,6 @@ components:
                     type: string
                     description: If there is an error, this field will contain the error message, and 'response' field will not be present.
                     example: GenAI Integration has not been enabled for your Nexla organization. Please contact your organization admin or Nexla support for enabling the integration.
-  parameters:
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
-
-          '
   securitySchemes:
     NexlaSessionToken:
       type: http

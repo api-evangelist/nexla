@@ -198,138 +198,36 @@ paths:
       x-operation-id-source: normalized
       x-operation-id-original: update_api_auth_config
 components:
+  responses:
+    auth_config_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthConfig'
+    auth_setting_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthSetting'
+    auth_configs_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AuthConfig'
+    auth_settings_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AuthSetting'
   schemas:
-    UserSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        full_name:
-          type: string
-        email:
-          type: string
-        email_verified_at:
-          type: string
-          format: date-time
-    AuthSettingPayload:
-      type: object
-      properties:
-        enabled:
-          type: boolean
-    AuthSetting:
-      type: object
-      properties:
-        id:
-          type: integer
-        org:
-          $ref: '#/components/schemas/OrgSimplified'
-        auth_config:
-          type: object
-          properties:
-            id:
-              type: integer
-            uid:
-              type: string
-            protocol:
-              type: string
-              enum:
-              - saml
-              - oidc
-              - google
-              - password
-            name:
-              type: string
-            description:
-              type: string
-            global:
-              type: boolean
-        enabled:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-    AuthConfigPayload:
-      type: object
-      additionalProperties: false
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        owner_id:
-          type: integer
-        org_id:
-          type: integer
-        uid:
-          type: string
-        protocol:
-          type: string
-        name:
-          type: string
-        description:
-          type: string
-        global:
-          type: boolean
-        enabled_by_default:
-          type: boolean
-        auto_create_users_enabled:
-          type: boolean
-        name_identifier_format:
-          type: string
-        nexla_base_url:
-          type: string
-        service_entity_id:
-          type: string
-        assertion_consumer_url:
-          type: string
-        idp_entity_id:
-          type: string
-        idp_sso_target_url:
-          type: string
-        idp_slo_target_url:
-          type: string
-        idp_cert:
-          type: string
-        security_settings:
-          type: object
-          additionalProperties: true
-        metadata:
-          type: string
-        oidc_domain:
-          type: string
-        oidc_keys_url_key:
-          type: string
-        oidc_id_claims:
-          type: object
-          additionalProperties: true
-        oidc_access_claims:
-          type: object
-          additionalProperties: true
-        client_config:
-          type: object
-          additionalProperties: true
-        secret_config:
-          type: object
-          additionalProperties: true
-        check_state:
-          type: boolean
-    OrgSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email_domain:
-          type: string
-        email:
-          type: string
-        client_identifier:
-          type: string
-        org_webhook_host:
-          type: string
     AuthConfig:
       type: object
       properties:
@@ -412,6 +310,137 @@ components:
         created_at:
           type: string
           format: date-time
+    AuthSetting:
+      type: object
+      properties:
+        id:
+          type: integer
+        org:
+          $ref: '#/components/schemas/OrgSimplified'
+        auth_config:
+          type: object
+          properties:
+            id:
+              type: integer
+            uid:
+              type: string
+            protocol:
+              type: string
+              enum:
+              - saml
+              - oidc
+              - google
+              - password
+            name:
+              type: string
+            description:
+              type: string
+            global:
+              type: boolean
+        enabled:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    AuthSettingPayload:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+    UserSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+        email_verified_at:
+          type: string
+          format: date-time
+    AuthConfigPayload:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner_id:
+          type: integer
+        org_id:
+          type: integer
+        uid:
+          type: string
+        protocol:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        global:
+          type: boolean
+        enabled_by_default:
+          type: boolean
+        auto_create_users_enabled:
+          type: boolean
+        name_identifier_format:
+          type: string
+        nexla_base_url:
+          type: string
+        service_entity_id:
+          type: string
+        assertion_consumer_url:
+          type: string
+        idp_entity_id:
+          type: string
+        idp_sso_target_url:
+          type: string
+        idp_slo_target_url:
+          type: string
+        idp_cert:
+          type: string
+        security_settings:
+          type: object
+          additionalProperties: true
+        metadata:
+          type: string
+        oidc_domain:
+          type: string
+        oidc_keys_url_key:
+          type: string
+        oidc_id_claims:
+          type: object
+          additionalProperties: true
+        oidc_access_claims:
+          type: object
+          additionalProperties: true
+        client_config:
+          type: object
+          additionalProperties: true
+        secret_config:
+          type: object
+          additionalProperties: true
+        check_state:
+          type: boolean
+    OrgSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: string
+        client_identifier:
+          type: string
+        org_webhook_host:
+          type: string
   parameters:
     accept:
       name: Accept
@@ -424,35 +453,6 @@ components:
         description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
 
           '
-  responses:
-    auth_settings_many:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/AuthSetting'
-    auth_setting_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AuthSetting'
-    auth_config_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AuthConfig'
-    auth_configs_many:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/AuthConfig'
   securitySchemes:
     NexlaSessionToken:
       type: http

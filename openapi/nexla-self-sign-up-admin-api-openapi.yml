@@ -152,21 +152,6 @@ paths:
           description: Not found error
 components:
   responses:
-    self_signup_blocked_domains_response:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: integer
-                  description: The unique identifier of the blocked domain.
-                domain:
-                  type: string
-                  description: The email domain that is blocked.
     self_signup_requests_response:
       description: Success
       content:
@@ -204,6 +189,21 @@ components:
                   type: string
                   format: date-time
                   description: The date and time when the self sign up request was last updated.
+    self_signup_blocked_domains_response:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: The unique identifier of the blocked domain.
+                domain:
+                  type: string
+                  description: The email domain that is blocked.
   securitySchemes:
     NexlaSessionToken:
       type: http

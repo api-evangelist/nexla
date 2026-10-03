@@ -1612,32 +1612,15 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ValidationError:
+    HTTPValidationError:
       properties:
-        loc:
+        detail:
           items:
-            anyOf:
-            - type: string
-            - type: integer
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+          title: Detail
       type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      title: HTTPValidationError
     ToolFilterIn:
       properties:
         mode:
@@ -1671,6 +1654,40 @@ components:
         ``patterns`` are synced.  When ``mode`` is ``"exclude"``, all tools
 
         *except* those matching are synced.'
+    ExtMcpServerCreateIn:
+      properties:
+        server_name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          title: Server Name
+        server_description:
+          anyOf:
+          - type: string
+            maxLength: 4096
+          - type: 'null'
+          title: Server Description
+        server_url:
+          anyOf:
+          - type: string
+            maxLength: 1024
+          - type: 'null'
+          title: Server Url
+        mcp_config:
+          additionalProperties: true
+          type: object
+          title: Mcp Config
+        tool_filter:
+          anyOf:
+          - $ref: '#/components/schemas/ToolFilterIn'
+          - type: 'null'
+          description: Optional filter to select a subset of tools from the external MCP server. When omitted, all tools discovered on the server are synced.
+      additionalProperties: false
+      type: object
+      required:
+      - server_name
+      - mcp_config
+      title: ExtMcpServerCreateIn
     GatewaySearchIn:
       properties:
         search_term:
@@ -1689,6 +1706,32 @@ components:
       required:
       - search_term
       title: GatewaySearchIn
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     ExtMcpServerUpdateIn:
       properties:
         server_name:
@@ -1734,46 +1777,3 @@ components:
       additionalProperties: false
       type: object
       title: ExtMcpServerUpdateIn
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ExtMcpServerCreateIn:
-      properties:
-        server_name:
-          type: string
-          maxLength: 255
-          minLength: 1
-          title: Server Name
-        server_description:
-          anyOf:
-          - type: string
-            maxLength: 4096
-          - type: 'null'
-          title: Server Description
-        server_url:
-          anyOf:
-          - type: string
-            maxLength: 1024
-          - type: 'null'
-          title: Server Url
-        mcp_config:
-          additionalProperties: true
-          type: object
-          title: Mcp Config
-        tool_filter:
-          anyOf:
-          - $ref: '#/components/schemas/ToolFilterIn'
-          - type: 'null'
-          description: Optional filter to select a subset of tools from the external MCP server. When omitted, all tools discovered on the server are synced.
-      additionalProperties: false
-      type: object
-      required:
-      - server_name
-      - mcp_config
-      title: ExtMcpServerCreateIn

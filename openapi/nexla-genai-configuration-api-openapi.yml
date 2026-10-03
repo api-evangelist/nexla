@@ -130,6 +130,18 @@ components:
           format: date-time
         tags:
           type: array
+    UserSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+        email_verified_at:
+          type: string
+          format: date-time
     GenAiConfig:
       type: object
       properties:
@@ -168,21 +180,6 @@ components:
           enum:
           - genai_openai
           - genai_googleai
-    OrgSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email_domain:
-          type: string
-        email:
-          type: string
-        client_identifier:
-          type: string
-        org_webhook_host:
-          type: string
     GenAiOrgSetting:
       type: object
       properties:
@@ -201,18 +198,21 @@ components:
         gen_ai_config:
           description: GenAI configuration (only if accessible)
           $ref: '#/components/schemas/GenAiConfig'
-    UserSimplified:
+    OrgSimplified:
       type: object
       properties:
         id:
           type: integer
-        full_name:
+        name:
+          type: string
+        email_domain:
           type: string
         email:
           type: string
-        email_verified_at:
+        client_identifier:
           type: string
-          format: date-time
+        org_webhook_host:
+          type: string
   responses:
     gen_ai_org_settings_one:
       description: Success

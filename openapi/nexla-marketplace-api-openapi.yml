@@ -320,27 +320,13 @@ paths:
         '403':
           description: Forbidden
 components:
-  parameters:
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
-
-          '
   responses:
-    domains_many:
-      description: List of marketplace domains
+    custodians_many:
+      description: List of custodians
       content:
         application/vnd.nexla.api.v1+json:
           schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/MarketplaceDomain'
+            $ref: '#/components/schemas/CustodiansResponse'
     domains_one:
       description: Single marketplace domain
       content:
@@ -355,13 +341,91 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/MarketplaceDomainsItem'
-    custodians_many:
-      description: List of custodians
+    domains_many:
+      description: List of marketplace domains
       content:
         application/vnd.nexla.api.v1+json:
           schema:
-            $ref: '#/components/schemas/CustodiansResponse'
+            type: array
+            items:
+              $ref: '#/components/schemas/MarketplaceDomain'
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
   schemas:
+    MarketplaceDomainsItemCreate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type:
+          - 'null'
+          - string
+        data_set_id:
+          type: integer
+          description: ID of the org's dataset that marketplace item should present. User should have a `read` permission for the dataset.
+    MarketplaceDomainCreate:
+      type: object
+      properties:
+        org_id:
+          type:
+          - 'null'
+          - integer
+        owner_id:
+          type:
+          - 'null'
+          - integer
+        name:
+          type: string
+        description:
+          type: string
+        parent_id:
+          type: integer
+          description: ID of the parent domain. Domains may build a hierarchy.
+        custodians:
+          $ref: '#/components/schemas/CustodiansPayload'
+    MarketplaceDomainsItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type:
+          - 'null'
+          - string
+        data_samples:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: Data samples coming from data sets that the marketplace item presents.
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    CustodiansPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          email:
+            type: string
     MarketplaceDomain:
       type: object
       properties:
@@ -388,38 +452,6 @@ components:
         updated_at:
           type: string
           format: date-time
-    CustodiansPayload:
-      type: array
-      items:
-        type: object
-        properties:
-          id:
-            type: integer
-          email:
-            type: string
-    MarketplaceDomainsItem:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type:
-          - 'null'
-          - string
-        data_samples:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          description: Data samples coming from data sets that the marketplace item presents.
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
     CustodiansResponse:
       type: array
       items:
@@ -431,38 +463,6 @@ components:
             type: string
           full_name:
             type: string
-    MarketplaceDomainCreate:
-      type: object
-      properties:
-        org_id:
-          type:
-          - 'null'
-          - integer
-        owner_id:
-          type:
-          - 'null'
-          - integer
-        name:
-          type: string
-        description:
-          type: string
-        parent_id:
-          type: integer
-          description: ID of the parent domain. Domains may build a hierarchy.
-        custodians:
-          $ref: '#/components/schemas/CustodiansPayload'
-    MarketplaceDomainsItemCreate:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type:
-          - 'null'
-          - string
-        data_set_id:
-          type: integer
-          description: ID of the org's dataset that marketplace item should present. User should have a `read` permission for the dataset.
   securitySchemes:
     NexlaSessionToken:
       type: http

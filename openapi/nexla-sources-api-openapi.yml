@@ -307,191 +307,181 @@ components:
         description: 'Add this parameter to a resource fetch request to receive details about related resources in the response.
 
           '
+  schemas:
+    data_set_schema:
+      type: object
+      properties:
+        properties:
+          type: object
+          additionalProperties:
+            type: string
+            x-additionalPropertiesName: nexset_attribute_name
+        $schema:
+          type: string
+          format: url
+        $schema-id:
+          type: integer
+    org:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: 'null'
+        client_identifier:
+          type: 'null'
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
+    data_source:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        data_credentials_id:
+          type: integer
+          description: '__Credential ID__: Nexla data credential that contains all authentication information for this source.
+
+
+            Note that this is not applicable for `file_upload`, `nexla_rest` and `email` sources but is required for all other connectors.
+
+            '
+        stream_config:
+          type: object
+          description: 'Field only used for ELT Vendor Endpoints
+
+            '
+        source_type:
+          type: string
+          description: '__Connector Type__: Connector codename.
+
+            '
+        code_container_id:
+          type: integer
+          description: 'ID of code container to attach to this source.
+
+            '
+        code_container:
+          type: object
+          description: "Code Container details that will be created and attached to this source. Note: you can't pass both `code_container` and `code_container_id` together, \ncode_container_id will take priority.\n"
+          properties:
+            code:
+              anyOf:
+              - type: string
+              - type: object
+              - type: array
+            name:
+              type: string
+            description:
+              type: string
+            resource_type:
+              type: string
+              enum:
+              - source
+              - source_custom
+            code_type:
+              type: string
+              enum:
+              - jolt_standard
+              - jolt_custom
+              - python
+              - python3
+              - javascript
+              - flink_sql
+              - spark_sql
+            code_encoding:
+              type: string
+              enum:
+              - none
+              - base64
+            code_config:
+              type: object
+            custom_config:
+              type: object
+            repo_type:
+              type: string
+              enum:
+              - embedded
+              - github
+            repo_config:
+              type: object
+      discriminator:
+        propertyName: source_type
+        mapping:
+          as400: '#/components/schemas/as400_data_source'
+          aws_athena: '#/components/schemas/aws_athena_data_source'
+          azure_blb: '#/components/schemas/azure_blb_data_source'
+          azure_data_lake: '#/components/schemas/azure_data_lake_data_source'
+          azure_synapse: '#/components/schemas/azure_synapse_data_source'
+          bigquery: '#/components/schemas/bigquery_data_source'
+          box: '#/components/schemas/box_data_source'
+          cloudsql_mysql: '#/components/schemas/cloudsql_mysql_data_source'
+          cloudsql_postgres: '#/components/schemas/cloudsql_postgres_data_source'
+          cloudsql_sqlserver: '#/components/schemas/cloudsql_sqlserver_data_source'
+          confluent_kafka: '#/components/schemas/confluent_kafka_data_source'
+          databricks: '#/components/schemas/databricks_data_source'
+          db2: '#/components/schemas/db2_data_source'
+          dropbox: '#/components/schemas/dropbox_data_source'
+          dynamodb: '#/components/schemas/dynamodb_data_source'
+          file_upload: '#/components/schemas/file_upload_data_source'
+          firebase: '#/components/schemas/firebase_data_source'
+          firebolt: '#/components/schemas/firebolt_data_source'
+          ftp: '#/components/schemas/ftp_data_source'
+          gcp_alloydb: '#/components/schemas/gcp_alloydb_data_source'
+          gcp_spanner: '#/components/schemas/gcp_spanner_data_source'
+          gcs: '#/components/schemas/gcs_data_source'
+          gdrive: '#/components/schemas/gdrive_data_source'
+          google_pubsub: '#/components/schemas/google_pubsub_data_source'
+          hana_jdbc: '#/components/schemas/hana_jdbc_data_source'
+          hive: '#/components/schemas/hive_data_source'
+          jms: '#/components/schemas/jms_data_source'
+          kafka: '#/components/schemas/kafka_data_source'
+          min_io_s3: '#/components/schemas/min_io_s3_data_source'
+          mongo: '#/components/schemas/mongo_data_source'
+          mysql: '#/components/schemas/mysql_data_source'
+          netsuite_jdbc: '#/components/schemas/netsuite_jdbc_data_source'
+          nexla_monitor: '#/components/schemas/nexla_monitor_data_source'
+          nexla_rest: '#/components/schemas/nexla_rest_data_source'
+          oracle: '#/components/schemas/oracle_data_source'
+          oracle_autonomous: '#/components/schemas/oracle_autonomous_data_source'
+          pinecone: '#/components/schemas/pinecone_data_source'
+          postgres: '#/components/schemas/postgres_data_source'
+          redshift: '#/components/schemas/redshift_data_source'
+          rest: '#/components/schemas/rest_data_source'
+          s3: '#/components/schemas/s3_data_source'
+          s3_iceberg: '#/components/schemas/s3_iceberg_data_source'
+          sharepoint: '#/components/schemas/sharepoint_data_source'
+          snowflake: '#/components/schemas/snowflake_data_source'
+          soap: '#/components/schemas/soap_data_source'
+          sqlserver: '#/components/schemas/sqlserver_data_source'
+          sybase: '#/components/schemas/sybase_data_source'
+          teradata: '#/components/schemas/teradata_data_source'
+          tibco: '#/components/schemas/tibco_data_source'
+          webdav: '#/components/schemas/webdav_data_source'
+    owner:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+          format: email
   responses:
-    data_source_one_expand:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              id:
-                type: integer
-              owner:
-                $ref: '#/components/schemas/owner'
-              org:
-                $ref: '#/components/schemas/org'
-              access_roles:
-                $ref: '#/components/schemas/AccessRoles'
-              name:
-                type: string
-              description:
-                type: 'null'
-              status:
-                type: string
-              data_sets:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    version:
-                      type: integer
-                    id:
-                      type: integer
-                    owner_id:
-                      type: integer
-                    org_id:
-                      type: integer
-                    name:
-                      type: string
-                    description:
-                      type: string
-                    updated_at:
-                      type: string
-                      format: date-time
-                    created_at:
-                      type: string
-                      format: date-time
-                    sample_service_id:
-                      type:
-                      - 'null'
-                    source_schema:
-                      $ref: '#/components/schemas/data_set_schema'
-                    transform:
-                      type: object
-                      properties:
-                        version:
-                          type: integer
-                        data_maps:
-                          type: array
-                        transforms:
-                          type: array
-                        custom_config:
-                          type: object
-                    output_schema:
-                      $ref: '#/components/schemas/data_set_schema'
-              ingest_method:
-                type: string
-              source_format:
-                type: string
-              source_config:
-                type: object
-                additionalProperties:
-                  type: string
-              poll_schedule:
-                type: 'null'
-              managed:
-                type: boolean
-              code_container_id:
-                type: 'null'
-              source_type:
-                type: string
-              connector_type:
-                type: string
-              connector:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  type:
-                    type: string
-                  connection_type:
-                    type: string
-                  name:
-                    type: string
-                  description:
-                    type: string
-                  nexset_api_compatible:
-                    type: boolean
-              api_keys:
-                type: array
-              auto_generated:
-                type: boolean
-              data_credentials:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  description:
-                    type: string
-                  owner:
-                    $ref: '#/components/schemas/owner'
-                  org:
-                    $ref: '#/components/schemas/org'
-                  access_roles:
-                    $ref: '#/components/schemas/AccessRoles'
-                  credentials_version:
-                    type: string
-                  managed:
-                    type: boolean
-                  credentials_type:
-                    type: string
-                  connector:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      type:
-                        type: string
-                      connection_type:
-                        type: string
-                      name:
-                        type: string
-                      description:
-                        type: string
-                      nexset_api_compatible:
-                        type: boolean
-                  api_keys:
-                    type: array
-                  credentials_non_secure_data:
-                    type: object
-                    additionalProperties:
-                      type:
-                      - string
-                      - object
-                      - integer
-                      x-additionalPropertiesName: credential_property
-                  verified_status:
-                    type: string
-                  verified_at:
-                    type: string
-                    format: date-time
-                  copied_from_id:
-                    type: 'null'
-                  updated_at:
-                    type: string
-                    format: date-time
-                  created_at:
-                    type: string
-                    format: date-time
-                  tags:
-                    type: array
-              run_ids:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    created_at:
-                      type: string
-                      format: date-time
-              copied_from_id:
-                type: 'null'
-              updated_at:
-                type: string
-                format: date-time
-              created_at:
-                type: string
-                format: date-time
-              flow_type:
-                type: string
-              ingestion_mode:
-                type: string
-              tags:
-                type: array
     data_source_many:
       description: Success
       content:
@@ -760,180 +750,190 @@ components:
                 type: string
               ingestion_mode:
                 type: string
-  schemas:
-    AccessRoles:
-      type: array
-      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
-      items:
-        type: string
-        enum:
-        - owner
-        - collaborator
-        - operator
-        - admin
-    org:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email_domain:
-          type: string
-        email:
-          type: 'null'
-        client_identifier:
-          type: 'null'
-    data_source:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        data_credentials_id:
-          type: integer
-          description: '__Credential ID__: Nexla data credential that contains all authentication information for this source.
-
-
-            Note that this is not applicable for `file_upload`, `nexla_rest` and `email` sources but is required for all other connectors.
-
-            '
-        stream_config:
-          type: object
-          description: 'Field only used for ELT Vendor Endpoints
-
-            '
-        source_type:
-          type: string
-          description: '__Connector Type__: Connector codename.
-
-            '
-        code_container_id:
-          type: integer
-          description: 'ID of code container to attach to this source.
-
-            '
-        code_container:
-          type: object
-          description: "Code Container details that will be created and attached to this source. Note: you can't pass both `code_container` and `code_container_id` together, \ncode_container_id will take priority.\n"
-          properties:
-            code:
-              anyOf:
-              - type: string
-              - type: object
-              - type: array
-            name:
-              type: string
-            description:
-              type: string
-            resource_type:
-              type: string
-              enum:
-              - source
-              - source_custom
-            code_type:
-              type: string
-              enum:
-              - jolt_standard
-              - jolt_custom
-              - python
-              - python3
-              - javascript
-              - flink_sql
-              - spark_sql
-            code_encoding:
-              type: string
-              enum:
-              - none
-              - base64
-            code_config:
-              type: object
-            custom_config:
-              type: object
-            repo_type:
-              type: string
-              enum:
-              - embedded
-              - github
-            repo_config:
-              type: object
-      discriminator:
-        propertyName: source_type
-        mapping:
-          as400: '#/components/schemas/as400_data_source'
-          aws_athena: '#/components/schemas/aws_athena_data_source'
-          azure_blb: '#/components/schemas/azure_blb_data_source'
-          azure_data_lake: '#/components/schemas/azure_data_lake_data_source'
-          azure_synapse: '#/components/schemas/azure_synapse_data_source'
-          bigquery: '#/components/schemas/bigquery_data_source'
-          box: '#/components/schemas/box_data_source'
-          cloudsql_mysql: '#/components/schemas/cloudsql_mysql_data_source'
-          cloudsql_postgres: '#/components/schemas/cloudsql_postgres_data_source'
-          cloudsql_sqlserver: '#/components/schemas/cloudsql_sqlserver_data_source'
-          confluent_kafka: '#/components/schemas/confluent_kafka_data_source'
-          databricks: '#/components/schemas/databricks_data_source'
-          db2: '#/components/schemas/db2_data_source'
-          dropbox: '#/components/schemas/dropbox_data_source'
-          dynamodb: '#/components/schemas/dynamodb_data_source'
-          file_upload: '#/components/schemas/file_upload_data_source'
-          firebase: '#/components/schemas/firebase_data_source'
-          firebolt: '#/components/schemas/firebolt_data_source'
-          ftp: '#/components/schemas/ftp_data_source'
-          gcp_alloydb: '#/components/schemas/gcp_alloydb_data_source'
-          gcp_spanner: '#/components/schemas/gcp_spanner_data_source'
-          gcs: '#/components/schemas/gcs_data_source'
-          gdrive: '#/components/schemas/gdrive_data_source'
-          google_pubsub: '#/components/schemas/google_pubsub_data_source'
-          hana_jdbc: '#/components/schemas/hana_jdbc_data_source'
-          hive: '#/components/schemas/hive_data_source'
-          jms: '#/components/schemas/jms_data_source'
-          kafka: '#/components/schemas/kafka_data_source'
-          min_io_s3: '#/components/schemas/min_io_s3_data_source'
-          mongo: '#/components/schemas/mongo_data_source'
-          mysql: '#/components/schemas/mysql_data_source'
-          netsuite_jdbc: '#/components/schemas/netsuite_jdbc_data_source'
-          nexla_monitor: '#/components/schemas/nexla_monitor_data_source'
-          nexla_rest: '#/components/schemas/nexla_rest_data_source'
-          oracle: '#/components/schemas/oracle_data_source'
-          oracle_autonomous: '#/components/schemas/oracle_autonomous_data_source'
-          pinecone: '#/components/schemas/pinecone_data_source'
-          postgres: '#/components/schemas/postgres_data_source'
-          redshift: '#/components/schemas/redshift_data_source'
-          rest: '#/components/schemas/rest_data_source'
-          s3: '#/components/schemas/s3_data_source'
-          s3_iceberg: '#/components/schemas/s3_iceberg_data_source'
-          sharepoint: '#/components/schemas/sharepoint_data_source'
-          snowflake: '#/components/schemas/snowflake_data_source'
-          soap: '#/components/schemas/soap_data_source'
-          sqlserver: '#/components/schemas/sqlserver_data_source'
-          sybase: '#/components/schemas/sybase_data_source'
-          teradata: '#/components/schemas/teradata_data_source'
-          tibco: '#/components/schemas/tibco_data_source'
-          webdav: '#/components/schemas/webdav_data_source'
-    owner:
-      type: object
-      properties:
-        id:
-          type: integer
-        full_name:
-          type: string
-        email:
-          type: string
-          format: email
-    data_set_schema:
-      type: object
-      properties:
-        properties:
-          type: object
-          additionalProperties:
-            type: string
-            x-additionalPropertiesName: nexset_attribute_name
-        $schema:
-          type: string
-          format: url
-        $schema-id:
-          type: integer
+    data_source_one_expand:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              owner:
+                $ref: '#/components/schemas/owner'
+              org:
+                $ref: '#/components/schemas/org'
+              access_roles:
+                $ref: '#/components/schemas/AccessRoles'
+              name:
+                type: string
+              description:
+                type: 'null'
+              status:
+                type: string
+              data_sets:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    version:
+                      type: integer
+                    id:
+                      type: integer
+                    owner_id:
+                      type: integer
+                    org_id:
+                      type: integer
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    updated_at:
+                      type: string
+                      format: date-time
+                    created_at:
+                      type: string
+                      format: date-time
+                    sample_service_id:
+                      type:
+                      - 'null'
+                    source_schema:
+                      $ref: '#/components/schemas/data_set_schema'
+                    transform:
+                      type: object
+                      properties:
+                        version:
+                          type: integer
+                        data_maps:
+                          type: array
+                        transforms:
+                          type: array
+                        custom_config:
+                          type: object
+                    output_schema:
+                      $ref: '#/components/schemas/data_set_schema'
+              ingest_method:
+                type: string
+              source_format:
+                type: string
+              source_config:
+                type: object
+                additionalProperties:
+                  type: string
+              poll_schedule:
+                type: 'null'
+              managed:
+                type: boolean
+              code_container_id:
+                type: 'null'
+              source_type:
+                type: string
+              connector_type:
+                type: string
+              connector:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  type:
+                    type: string
+                  connection_type:
+                    type: string
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  nexset_api_compatible:
+                    type: boolean
+              api_keys:
+                type: array
+              auto_generated:
+                type: boolean
+              data_credentials:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  owner:
+                    $ref: '#/components/schemas/owner'
+                  org:
+                    $ref: '#/components/schemas/org'
+                  access_roles:
+                    $ref: '#/components/schemas/AccessRoles'
+                  credentials_version:
+                    type: string
+                  managed:
+                    type: boolean
+                  credentials_type:
+                    type: string
+                  connector:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      type:
+                        type: string
+                      connection_type:
+                        type: string
+                      name:
+                        type: string
+                      description:
+                        type: string
+                      nexset_api_compatible:
+                        type: boolean
+                  api_keys:
+                    type: array
+                  credentials_non_secure_data:
+                    type: object
+                    additionalProperties:
+                      type:
+                      - string
+                      - object
+                      - integer
+                      x-additionalPropertiesName: credential_property
+                  verified_status:
+                    type: string
+                  verified_at:
+                    type: string
+                    format: date-time
+                  copied_from_id:
+                    type: 'null'
+                  updated_at:
+                    type: string
+                    format: date-time
+                  created_at:
+                    type: string
+                    format: date-time
+                  tags:
+                    type: array
+              run_ids:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    created_at:
+                      type: string
+                      format: date-time
+              copied_from_id:
+                type: 'null'
+              updated_at:
+                type: string
+                format: date-time
+              created_at:
+                type: string
+                format: date-time
+              flow_type:
+                type: string
+              ingestion_mode:
+                type: string
+              tags:
+                type: array
   securitySchemes:
     NexlaSessionToken:
       type: http

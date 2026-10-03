@@ -204,32 +204,7 @@ components:
         description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
 
           '
-  responses:
-    CodeContainer:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CodeContainer'
-    code_containers_many_CodeContainer:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/CodeContainer'
   schemas:
-    AccessRoles:
-      type: array
-      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
-      items:
-        type: string
-        enum:
-        - owner
-        - collaborator
-        - operator
-        - admin
     CodeContainer:
       type: object
       properties:
@@ -334,37 +309,38 @@ components:
           type: array
           items:
             type: string
-    DataCredentialBrief:
+    code_containers_ResourceType:
+      type: string
+      enum:
+      - transform
+      - ai_function
+      - source
+      - sink
+      - error
+      - validator
+      description: "The type of resource that this code container is to be used for. \n- `transform`: For user defined code that is used in a Nexset transform.\n- `ai_function`: For user defined code that is used in an AI function. See `ai_function_type` for the scenarios where this is used.\n- `source`: For user defined code in a source.\n- `sink`: For user defined code in a sink.\n- `error`: For user defined code that acts as an error handler.\n- `validator`: For user defined code that acts as a validator.\n"
+    UserSimplified:
       type: object
       properties:
         id:
           type: integer
-        name:
+        full_name:
           type: string
-        description:
+        email:
           type: string
-        updated_at:
-          type: string
-          format: date-time
-        created_at:
+        email_verified_at:
           type: string
           format: date-time
-    code_containers_OutputType:
-      type: string
-      enum:
-      - record
-      - attribute
-      - custom
-      description: 'The type of output that this code container produces.
-
-
-        - `record`: Produces a full Nexset record. Used only when the code container is used to modify a Nexset, i.e output_type: `transform`
-
-        - `attribute`: Produces value for an attribute inside a Nexset record. Used only when the code container is used to modify a value inside a Nexset, i.e output_type: `transform`
-
-        - `custom`: Produces custom output. Used as a catch-all output format when a code container is used in any context other than for Nexset modification.
-
-        '
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
     CodeContainerMutable:
       type: object
       required:
@@ -446,16 +422,29 @@ components:
             type: string
         custom_config:
           type: object
-    code_containers_ResourceType:
+    DataCredentialBrief:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+    code_containers_CodeType:
       type: string
       enum:
-      - transform
-      - ai_function
-      - source
-      - sink
-      - error
-      - validator
-      description: "The type of resource that this code container is to be used for. \n- `transform`: For user defined code that is used in a Nexset transform.\n- `ai_function`: For user defined code that is used in an AI function. See `ai_function_type` for the scenarios where this is used.\n- `source`: For user defined code in a source.\n- `sink`: For user defined code in a sink.\n- `error`: For user defined code that acts as an error handler.\n- `validator`: For user defined code that acts as a validator.\n"
+      - jolt_standard
+      - jolt_custom
+      - python
+      - python3
+      - javascript
     OrgSimplified:
       type: object
       properties:
@@ -471,26 +460,37 @@ components:
           type: string
         org_webhook_host:
           type: string
-    UserSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        full_name:
-          type: string
-        email:
-          type: string
-        email_verified_at:
-          type: string
-          format: date-time
-    code_containers_CodeType:
+    code_containers_OutputType:
       type: string
       enum:
-      - jolt_standard
-      - jolt_custom
-      - python
-      - python3
-      - javascript
+      - record
+      - attribute
+      - custom
+      description: 'The type of output that this code container produces.
+
+
+        - `record`: Produces a full Nexset record. Used only when the code container is used to modify a Nexset, i.e output_type: `transform`
+
+        - `attribute`: Produces value for an attribute inside a Nexset record. Used only when the code container is used to modify a value inside a Nexset, i.e output_type: `transform`
+
+        - `custom`: Produces custom output. Used as a catch-all output format when a code container is used in any context other than for Nexset modification.
+
+        '
+  responses:
+    code_containers_many_CodeContainer:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/CodeContainer'
+    CodeContainer:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CodeContainer'
   securitySchemes:
     NexlaSessionToken:
       type: http

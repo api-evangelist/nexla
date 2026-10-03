@@ -297,16 +297,6 @@ paths:
           description: Not Found
 components:
   schemas:
-    async_task_types:
-      type: string
-      enum:
-      - BulkDeleteNotifications
-      - BulkMarkAsReadNotifications
-      - BulkPauseFlows
-      - CallProbe
-      - ChownUserResources
-      - DeactivateUser
-      - GetAuditLogs
     AsyncTask:
       description: Success
       type: object
@@ -346,6 +336,15 @@ components:
           $ref: '#/components/schemas/owner'
         org:
           $ref: '#/components/schemas/org'
+    async_task_statuses:
+      type: string
+      enum:
+      - pending
+      - running
+      - completed
+      - failed
+      - cancelled
+      description: The status of the task.
     org:
       type: object
       properties:
@@ -359,6 +358,16 @@ components:
           type: 'null'
         client_identifier:
           type: 'null'
+    async_task_types:
+      type: string
+      enum:
+      - BulkDeleteNotifications
+      - BulkMarkAsReadNotifications
+      - BulkPauseFlows
+      - CallProbe
+      - ChownUserResources
+      - DeactivateUser
+      - GetAuditLogs
     AsyncTaskPayload:
       type: object
       additionalProperties: false
@@ -391,15 +400,6 @@ components:
         email:
           type: string
           format: email
-    async_task_statuses:
-      type: string
-      enum:
-      - pending
-      - running
-      - completed
-      - failed
-      - cancelled
-      description: The status of the task.
   parameters:
     accept:
       name: Accept
