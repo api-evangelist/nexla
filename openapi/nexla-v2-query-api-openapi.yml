@@ -112,15 +112,148 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HTTPValidationError:
+    V2CacheBucket:
+      type: string
+      enum:
+      - credentials
+      - pinecone
+      - filter_schema
+      - normalization_map
+      - dataset_info
+      title: V2CacheBucket
+      description: Externally invalidatable V2 cache buckets.
+    TokenType:
+      type: string
+      enum:
+      - bearer
+      - service_key
+      title: TokenType
+    ClearCacheRequest:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        nexset_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Nexset Id
+        clear_all:
+          type: boolean
+          title: Clear All
+          default: false
       type: object
-      title: HTTPValidationError
+      title: ClearCacheRequest
+    NexsetFilters:
+      properties:
+        acl_filter:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/FilterCondition'
+            type: array
+          - type: 'null'
+          title: Acl Filter
+          description: Access control filters. Restrict results based on authorization rules. Multiple conditions are combined with AND logic.
+        pre_filter:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/FilterCondition'
+            type: array
+          - type: 'null'
+          title: Pre Filter
+          description: Pre-retrieval metadata filters. Narrow the search space before vector/semantic retrieval. Multiple conditions are combined with AND logic.
+        strict_metadata_filter:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Strict Metadata Filter
+          description: When True, agent-supplied metadata_filter keys not in the allowed list cause the entire agent filter to be rejected. When None, falls back to the V2_PINECONE_STRICT_METADATA_FILTER env var.
+      additionalProperties: false
+      type: object
+      title: NexsetFilters
+      description: Filters applied to a specific nexset during retrieval.
+    UserContext:
+      properties:
+        access_role:
+          items:
+            type: string
+          type: array
+          title: Access Role
+          description: The access roles for the requesting user.
+        user_id:
+          type: string
+          title: User Id
+          description: The unique identifier for the requesting user.
+        session_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Session Id
+          description: Session ID associated with user session. Useful for storing conversation history.
+        access_rules:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Access Rules
+          description: Policy-level gate. Keys and valid values configured at registration.
+        access_scope:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Access Scope
+          description: Data ownership scope. Values are always arrays (IN semantics).
+        filters:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Filters
+          description: Page/session context filters. String = EQ, array = IN.
+      additionalProperties: false
+      type: object
+      required:
+      - user_id
+      title: UserContext
+    AgenticRagMode:
+      type: string
+      enum:
+      - instant
+      - thinking
+      - deep_research
+      title: AgenticRagMode
+      description: 'Execution mode for ``POST /v2/agentic-rag``.
+
+
+        Controls reasoning depth, agent-loop turn budget, and model selection
+
+        (instant prefers ``slm_config`` when provided; thinking / deep_research
+
+        always use ``llm_config``).'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     AgenticRagRerankerConfig:
       properties:
         credential_id:
@@ -168,118 +301,6 @@ components:
         search tools. The tool over-fetches ``top_k_multiplier × top_k`` candidates
 
         from Pinecone, reranks via Cohere, and returns the top ``top_k``.'
-    UserContext:
-      properties:
-        access_role:
-          items:
-            type: string
-          type: array
-          title: Access Role
-          description: The access roles for the requesting user.
-        user_id:
-          type: string
-          title: User Id
-          description: The unique identifier for the requesting user.
-        session_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Session Id
-          description: Session ID associated with user session. Useful for storing conversation history.
-        access_rules:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Access Rules
-          description: Policy-level gate. Keys and valid values configured at registration.
-        access_scope:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Access Scope
-          description: Data ownership scope. Values are always arrays (IN semantics).
-        filters:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Filters
-          description: Page/session context filters. String = EQ, array = IN.
-      additionalProperties: false
-      type: object
-      required:
-      - user_id
-      title: UserContext
-    V2CacheBucket:
-      type: string
-      enum:
-      - credentials
-      - pinecone
-      - filter_schema
-      - normalization_map
-      - dataset_info
-      title: V2CacheBucket
-      description: Externally invalidatable V2 cache buckets.
-    NexsetFilters:
-      properties:
-        acl_filter:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/FilterCondition'
-            type: array
-          - type: 'null'
-          title: Acl Filter
-          description: Access control filters. Restrict results based on authorization rules. Multiple conditions are combined with AND logic.
-        pre_filter:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/FilterCondition'
-            type: array
-          - type: 'null'
-          title: Pre Filter
-          description: Pre-retrieval metadata filters. Narrow the search space before vector/semantic retrieval. Multiple conditions are combined with AND logic.
-        strict_metadata_filter:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Strict Metadata Filter
-          description: When True, agent-supplied metadata_filter keys not in the allowed list cause the entire agent filter to be rejected. When None, falls back to the V2_PINECONE_STRICT_METADATA_FILTER env var.
-      additionalProperties: false
-      type: object
-      title: NexsetFilters
-      description: Filters applied to a specific nexset during retrieval.
-    CacheInvalidateRequest:
-      properties:
-        buckets:
-          items:
-            $ref: '#/components/schemas/V2CacheBucket'
-          type: array
-          title: Buckets
-          description: Cache buckets to invalidate.
-        nexset_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Nexset Id
-          description: Required for pinecone, filter_schema, and normalization_map.
-        credential_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Credential Id
-          description: Required for credentials invalidation.
-        credential_mode:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Credential Mode
-          description: Optional credential mode; when omitted both llm and embedding are cleared.
-      type: object
-      required:
-      - buckets
-      title: CacheInvalidateRequest
     AgenticRagEmbeddingConfig:
       properties:
         credential_id:
@@ -304,48 +325,14 @@ components:
       - credential_id
       title: AgenticRagEmbeddingConfig
       description: Embedding config for the V2 agentic endpoint.
-    NexsetSpec:
-      properties:
-        id:
-          type: string
-          title: Id
-          description: The unique identifier for the nexset.
-        filters:
-          anyOf:
-          - $ref: '#/components/schemas/NexsetFilters'
-          - type: 'null'
-          description: Optional per-nexset filters for ACL and pre-retrieval filtering.
-      additionalProperties: false
-      type: object
-      required:
-      - id
-      title: NexsetSpec
-      description: Specification for a nexset to include in a query, with optional per-nexset filters.
-    FilterCondition:
-      properties:
-        key:
-          type: string
-          title: Key
-          description: The metadata field name to filter on (e.g., 'access_role', 'tenant_id', 'document_id').
-        operator:
-          $ref: '#/components/schemas/FilterOperator'
-          description: The comparison operator to apply.
-        value:
-          title: Value
-          description: 'The value(s) to compare against. Type depends on operator: single value for EQ/NEQ/GT/GTE/LT/LTE/CONTAINS/NOT_CONTAINS, list for IN/NOT_IN, two-element list [min, max] for BETWEEN, ignored for EXISTS/NOT_EXISTS.'
-      additionalProperties: false
-      type: object
-      required:
-      - key
-      - operator
-      title: FilterCondition
-      description: A single filter predicate on a metadata key.
-    TokenType:
+    V2CachePolicy:
       type: string
       enum:
-      - bearer
-      - service_key
-      title: TokenType
+      - default
+      - refresh
+      - bypass
+      title: V2CachePolicy
+      description: Cache behavior for V2 agentic RAG request-scoped cacheable phases.
     AgenticRagLLMConfig:
       properties:
         credential_id:
@@ -396,47 +383,15 @@ components:
 
 
         Model and provider are inferred from the credential when not provided.'
-    AgenticRagMode:
-      type: string
-      enum:
-      - instant
-      - thinking
-      - deep_research
-      title: AgenticRagMode
-      description: 'Execution mode for ``POST /v2/agentic-rag``.
-
-
-        Controls reasoning depth, agent-loop turn budget, and model selection
-
-        (instant prefers ``slm_config`` when provided; thinking / deep_research
-
-        always use ``llm_config``).'
-    ValidationError:
+    HTTPValidationError:
       properties:
-        loc:
+        detail:
           items:
-            anyOf:
-            - type: string
-            - type: integer
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+          title: Detail
       type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      title: HTTPValidationError
     AgenticRagRequest:
       properties:
         user_prompt:
@@ -514,14 +469,72 @@ components:
       - llm_config
       title: AgenticRagRequest
       description: Request model for the V2 agentic RAG endpoint (``POST /v2/agentic-rag``).
-    V2CachePolicy:
-      type: string
-      enum:
-      - default
-      - refresh
-      - bypass
-      title: V2CachePolicy
-      description: Cache behavior for V2 agentic RAG request-scoped cacheable phases.
+    FilterCondition:
+      properties:
+        key:
+          type: string
+          title: Key
+          description: The metadata field name to filter on (e.g., 'access_role', 'tenant_id', 'document_id').
+        operator:
+          $ref: '#/components/schemas/FilterOperator'
+          description: The comparison operator to apply.
+        value:
+          title: Value
+          description: 'The value(s) to compare against. Type depends on operator: single value for EQ/NEQ/GT/GTE/LT/LTE/CONTAINS/NOT_CONTAINS, list for IN/NOT_IN, two-element list [min, max] for BETWEEN, ignored for EXISTS/NOT_EXISTS.'
+      additionalProperties: false
+      type: object
+      required:
+      - key
+      - operator
+      title: FilterCondition
+      description: A single filter predicate on a metadata key.
+    CacheInvalidateRequest:
+      properties:
+        buckets:
+          items:
+            $ref: '#/components/schemas/V2CacheBucket'
+          type: array
+          title: Buckets
+          description: Cache buckets to invalidate.
+        nexset_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Nexset Id
+          description: Required for pinecone, filter_schema, and normalization_map.
+        credential_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Credential Id
+          description: Required for credentials invalidation.
+        credential_mode:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Credential Mode
+          description: Optional credential mode; when omitted both llm and embedding are cleared.
+      type: object
+      required:
+      - buckets
+      title: CacheInvalidateRequest
+    NexsetSpec:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: The unique identifier for the nexset.
+        filters:
+          anyOf:
+          - $ref: '#/components/schemas/NexsetFilters'
+          - type: 'null'
+          description: Optional per-nexset filters for ACL and pre-retrieval filtering.
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      title: NexsetSpec
+      description: Specification for a nexset to include in a query, with optional per-nexset filters.
     FilterOperator:
       type: string
       enum:
@@ -540,16 +553,3 @@ components:
       - BETWEEN
       title: FilterOperator
       description: Supported operators for nexset metadata filtering.
-    ClearCacheRequest:
-      properties:
-        nexset_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Nexset Id
-        clear_all:
-          type: boolean
-          title: Clear All
-          default: false
-      type: object
-      title: ClearCacheRequest

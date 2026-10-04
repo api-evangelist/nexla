@@ -106,21 +106,6 @@ paths:
         '403':
           description: Forbidden
 components:
-  responses:
-    approval_requests_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApprovalRequest'
-    approval_requests_many:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/ApprovalRequest'
   parameters:
     accept:
       name: Accept
@@ -133,6 +118,21 @@ components:
         description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
 
           '
+  responses:
+    approval_requests_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ApprovalRequest'
+    approval_requests_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApprovalRequest'
   schemas:
     ApprovalRequest:
       type: object

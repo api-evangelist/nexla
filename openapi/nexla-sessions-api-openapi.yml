@@ -595,15 +595,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -630,6 +621,25 @@ components:
       - msg
       - type
       title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    SessionCleanupIn:
+      properties:
+        inactive_seconds:
+          type: integer
+          title: Inactive Seconds
+          default: 3600
+      additionalProperties: false
+      type: object
+      title: SessionCleanupIn
+      description: Input for bulk cleanup of stale sessions.
     SessionTerminateIn:
       properties:
         reason:
@@ -641,13 +651,3 @@ components:
       type: object
       title: SessionTerminateIn
       description: Input for terminating a session.
-    SessionCleanupIn:
-      properties:
-        inactive_seconds:
-          type: integer
-          title: Inactive Seconds
-          default: 3600
-      additionalProperties: false
-      type: object
-      title: SessionCleanupIn
-      description: Input for bulk cleanup of stale sessions.

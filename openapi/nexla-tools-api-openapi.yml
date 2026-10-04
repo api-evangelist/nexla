@@ -1361,62 +1361,32 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HTTPValidationError:
+    ValidationError:
       properties:
-        detail:
+        loc:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            anyOf:
+            - type: string
+            - type: integer
           type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    FromNexsetIn:
-      properties:
-        nexset_id:
-          type: integer
-          minimum: 1.0
-          title: Nexset Id
-        publish:
-          type: boolean
-          title: Publish
-          default: false
-      additionalProperties: false
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
       type: object
       required:
-      - nexset_id
-      title: FromNexsetIn
-    ToolUpdateIn:
-      properties:
-        name:
-          anyOf:
-          - type: string
-            maxLength: 512
-            minLength: 1
-          - type: 'null'
-          title: Name
-        description:
-          anyOf:
-          - type: string
-            maxLength: 1024
-          - type: 'null'
-          title: Description
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-        runtime_config:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Runtime Config
-      additionalProperties: false
-      type: object
-      title: ToolUpdateIn
-      description: Input schema for updating a tool.
+      - loc
+      - msg
+      - type
+      title: ValidationError
     ReconcileIn:
       properties:
         mode:
@@ -1454,29 +1424,59 @@ components:
       required:
       - version
       title: ExecuteIn
-    ValidationError:
+    ToolUpdateIn:
       properties:
-        loc:
+        name:
+          anyOf:
+          - type: string
+            maxLength: 512
+            minLength: 1
+          - type: 'null'
+          title: Name
+        description:
+          anyOf:
+          - type: string
+            maxLength: 1024
+          - type: 'null'
+          title: Description
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        runtime_config:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Runtime Config
+      additionalProperties: false
+      type: object
+      title: ToolUpdateIn
+      description: Input schema for updating a tool.
+    HTTPValidationError:
+      properties:
+        detail:
           items:
-            anyOf:
-            - type: string
-            - type: integer
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    FromNexsetIn:
+      properties:
+        nexset_id:
+          type: integer
+          minimum: 1.0
+          title: Nexset Id
+        publish:
+          type: boolean
+          title: Publish
+          default: false
+      additionalProperties: false
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - nexset_id
+      title: FromNexsetIn

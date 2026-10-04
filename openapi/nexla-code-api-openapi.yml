@@ -63,59 +63,6 @@ paths:
       - Code
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    RAGFlowCodeExecutionRequest:
-      properties:
-        code:
-          type: string
-          title: Code
-          description: Code to execute
-        parameter_1:
-          title: Parameter 1
-          description: First parameter to pass to the code
-        parameter_2:
-          title: Parameter 2
-          description: Second parameter to pass to the code
-      type: object
-      required:
-      - code
-      - parameter_1
-      - parameter_2
-      title: RAGFlowCodeExecutionRequest
-    GenaiIntegrationConfig:
-      properties:
-        configs:
-          additionalProperties: true
-          type: object
-          title: Configs
-        data_credentials:
-          $ref: '#/components/schemas/DataCredentialModel'
-      additionalProperties: true
-      type: object
-      required:
-      - configs
-      - data_credentials
-      title: GenaiIntegrationConfig
-    CodeSafetySerializer:
-      properties:
-        code_snippet:
-          type: string
-          title: Code Snippet
-        genai_integration_config:
-          $ref: '#/components/schemas/GenaiIntegrationConfig'
-      type: object
-      required:
-      - code_snippet
-      - genai_integration_config
-      title: CodeSafetySerializer
     DataCredentialModel:
       properties:
         id:
@@ -185,3 +132,56 @@ components:
       - type
       - connection_type
       title: ConnectorModel
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    GenaiIntegrationConfig:
+      properties:
+        configs:
+          additionalProperties: true
+          type: object
+          title: Configs
+        data_credentials:
+          $ref: '#/components/schemas/DataCredentialModel'
+      additionalProperties: true
+      type: object
+      required:
+      - configs
+      - data_credentials
+      title: GenaiIntegrationConfig
+    CodeSafetySerializer:
+      properties:
+        code_snippet:
+          type: string
+          title: Code Snippet
+        genai_integration_config:
+          $ref: '#/components/schemas/GenaiIntegrationConfig'
+      type: object
+      required:
+      - code_snippet
+      - genai_integration_config
+      title: CodeSafetySerializer
+    RAGFlowCodeExecutionRequest:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Code to execute
+        parameter_1:
+          title: Parameter 1
+          description: First parameter to pass to the code
+        parameter_2:
+          title: Parameter 2
+          description: Second parameter to pass to the code
+      type: object
+      required:
+      - code
+      - parameter_1
+      - parameter_2
+      title: RAGFlowCodeExecutionRequest

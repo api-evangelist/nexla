@@ -265,148 +265,6 @@ paths:
           description: Not found
 components:
   responses:
-    data_sink_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              id:
-                type: integer
-              owner:
-                $ref: '#/components/schemas/owner'
-              org:
-                $ref: '#/components/schemas/org'
-              access_roles:
-                $ref: '#/components/schemas/AccessRoles'
-              name:
-                type: string
-              description:
-                type: 'null'
-              status:
-                type: string
-              data_set_id:
-                type: integer
-              data_map_id:
-                type: 'null'
-              data_source_id:
-                type: 'null'
-              sink_format:
-                type: 'null'
-              sink_config:
-                type: object
-                description: 'The destination configuration properties that were set as `sink_config` in the payload-to-destination create/update API calls.
-
-                  '
-                additionalProperties:
-                  type: string
-                  x-additionalPropertiesName: sink_config_property
-              sink_schedule:
-                type: 'null'
-              in_memory:
-                type: boolean
-              managed:
-                type: boolean
-              sink_type:
-                type: string
-              connector_type:
-                type: string
-              connector:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  type:
-                    type: string
-                  connection_type:
-                    type: string
-                  name:
-                    type: string
-                  description:
-                    type: string
-                  nexset_api_compatible:
-                    type: boolean
-              data_set:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-              data_credentials:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  description:
-                    type: string
-                  owner:
-                    $ref: '#/components/schemas/owner'
-                  org:
-                    $ref: '#/components/schemas/org'
-                  access_roles:
-                    $ref: '#/components/schemas/AccessRoles'
-                  credentials_version:
-                    type: string
-                  managed:
-                    type: boolean
-                  credentials_type:
-                    type: string
-                  connector:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      type:
-                        type: string
-                      connection_type:
-                        type: string
-                      name:
-                        type: string
-                      description:
-                        type: string
-                      nexset_api_compatible:
-                        type: boolean
-                  api_keys:
-                    type: array
-                  credentials_non_secure_data:
-                    type: object
-                    additionalProperties:
-                      type:
-                      - string
-                      - object
-                      - integer
-                      x-additionalPropertiesName: credential_property
-                  verified_status:
-                    type: string
-                  verified_at:
-                    type: string
-                    format: date-time
-                  copied_from_id:
-                    type: 'null'
-                  updated_at:
-                    type: string
-                    format: date-time
-                  created_at:
-                    type: string
-                    format: date-time
-                  tags:
-                    type: array
-              copied_from_id:
-                type: 'null'
-              updated_at:
-                type: string
-                format: date-time
-              created_at:
-                type: string
-                format: date-time
-              tags:
-                type: array
-              flow_type:
-                type: string
     data_sink_many:
       description: Success
       content:
@@ -712,56 +570,159 @@ components:
                 format: date-time
               tags:
                 type: array
-  parameters:
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+    data_sink_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              owner:
+                $ref: '#/components/schemas/owner'
+              org:
+                $ref: '#/components/schemas/org'
+              access_roles:
+                $ref: '#/components/schemas/AccessRoles'
+              name:
+                type: string
+              description:
+                type: 'null'
+              status:
+                type: string
+              data_set_id:
+                type: integer
+              data_map_id:
+                type: 'null'
+              data_source_id:
+                type: 'null'
+              sink_format:
+                type: 'null'
+              sink_config:
+                type: object
+                description: 'The destination configuration properties that were set as `sink_config` in the payload-to-destination create/update API calls.
 
-          '
-    access_roles:
-      name: access_role
-      in: query
-      schema:
+                  '
+                additionalProperties:
+                  type: string
+                  x-additionalPropertiesName: sink_config_property
+              sink_schedule:
+                type: 'null'
+              in_memory:
+                type: boolean
+              managed:
+                type: boolean
+              sink_type:
+                type: string
+              connector_type:
+                type: string
+              connector:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  type:
+                    type: string
+                  connection_type:
+                    type: string
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  nexset_api_compatible:
+                    type: boolean
+              data_set:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+              data_credentials:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  owner:
+                    $ref: '#/components/schemas/owner'
+                  org:
+                    $ref: '#/components/schemas/org'
+                  access_roles:
+                    $ref: '#/components/schemas/AccessRoles'
+                  credentials_version:
+                    type: string
+                  managed:
+                    type: boolean
+                  credentials_type:
+                    type: string
+                  connector:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      type:
+                        type: string
+                      connection_type:
+                        type: string
+                      name:
+                        type: string
+                      description:
+                        type: string
+                      nexset_api_compatible:
+                        type: boolean
+                  api_keys:
+                    type: array
+                  credentials_non_secure_data:
+                    type: object
+                    additionalProperties:
+                      type:
+                      - string
+                      - object
+                      - integer
+                      x-additionalPropertiesName: credential_property
+                  verified_status:
+                    type: string
+                  verified_at:
+                    type: string
+                    format: date-time
+                  copied_from_id:
+                    type: 'null'
+                  updated_at:
+                    type: string
+                    format: date-time
+                  created_at:
+                    type: string
+                    format: date-time
+                  tags:
+                    type: array
+              copied_from_id:
+                type: 'null'
+              updated_at:
+                type: string
+                format: date-time
+              created_at:
+                type: string
+                format: date-time
+              tags:
+                type: array
+              flow_type:
+                type: string
+  schemas:
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
         type: string
         enum:
+        - owner
         - collaborator
         - operator
         - admin
-        - owner
-        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
-        externalDocs:
-          description: Nexla API access roles
-          url: https://developers.nexla.com/docs/access-modes
-    expand:
-      name: expand
-      in: query
-      schema:
-        type: integer
-        enum:
-        - 1
-        description: 'Add this parameter to a resource fetch request to receive details about related resources in the response.
-
-          '
-  schemas:
-    org:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email_domain:
-          type: string
-        email:
-          type: 'null'
-        client_identifier:
-          type: 'null'
     data_set_schema:
       type: object
       properties:
@@ -775,16 +736,16 @@ components:
           format: url
         $schema-id:
           type: integer
-    AccessRoles:
-      type: array
-      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
-      items:
-        type: string
-        enum:
-        - owner
-        - collaborator
-        - operator
-        - admin
+    owner:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+          format: email
     data_sink:
       type: object
       properties:
@@ -854,16 +815,55 @@ components:
           sqlserver: '#/components/schemas/sqlserver_data_sink'
           teradata: '#/components/schemas/teradata_data_sink'
           tibco: '#/components/schemas/tibco_data_sink'
-    owner:
+    org:
       type: object
       properties:
         id:
           type: integer
-        full_name:
+        name:
+          type: string
+        email_domain:
           type: string
         email:
-          type: string
-          format: email
+          type: 'null'
+        client_identifier:
+          type: 'null'
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
+    expand:
+      name: expand
+      in: query
+      schema:
+        type: integer
+        enum:
+        - 1
+        description: 'Add this parameter to a resource fetch request to receive details about related resources in the response.
+
+          '
+    access_roles:
+      name: access_role
+      in: query
+      schema:
+        type: string
+        enum:
+        - collaborator
+        - operator
+        - admin
+        - owner
+        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
+        externalDocs:
+          description: Nexla API access roles
+          url: https://developers.nexla.com/docs/access-modes
   securitySchemes:
     NexlaSessionToken:
       type: http

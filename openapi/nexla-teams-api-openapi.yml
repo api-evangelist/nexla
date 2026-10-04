@@ -244,6 +244,16 @@ paths:
           description: Not Found
 components:
   schemas:
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
     TeamMutable:
       type: object
       properties:
@@ -255,12 +265,59 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TeamMemberRequestSchema'
-    TeamCreate:
-      allOf:
-      - $ref: '#/components/schemas/TeamMutable'
+    OrgSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: string
+        client_identifier:
+          type: string
+        org_webhook_host:
+          type: string
+    TeamMemberRequestSchema:
+      oneOf:
       - type: object
-        required:
-        - name
+        properties:
+          id:
+            type: integer
+            description: "Unique ID of the user. \n"
+          admin:
+            type: boolean
+            description: 'Reflects whether the user is an administrator of this team or not.
+
+              '
+      - type: object
+        properties:
+          email:
+            type: string
+            format: email
+            description: 'Email ID of the user.
+
+              '
+          admin:
+            type: boolean
+            description: "Reflects whether the user is an administrator of this team or not.        \n"
+    TeamMemberResponseSchema:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: "Unique ID of the user. \n"
+        email:
+          type: string
+          format: email
+          description: "Email ID of the user. \n"
+        admin:
+          type: boolean
+          description: 'Reflects whether the user is an administrator of this team or not.
+
+            '
     Team:
       type: object
       properties:
@@ -304,54 +361,12 @@ components:
         email_verified_at:
           type: string
           format: date-time
-    AccessRoles:
-      type: array
-      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
-      items:
-        type: string
-        enum:
-        - owner
-        - collaborator
-        - operator
-        - admin
-    TeamMemberRequestSchema:
-      oneOf:
+    TeamCreate:
+      allOf:
+      - $ref: '#/components/schemas/TeamMutable'
       - type: object
-        properties:
-          id:
-            type: integer
-            description: "Unique ID of the user. \n"
-          admin:
-            type: boolean
-            description: 'Reflects whether the user is an administrator of this team or not.
-
-              '
-      - type: object
-        properties:
-          email:
-            type: string
-            format: email
-            description: 'Email ID of the user.
-
-              '
-          admin:
-            type: boolean
-            description: "Reflects whether the user is an administrator of this team or not.        \n"
-    TeamMemberResponseSchema:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: "Unique ID of the user. \n"
-        email:
-          type: string
-          format: email
-          description: "Email ID of the user. \n"
-        admin:
-          type: boolean
-          description: 'Reflects whether the user is an administrator of this team or not.
-
-            '
+        required:
+        - name
     TeamMemberList:
       type: object
       properties:
@@ -359,21 +374,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TeamMemberResponseSchema'
-    OrgSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email_domain:
-          type: string
-        email:
-          type: string
-        client_identifier:
-          type: string
-        org_webhook_host:
-          type: string
+  responses:
+    teams_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Team'
+    team_members:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/TeamMemberList'
+    teams_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Team'
   parameters:
     accept:
       name: Accept
@@ -400,29 +423,6 @@ components:
         externalDocs:
           description: Nexla API access roles
           url: https://developers.nexla.com/docs/access-modes
-  responses:
-    team_members:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/TeamMemberList'
-    teams_many:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/Team'
-    teams_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Team'
   securitySchemes:
     NexlaSessionToken:
       type: http

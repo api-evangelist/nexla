@@ -171,12 +171,6 @@ paths:
           description: Forbidden
 components:
   responses:
-    runtimes_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Runtime'
     runtimes_many:
       description: Success
       content:
@@ -185,42 +179,23 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/Runtime'
+    runtimes_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Runtime'
   schemas:
-    org:
+    owner:
       type: object
       properties:
         id:
           type: integer
-        name:
-          type: string
-        email_domain:
+        full_name:
           type: string
         email:
-          type: 'null'
-        client_identifier:
-          type: 'null'
-    RuntimePayload:
-      type: object
-      properties:
-        name:
           type: string
-          description: The name of the runtime.
-        description:
-          type: string
-          description: The description of the runtime.
-        active:
-          type: boolean
-          description: Whether the runtime is active or not.
-        dockerpath:
-          type: string
-          description: The path to the Docker image.
-        managed:
-          type: boolean
-          description: Whether the runtime is managed or not.
-        config:
-          type: object
-          description: The configuration of the runtime.
-          additionalProperties: true
+          format: email
     Runtime:
       type: object
       properties:
@@ -258,16 +233,41 @@ components:
           type: object
           description: The configuration of the runtime.
           additionalProperties: true
-    owner:
+    org:
       type: object
       properties:
         id:
           type: integer
-        full_name:
+        name:
+          type: string
+        email_domain:
           type: string
         email:
+          type: 'null'
+        client_identifier:
+          type: 'null'
+    RuntimePayload:
+      type: object
+      properties:
+        name:
           type: string
-          format: email
+          description: The name of the runtime.
+        description:
+          type: string
+          description: The description of the runtime.
+        active:
+          type: boolean
+          description: Whether the runtime is active or not.
+        dockerpath:
+          type: string
+          description: The path to the Docker image.
+        managed:
+          type: boolean
+          description: Whether the runtime is managed or not.
+        config:
+          type: object
+          description: The configuration of the runtime.
+          additionalProperties: true
   securitySchemes:
     NexlaSessionToken:
       type: http

@@ -327,12 +327,6 @@ components:
         application/vnd.nexla.api.v1+json:
           schema:
             $ref: '#/components/schemas/CustodiansResponse'
-    domains_one:
-      description: Single marketplace domain
-      content:
-        application/vnd.nexla.api.v1+json:
-          schema:
-            $ref: '#/components/schemas/MarketplaceDomain'
     domain_items_many:
       description: List of marketplace domain items
       content:
@@ -349,19 +343,22 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/MarketplaceDomain'
-  parameters:
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
-
-          '
+    domains_one:
+      description: Single marketplace domain
+      content:
+        application/vnd.nexla.api.v1+json:
+          schema:
+            $ref: '#/components/schemas/MarketplaceDomain'
   schemas:
+    CustodiansPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          email:
+            type: string
     MarketplaceDomainsItemCreate:
       type: object
       properties:
@@ -394,6 +391,17 @@ components:
           description: ID of the parent domain. Domains may build a hierarchy.
         custodians:
           $ref: '#/components/schemas/CustodiansPayload'
+    CustodiansResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          email:
+            type: string
+          full_name:
+            type: string
     MarketplaceDomainsItem:
       type: object
       properties:
@@ -417,15 +425,6 @@ components:
         updated_at:
           type: string
           format: date-time
-    CustodiansPayload:
-      type: array
-      items:
-        type: object
-        properties:
-          id:
-            type: integer
-          email:
-            type: string
     MarketplaceDomain:
       type: object
       properties:
@@ -452,17 +451,18 @@ components:
         updated_at:
           type: string
           format: date-time
-    CustodiansResponse:
-      type: array
-      items:
-        type: object
-        properties:
-          id:
-            type: integer
-          email:
-            type: string
-          full_name:
-            type: string
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
   securitySchemes:
     NexlaSessionToken:
       type: http

@@ -1315,6 +1315,16 @@ paths:
           description: Not Found
 components:
   schemas:
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
+        type: string
+        enum:
+        - owner
+        - collaborator
+        - operator
+        - admin
     RequestUserAccessor:
       type: object
       properties:
@@ -1335,6 +1345,26 @@ components:
           description: 'Users can belong to multiple organizations. Specify the org_id to explicitly set the organization context for this access permission. If this is not specified the platform will try to automatically assign the permission to the user''s default organization (when granting sharer access on a Nexset) or to the current organization (for all other access roles).
 
             '
+    ResponseUserAccessor:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - USER
+        email:
+          type: string
+          example: example@nexla.com
+    AccessorsMutable:
+      allOf:
+      - oneOf:
+        - $ref: '#/components/schemas/RequestUserAccessor'
+        - $ref: '#/components/schemas/RequestTeamAccessor'
+        - $ref: '#/components/schemas/RequestOrgAccessor'
+      - type: object
+        properties:
+          access_roles:
+            $ref: '#/components/schemas/AccessRoles'
     RequestOrgAccessor:
       type: object
       properties:
@@ -1348,19 +1378,6 @@ components:
           description: 'Unique ID of the organization that should be granted this permission.
 
             '
-    ResponseOrgAccessor:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - ORG
-        email_domain:
-          type: string
-          example: nexla.com
-        client_identifier:
-          type: string
-          format: nullable
     RequestTeamAccessor:
       type: object
       properties:
@@ -1374,16 +1391,6 @@ components:
           description: 'Unique ID of the team that should be granted this permission.
 
             '
-    AccessorsMutable:
-      allOf:
-      - oneOf:
-        - $ref: '#/components/schemas/RequestUserAccessor'
-        - $ref: '#/components/schemas/RequestTeamAccessor'
-        - $ref: '#/components/schemas/RequestOrgAccessor'
-      - type: object
-        properties:
-          access_roles:
-            $ref: '#/components/schemas/AccessRoles'
     AccessorsRequestSchema:
       type: object
       properties:
@@ -1391,16 +1398,28 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AccessorsMutable'
-    AccessRoles:
-      type: array
-      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
-      items:
-        type: string
-        enum:
-        - owner
-        - collaborator
-        - operator
-        - admin
+    ResponseTeamAccessor:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - TEAM
+        name:
+          type: string
+    ResponseOrgAccessor:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - ORG
+        email_domain:
+          type: string
+          example: nexla.com
+        client_identifier:
+          type: string
+          format: nullable
     AccessorsResponseSchema:
       allOf:
       - oneOf:
@@ -1419,25 +1438,6 @@ components:
             type: string
             format: date-time
             example: '2021-04-06T21:02:17.000Z'
-    ResponseUserAccessor:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - USER
-        email:
-          type: string
-          example: example@nexla.com
-    ResponseTeamAccessor:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - TEAM
-        name:
-          type: string
   responses:
     accessors_list:
       description: Success

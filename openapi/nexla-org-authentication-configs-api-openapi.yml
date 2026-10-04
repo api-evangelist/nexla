@@ -198,36 +198,27 @@ paths:
       x-operation-id-source: normalized
       x-operation-id-original: update_api_auth_config
 components:
-  responses:
-    auth_config_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AuthConfig'
-    auth_setting_one:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AuthSetting'
-    auth_configs_many:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/AuthConfig'
-    auth_settings_many:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/AuthSetting'
   schemas:
+    AuthSettingPayload:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+    OrgSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: string
+        client_identifier:
+          type: string
+        org_webhook_host:
+          type: string
     AuthConfig:
       type: object
       properties:
@@ -345,23 +336,6 @@ components:
         updated_at:
           type: string
           format: date-time
-    AuthSettingPayload:
-      type: object
-      properties:
-        enabled:
-          type: boolean
-    UserSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        full_name:
-          type: string
-        email:
-          type: string
-        email_verified_at:
-          type: string
-          format: date-time
     AuthConfigPayload:
       type: object
       additionalProperties: false
@@ -426,21 +400,47 @@ components:
           additionalProperties: true
         check_state:
           type: boolean
-    OrgSimplified:
+    UserSimplified:
       type: object
       properties:
         id:
           type: integer
-        name:
-          type: string
-        email_domain:
+        full_name:
           type: string
         email:
           type: string
-        client_identifier:
+        email_verified_at:
           type: string
-        org_webhook_host:
-          type: string
+          format: date-time
+  responses:
+    auth_setting_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthSetting'
+    auth_config_one:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthConfig'
+    auth_configs_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AuthConfig'
+    auth_settings_many:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AuthSetting'
   parameters:
     accept:
       name: Accept

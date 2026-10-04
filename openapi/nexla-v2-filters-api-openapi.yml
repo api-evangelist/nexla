@@ -200,6 +200,91 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    TokenType:
+      type: string
+      enum:
+      - bearer
+      - service_key
+      title: TokenType
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    FilterKeyDefinition:
+      properties:
+        key:
+          type: string
+          title: Key
+          description: Metadata key name (e.g. 'tenant_id').
+        type:
+          $ref: '#/components/schemas/FilterType'
+          description: 'Filter layer: ''access_rules'', ''access_scope'', or ''filters''.'
+        operator:
+          type: string
+          title: Operator
+          description: 'Default operator: EQ, IN, CONTAINS, etc.'
+          default: EQ
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          description: Human-readable description.
+        nexset_field:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Nexset Field
+          description: Backend field name if different from key. When set, 'key' is used to look up the value in user_context and 'nexset_field' is the actual column/metadata field in the backend.
+      type: object
+      required:
+      - key
+      - type
+      title: FilterKeyDefinition
+      description: Definition of a single filter key in a nexset's filter schema.
+    FilterType:
+      type: string
+      enum:
+      - access_rules
+      - access_scope
+      - filters
+      title: FilterType
+      description: Supported user-context layers for registered nexset filters.
+    FilterRegistrationRequest:
+      properties:
+        filters:
+          items:
+            $ref: '#/components/schemas/FilterKeyDefinition'
+          type: array
+          title: Filters
+          description: List of filter key definitions to register.
+      type: object
+      required:
+      - filters
+      title: FilterRegistrationRequest
+      description: Request body for ``POST /v2/nexsets/{nexset_id}/filters``.
     HTTPValidationError:
       properties:
         detail:
@@ -237,88 +322,3 @@ components:
       type: object
       title: FilterKeyPatchRequest
       description: Request body for ``PATCH /v2/nexsets/{nexset_id}/filters/{key}``.
-    FilterRegistrationRequest:
-      properties:
-        filters:
-          items:
-            $ref: '#/components/schemas/FilterKeyDefinition'
-          type: array
-          title: Filters
-          description: List of filter key definitions to register.
-      type: object
-      required:
-      - filters
-      title: FilterRegistrationRequest
-      description: Request body for ``POST /v2/nexsets/{nexset_id}/filters``.
-    FilterKeyDefinition:
-      properties:
-        key:
-          type: string
-          title: Key
-          description: Metadata key name (e.g. 'tenant_id').
-        type:
-          $ref: '#/components/schemas/FilterType'
-          description: 'Filter layer: ''access_rules'', ''access_scope'', or ''filters''.'
-        operator:
-          type: string
-          title: Operator
-          description: 'Default operator: EQ, IN, CONTAINS, etc.'
-          default: EQ
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-          description: Human-readable description.
-        nexset_field:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Nexset Field
-          description: Backend field name if different from key. When set, 'key' is used to look up the value in user_context and 'nexset_field' is the actual column/metadata field in the backend.
-      type: object
-      required:
-      - key
-      - type
-      title: FilterKeyDefinition
-      description: Definition of a single filter key in a nexset's filter schema.
-    TokenType:
-      type: string
-      enum:
-      - bearer
-      - service_key
-      title: TokenType
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    FilterType:
-      type: string
-      enum:
-      - access_rules
-      - access_scope
-      - filters
-      title: FilterType
-      description: Supported user-context layers for registered nexset filters.

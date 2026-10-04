@@ -499,12 +499,6 @@ components:
           description: 'The date and time when the request was completed. This field is only present if the request has been completed successfully.
 
             '
-    audit_log_response:
-      oneOf:
-      - type: array
-        items:
-          $ref: '#/components/schemas/LogEntry'
-      - $ref: '#/components/schemas/AsyncResponse'
     LogEntry:
       type: object
       properties:
@@ -626,6 +620,12 @@ components:
           type: string
           format: date-time
           example: '2022-11-08T22:51:47.720Z'
+    audit_log_response:
+      oneOf:
+      - type: array
+        items:
+          $ref: '#/components/schemas/LogEntry'
+      - $ref: '#/components/schemas/AsyncResponse'
   parameters:
     accept:
       name: Accept

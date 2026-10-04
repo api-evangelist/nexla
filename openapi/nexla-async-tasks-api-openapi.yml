@@ -297,45 +297,6 @@ paths:
           description: Not Found
 components:
   schemas:
-    AsyncTask:
-      description: Success
-      type: object
-      additionalProperties: false
-      properties:
-        id:
-          type: string
-          description: The unique identifier of the task.
-        type:
-          $ref: '#/components/schemas/async_task_types'
-        status:
-          $ref: '#/components/schemas/async_task_statuses'
-        progress:
-          type: integer
-          description: The progress of the task.
-        priority:
-          type: integer
-          description: The priority of the task.
-        created_at:
-          type: string
-          format: date-time
-          description: The date and time the task was created.
-        stopped_at:
-          type: string
-          format: date-time
-          description: The date and time the task was completed, failed or stopped in another way.
-        result:
-          type: object
-          description: The result of the task.
-        result_url:
-          type: string
-          description: The URL to the result of the task.
-        error:
-          type: object
-          description: The error that occurred during the task.
-        owner:
-          $ref: '#/components/schemas/owner'
-        org:
-          $ref: '#/components/schemas/org'
     async_task_statuses:
       type: string
       enum:
@@ -345,19 +306,6 @@ components:
       - failed
       - cancelled
       description: The status of the task.
-    org:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email_domain:
-          type: string
-        email:
-          type: 'null'
-        client_identifier:
-          type: 'null'
     async_task_types:
       type: string
       enum:
@@ -400,6 +348,58 @@ components:
         email:
           type: string
           format: email
+    AsyncTask:
+      description: Success
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the task.
+        type:
+          $ref: '#/components/schemas/async_task_types'
+        status:
+          $ref: '#/components/schemas/async_task_statuses'
+        progress:
+          type: integer
+          description: The progress of the task.
+        priority:
+          type: integer
+          description: The priority of the task.
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the task was created.
+        stopped_at:
+          type: string
+          format: date-time
+          description: The date and time the task was completed, failed or stopped in another way.
+        result:
+          type: object
+          description: The result of the task.
+        result_url:
+          type: string
+          description: The URL to the result of the task.
+        error:
+          type: object
+          description: The error that occurred during the task.
+        owner:
+          $ref: '#/components/schemas/owner'
+        org:
+          $ref: '#/components/schemas/org'
+    org:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: 'null'
+        client_identifier:
+          type: 'null'
   parameters:
     accept:
       name: Accept

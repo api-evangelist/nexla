@@ -206,47 +206,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    Annotations:
-      properties:
-        audience:
-          anyOf:
-          - items:
-              type: string
-              enum:
-              - user
-              - assistant
-            type: array
-          - type: 'null'
-          title: Audience
-        priority:
-          anyOf:
-          - type: number
-            maximum: 1.0
-            minimum: 0.0
-          - type: 'null'
-          title: Priority
-      additionalProperties: true
-      type: object
-      title: Annotations
-    Body_Nexla-Query-Service:
-      properties:
-        user_query:
-          type: string
-          title: User Query
-          description: The user's query text.
-      type: object
-      required:
-      - user_query
-      title: Body_Nexla-Query-Service
     ValidationError:
       properties:
         loc:
@@ -273,6 +232,37 @@ components:
       - msg
       - type
       title: ValidationError
+    Annotations:
+      properties:
+        audience:
+          anyOf:
+          - items:
+              type: string
+              enum:
+              - user
+              - assistant
+            type: array
+          - type: 'null'
+          title: Audience
+        priority:
+          anyOf:
+          - type: number
+            maximum: 1.0
+            minimum: 0.0
+          - type: 'null'
+          title: Priority
+      additionalProperties: true
+      type: object
+      title: Annotations
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     TextContent:
       properties:
         type:
@@ -299,3 +289,13 @@ components:
       - text
       title: TextContent
       description: Text content for a message.
+    Body_Nexla-Query-Service:
+      properties:
+        user_query:
+          type: string
+          title: User Query
+          description: The user's query text.
+      type: object
+      required:
+      - user_query
+      title: Body_Nexla-Query-Service

@@ -139,6 +139,58 @@ paths:
           description: Not Found
 components:
   schemas:
+    OrgSimplified:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email_domain:
+          type: string
+        email:
+          type: string
+        client_identifier:
+          type: string
+        org_webhook_host:
+          type: string
+    QuarantineSettingMutable:
+      type: object
+      properties:
+        data_credentials_id:
+          type: integer
+          description: 'Nexla data credential to a file storage system where all error data should be exported. Configure the base folder within the location accessible by this credential by setting an appropriate value for `configure["path"]`.
+
+            '
+        config:
+          type: object
+          required:
+          - start.cron
+          - path
+          properties:
+            start.cron:
+              type: string
+              description: 'The interval at which Nexla should scan all quarantined records in the user''s account and export them to the specified file storage.
+
+
+                This should be a valid cron expression.
+
+                '
+            path:
+              type: string
+              description: 'The base folder where all quarantined records will be exported. Nexla will automatically create subfolder tree in this base folder when exporting error data files. These subfolders will be of the pattern `<base-path>/<nexla-env-code>/<resource-type>/<resource-id>/<yyyy>/<MM>/<dd>/<unique-file-name>.json`
+
+                '
+          example:
+            start.cron: 0 50 18 1 1/1 ? *
+            path: /nexla_error_data/export
+    QuarantineSettingCreate:
+      allOf:
+      - $ref: '#/components/schemas/QuarantineSettingMutable'
+      - type: object
+        required:
+        - data_credentials_id
+        - config
     QuarantineSetting:
       type: object
       properties:
@@ -172,36 +224,6 @@ components:
           example: gdrive
         data_credentials:
           $ref: '#/components/schemas/DataCredential'
-    QuarantineSettingMutable:
-      type: object
-      properties:
-        data_credentials_id:
-          type: integer
-          description: 'Nexla data credential to a file storage system where all error data should be exported. Configure the base folder within the location accessible by this credential by setting an appropriate value for `configure["path"]`.
-
-            '
-        config:
-          type: object
-          required:
-          - start.cron
-          - path
-          properties:
-            start.cron:
-              type: string
-              description: 'The interval at which Nexla should scan all quarantined records in the user''s account and export them to the specified file storage.
-
-
-                This should be a valid cron expression.
-
-                '
-            path:
-              type: string
-              description: 'The base folder where all quarantined records will be exported. Nexla will automatically create subfolder tree in this base folder when exporting error data files. These subfolders will be of the pattern `<base-path>/<nexla-env-code>/<resource-type>/<resource-id>/<yyyy>/<MM>/<dd>/<unique-file-name>.json`
-
-                '
-          example:
-            start.cron: 0 50 18 1 1/1 ? *
-            path: /nexla_error_data/export
     DataCredential:
       type: object
       properties:
@@ -266,25 +288,6 @@ components:
           format: date-time
         tags:
           type: array
-    QuarantineSettingCreate:
-      allOf:
-      - $ref: '#/components/schemas/QuarantineSettingMutable'
-      - type: object
-        required:
-        - data_credentials_id
-        - config
-    UserSimplified:
-      type: object
-      properties:
-        id:
-          type: integer
-        full_name:
-          type: string
-        email:
-          type: string
-        email_verified_at:
-          type: string
-          format: date-time
     QuarantineResourceType:
       type: string
       enum:
@@ -297,21 +300,18 @@ components:
       - SOURCE
       - DATASET
       - SINK
-    OrgSimplified:
+    UserSimplified:
       type: object
       properties:
         id:
           type: integer
-        name:
-          type: string
-        email_domain:
+        full_name:
           type: string
         email:
           type: string
-        client_identifier:
+        email_verified_at:
           type: string
-        org_webhook_host:
-          type: string
+          format: date-time
   parameters:
     accept:
       name: Accept

@@ -45,15 +45,6 @@ paths:
       - Bulk Query
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     Body_bulk_query_bulk_query_post:
       properties:
         csv_file:
@@ -80,12 +71,6 @@ components:
       - ai_model
       - llm_provider
       title: Body_bulk_query_bulk_query_post
-    TokenType:
-      type: string
-      enum:
-      - bearer
-      - service_key
-      title: TokenType
     ValidationError:
       properties:
         loc:
@@ -112,3 +97,18 @@ components:
       - msg
       - type
       title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    TokenType:
+      type: string
+      enum:
+      - bearer
+      - service_key
+      title: TokenType

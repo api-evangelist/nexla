@@ -474,8 +474,272 @@ paths:
         '404':
           description: Not found error
 components:
+  schemas:
+    FlowResourceMetric:
+      type: object
+      properties:
+        id:
+          type: integer
+        metric:
+          type: object
+          properties:
+            records:
+              type: integer
+            size:
+              type: integer
+            errors:
+              type: integer
+    ResourceMetricDaily:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date
+          description: 'The date (in UTC) that the metrics in this entry are applicable for.
+
+            '
+        records:
+          type: integer
+          format: int32
+          description: "The total number of records that were processed on the date indicated by the `time` property.                 \n"
+        size:
+          type: integer
+          format: int32
+          description: "The total volume (in bytes) of records that were processed on the date indicated by the `time` property.           \n"
+        errors:
+          type: integer
+          format: int32
+          description: "The total number of data processing errors that occurred on the date indicated by the `time` property. \n"
+    ResourceMetricByRun:
+      type: object
+      properties:
+        runId:
+          type: integer
+          description: 'The run ID / ingestion cycle the the metrics in this entry are applicable for.
+
+            '
+        lastWritten:
+          type: integer
+          description: "The destination write batch id the the metrics in this entry are applicable for. \n\n> *Note*: This entry is present and applicable only if the request was made for a destination *and* the request was for grouping by `lastWritten` instead of `runId`\n"
+        dataSetId:
+          type: integer
+          description: "The Nexset ID these records were applicable for. For a data source, this indicates the nexset that received the records these metrics correspond to. For a data sink, this indicates the nexset that had the records these metrics correspond to.        \n"
+        records:
+          type: integer
+          format: int32
+          description: "The total number of records that were processed during the ingestion cycle indicated by `runId`                \n"
+        size:
+          type: integer
+          format: int32
+          description: "The total volume (in bytes) of records that processed during the ingestion cycle indicated by `runId`            \n"
+        errors:
+          type: integer
+          format: int32
+          description: "The total number of data processing errors that occurred during the ingestion cycle indicated by `runId` \n"
+    DashboardMetricSet:
+      type: object
+      properties:
+        records:
+          type: integer
+          format: int32
+          description: "The total number of records that were processed for this resource during the past 24 hours.           \n"
+        size:
+          type: integer
+          format: int32
+          description: "The total volume (in bytes) of records that were processed for this resource during the past 24 hours.            \n"
+        errors:
+          type: integer
+          format: int32
+          description: "The total number of data processing errors that occurred on this resource during the past 24 hours.         \n"
+        status:
+          type: string
+          enum:
+          - OK
+          - WARNING
+          - ERROR
+          description: "Indicates whether the platform identified this resource's performance during the last 24 hours as something that might require attention or not. \n"
+    FlowLogEntry:
+      type: object
+      properties:
+        timestamp:
+          type: integer
+          format: unix epoch in milliseconds
+          example: 1695442864636
+          description: 'Timestamp at which this log entry was generated.
+
+            '
+        resource_id:
+          type: integer
+          description: 'The ID of the resource that generated this log entry.
+
+            '
+        resource_type:
+          type: string
+          description: "The type of flow resource that generated this log entry.  \n"
+          enum:
+          - SOURCE
+          - DATASET
+          - SINK
+        log:
+          type: string
+          example: Processed records=100, errors=0, size=94162"
+          description: 'Detailed information about the data processing events on the flow resource.
+
+            '
+        log_type:
+          type: string
+          description: 'Indicates the type of event reflected by log entry.
+
+
+            * `SUMMARY`: Log entry describing high level summary of data processing event.
+
+            * `LOG`: Log entry describing details of data processing status.
+
+            '
+          enum:
+          - LOG
+          - SUMMARY
+        severity:
+          type: string
+          description: 'Indicates the severity of the event reflected by this log entry.
+
+            '
+          enum:
+          - INFO
+          - WARNING
+          - ERROR
+  parameters:
+    per_page:
+      name: per_page
+      in: query
+      schema:
+        type: integer
+        description: 'Add this parameter to a resource fetch request to set the number of items that should be returned in each request.
+
+          '
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
+    size:
+      name: size
+      in: query
+      schema:
+        type: integer
+        description: 'Add this parameter to a resource fetch request to set the number of items that should be returned in each request.
+
+          '
+    page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        description: 'Add this parameter to a resource fetch request to fetch a specific page of data.
+
+          '
+    access_roles:
+      name: access_role
+      in: query
+      schema:
+        type: string
+        enum:
+        - collaborator
+        - operator
+        - admin
+        - owner
+        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
+        externalDocs:
+          description: Nexla API access roles
+          url: https://developers.nexla.com/docs/access-modes
   responses:
-    ResourceMetricsDaily:
+    FlowLogsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                description: "Status of the report request. This must be 200 for the data object in the response to be considered valid.               \n"
+              message:
+                type: string
+                description: "Message signifying status of the report request. This must be `Ok` for the data object in the response to be considered valid.            \n"
+              logs:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FlowLogEntry'
+                  meta:
+                    type: object
+                    description: 'A special metadata object that indicates the relevant response Nexla metadata for the responses. This is useful for iterating through multiple pages of valid data.
+
+                      '
+                    properties:
+                      current_page:
+                        type: integer
+                        description: 'Current page that this response corresponds to.
+
+                          '
+                      pages_count:
+                        type: integer
+                        description: "Total number of valid pages of logs data given the current page size.  \n"
+                      total_count:
+                        type: integer
+                        description: 'Total number of log entries that are available for this resource.
+
+                          '
+                      org_id:
+                        type: integer
+                        description: "The id of the organization this flow belongs to.  \n"
+                      run_id:
+                        type: integer
+                        description: "The run id (denoting ingestion cycle) that these log were generated as part of.                      \n"
+    flows_dashboard:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                format: int32
+                description: "Status of the report request. This must be `200` or `Ok` for the metrics object in the response to be considered valid.          \n"
+              metrics:
+                type: object
+                properties:
+                  sources:
+                    type: object
+                    additionalProperties:
+                      $ref: '#/components/schemas/DashboardMetricSet'
+                      x-additionalPropertiesName: data_source_id
+                  sinks:
+                    type: object
+                    additionalProperties:
+                      $ref: '#/components/schemas/DashboardMetricSet'
+                      x-additionalPropertiesName: data_sink_id
+                  datasets:
+                    type: object
+                    additionalProperties:
+                      $ref: '#/components/schemas/DashboardMetricSet'
+                      x-additionalPropertiesName: data_set_id
+                  start_time:
+                    type: string
+                    format: date-time
+                  end_time:
+                    type: string
+                    format: date-time
+    user_metrics:
       description: Success
       content:
         application/json:
@@ -485,7 +749,26 @@ components:
               metrics:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ResourceMetricDaily'
+                  type: object
+                  properties:
+                    time:
+                      type: string
+                      format: date
+                      description: 'The date (in UTC) that the metrics in this entry are applicable for.
+
+                        '
+                    records:
+                      type: integer
+                      format: int32
+                      description: "The total number of records that were processed on the date indicated by the `time` property.                 \n"
+                    size:
+                      type: integer
+                      format: int32
+                      description: "The total volume (in bytes) of records that were processed on the date indicated by the `time` property.           \n"
+                    errors:
+                      type: integer
+                      format: int32
+                      description: "The total number of data processing errors that occurred on the date indicated by the `time` property. \n"
               status:
                 type: integer
                 format: int32
@@ -597,75 +880,6 @@ components:
                     end_time:
                       type: string
                       format: date-time
-    flows_dashboard:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: integer
-                format: int32
-                description: "Status of the report request. This must be `200` or `Ok` for the metrics object in the response to be considered valid.          \n"
-              metrics:
-                type: object
-                properties:
-                  sources:
-                    type: object
-                    additionalProperties:
-                      $ref: '#/components/schemas/DashboardMetricSet'
-                      x-additionalPropertiesName: data_source_id
-                  sinks:
-                    type: object
-                    additionalProperties:
-                      $ref: '#/components/schemas/DashboardMetricSet'
-                      x-additionalPropertiesName: data_sink_id
-                  datasets:
-                    type: object
-                    additionalProperties:
-                      $ref: '#/components/schemas/DashboardMetricSet'
-                      x-additionalPropertiesName: data_set_id
-                  start_time:
-                    type: string
-                    format: date-time
-                  end_time:
-                    type: string
-                    format: date-time
-    user_metrics:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              metrics:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    time:
-                      type: string
-                      format: date
-                      description: 'The date (in UTC) that the metrics in this entry are applicable for.
-
-                        '
-                    records:
-                      type: integer
-                      format: int32
-                      description: "The total number of records that were processed on the date indicated by the `time` property.                 \n"
-                    size:
-                      type: integer
-                      format: int32
-                      description: "The total volume (in bytes) of records that were processed on the date indicated by the `time` property.           \n"
-                    errors:
-                      type: integer
-                      format: int32
-                      description: "The total number of data processing errors that occurred on the date indicated by the `time` property. \n"
-              status:
-                type: integer
-                format: int32
-                description: "Status of the report request. This must be `200` or `Ok` for the metrics object in the response to be considered valid.          \n"
     ResourceMetricsByRuns:
       description: Success
       content:
@@ -701,235 +915,21 @@ components:
                 type: integer
                 format: int32
                 description: "Status of the report request. This must be `200` or `Ok` for the metrics object in the response to be considered valid. \n"
-    FlowLogsResponse:
+    ResourceMetricsDaily:
       description: Success
       content:
         application/json:
           schema:
             type: object
             properties:
+              metrics:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResourceMetricDaily'
               status:
                 type: integer
-                description: "Status of the report request. This must be 200 for the data object in the response to be considered valid.               \n"
-              message:
-                type: string
-                description: "Message signifying status of the report request. This must be `Ok` for the data object in the response to be considered valid.            \n"
-              logs:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/FlowLogEntry'
-                  meta:
-                    type: object
-                    description: 'A special metadata object that indicates the relevant response Nexla metadata for the responses. This is useful for iterating through multiple pages of valid data.
-
-                      '
-                    properties:
-                      current_page:
-                        type: integer
-                        description: 'Current page that this response corresponds to.
-
-                          '
-                      pages_count:
-                        type: integer
-                        description: "Total number of valid pages of logs data given the current page size.  \n"
-                      total_count:
-                        type: integer
-                        description: 'Total number of log entries that are available for this resource.
-
-                          '
-                      org_id:
-                        type: integer
-                        description: "The id of the organization this flow belongs to.  \n"
-                      run_id:
-                        type: integer
-                        description: "The run id (denoting ingestion cycle) that these log were generated as part of.                      \n"
-  parameters:
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
-
-          '
-    page:
-      name: page
-      in: query
-      schema:
-        type: integer
-        description: 'Add this parameter to a resource fetch request to fetch a specific page of data.
-
-          '
-    access_roles:
-      name: access_role
-      in: query
-      schema:
-        type: string
-        enum:
-        - collaborator
-        - operator
-        - admin
-        - owner
-        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
-        externalDocs:
-          description: Nexla API access roles
-          url: https://developers.nexla.com/docs/access-modes
-    size:
-      name: size
-      in: query
-      schema:
-        type: integer
-        description: 'Add this parameter to a resource fetch request to set the number of items that should be returned in each request.
-
-          '
-    per_page:
-      name: per_page
-      in: query
-      schema:
-        type: integer
-        description: 'Add this parameter to a resource fetch request to set the number of items that should be returned in each request.
-
-          '
-  schemas:
-    FlowResourceMetric:
-      type: object
-      properties:
-        id:
-          type: integer
-        metric:
-          type: object
-          properties:
-            records:
-              type: integer
-            size:
-              type: integer
-            errors:
-              type: integer
-    FlowLogEntry:
-      type: object
-      properties:
-        timestamp:
-          type: integer
-          format: unix epoch in milliseconds
-          example: 1695442864636
-          description: 'Timestamp at which this log entry was generated.
-
-            '
-        resource_id:
-          type: integer
-          description: 'The ID of the resource that generated this log entry.
-
-            '
-        resource_type:
-          type: string
-          description: "The type of flow resource that generated this log entry.  \n"
-          enum:
-          - SOURCE
-          - DATASET
-          - SINK
-        log:
-          type: string
-          example: Processed records=100, errors=0, size=94162"
-          description: 'Detailed information about the data processing events on the flow resource.
-
-            '
-        log_type:
-          type: string
-          description: 'Indicates the type of event reflected by log entry.
-
-
-            * `SUMMARY`: Log entry describing high level summary of data processing event.
-
-            * `LOG`: Log entry describing details of data processing status.
-
-            '
-          enum:
-          - LOG
-          - SUMMARY
-        severity:
-          type: string
-          description: 'Indicates the severity of the event reflected by this log entry.
-
-            '
-          enum:
-          - INFO
-          - WARNING
-          - ERROR
-    ResourceMetricByRun:
-      type: object
-      properties:
-        runId:
-          type: integer
-          description: 'The run ID / ingestion cycle the the metrics in this entry are applicable for.
-
-            '
-        lastWritten:
-          type: integer
-          description: "The destination write batch id the the metrics in this entry are applicable for. \n\n> *Note*: This entry is present and applicable only if the request was made for a destination *and* the request was for grouping by `lastWritten` instead of `runId`\n"
-        dataSetId:
-          type: integer
-          description: "The Nexset ID these records were applicable for. For a data source, this indicates the nexset that received the records these metrics correspond to. For a data sink, this indicates the nexset that had the records these metrics correspond to.        \n"
-        records:
-          type: integer
-          format: int32
-          description: "The total number of records that were processed during the ingestion cycle indicated by `runId`                \n"
-        size:
-          type: integer
-          format: int32
-          description: "The total volume (in bytes) of records that processed during the ingestion cycle indicated by `runId`            \n"
-        errors:
-          type: integer
-          format: int32
-          description: "The total number of data processing errors that occurred during the ingestion cycle indicated by `runId` \n"
-    DashboardMetricSet:
-      type: object
-      properties:
-        records:
-          type: integer
-          format: int32
-          description: "The total number of records that were processed for this resource during the past 24 hours.           \n"
-        size:
-          type: integer
-          format: int32
-          description: "The total volume (in bytes) of records that were processed for this resource during the past 24 hours.            \n"
-        errors:
-          type: integer
-          format: int32
-          description: "The total number of data processing errors that occurred on this resource during the past 24 hours.         \n"
-        status:
-          type: string
-          enum:
-          - OK
-          - WARNING
-          - ERROR
-          description: "Indicates whether the platform identified this resource's performance during the last 24 hours as something that might require attention or not. \n"
-    ResourceMetricDaily:
-      type: object
-      properties:
-        time:
-          type: string
-          format: date
-          description: 'The date (in UTC) that the metrics in this entry are applicable for.
-
-            '
-        records:
-          type: integer
-          format: int32
-          description: "The total number of records that were processed on the date indicated by the `time` property.                 \n"
-        size:
-          type: integer
-          format: int32
-          description: "The total volume (in bytes) of records that were processed on the date indicated by the `time` property.           \n"
-        errors:
-          type: integer
-          format: int32
-          description: "The total number of data processing errors that occurred on the date indicated by the `time` property. \n"
+                format: int32
+                description: "Status of the report request. This must be `200` or `Ok` for the metrics object in the response to be considered valid.          \n"
   securitySchemes:
     NexlaSessionToken:
       type: http

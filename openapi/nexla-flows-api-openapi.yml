@@ -493,20 +493,123 @@ paths:
         '404':
           description: Not found
 components:
+  responses:
+    FlowsManyWithMetric:
+      description: Success
+      content:
+        application/json:
+          schema:
+            allOf:
+            - type: object
+              properties:
+                flows:
+                  $ref: '#/components/schemas/FlowNodes'
+            - $ref: '#/components/schemas/FlowElements'
+            - type: object
+              properties:
+                metrics:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      origin_node_id:
+                        type: integer
+                      records:
+                        type: integer
+                      size:
+                        type: integer
+                      errors:
+                        type: integer
+                      reporting_date:
+                        type: string
+                        format: date-time
+                      run_id:
+                        type: integer
+    genai_recommendation_response:
+      description: Either success or failure
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            properties:
+              status:
+                type: string
+                description: Should be 200 or "ok" for normal response. If GenAI service is not available, you will get another status code.
+                example: ok
+              output:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    description: The response message from GenAI service. Contains Markdown text.  If there is an error, this field will not be present.
+                  statusCode:
+                    type: integer
+                    description: The status code from external GenAI service.
+                    example: 200
+                  errorMessage:
+                    type: string
+                    description: If there is an error, this field will contain the error message, and 'response' field will not be present.
+                    example: GenAI Integration has not been enabled for your Nexla organization. Please contact your organization admin or Nexla support for enabling the integration.
+    FlowsOne:
+      description: Success
+      content:
+        application/json:
+          schema:
+            allOf:
+            - type: object
+              properties:
+                flows:
+                  type: array
+                  minItems: 1
+                  maxItems: 1
+                  items:
+                    $ref: '#/components/schemas/FlowOriginNode'
+            - $ref: '#/components/schemas/FlowElements'
+  parameters:
+    per_page:
+      name: per_page
+      in: query
+      schema:
+        type: integer
+        description: 'Add this parameter to a resource fetch request to set the number of items that should be returned in each request.
+
+          '
+    accept:
+      name: Accept
+      in: header
+      schema:
+        type: string
+        enum:
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
+    page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        description: 'Add this parameter to a resource fetch request to fetch a specific page of data.
+
+          '
+    access_roles:
+      name: access_role
+      in: query
+      schema:
+        type: string
+        enum:
+        - collaborator
+        - operator
+        - admin
+        - owner
+        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
+        externalDocs:
+          description: Nexla API access roles
+          url: https://developers.nexla.com/docs/access-modes
   schemas:
-    flow_one_with_async:
-      oneOf:
-      - allOf:
-        - type: object
-          properties:
-            flows:
-              type: array
-              minItems: 1
-              maxItems: 1
-              items:
-                $ref: '#/components/schemas/FlowOriginNode'
-        - $ref: '#/components/schemas/FlowElements'
-      - $ref: '#/components/schemas/AsyncResponse'
     FlowOriginNode:
       type: object
       properties:
@@ -556,55 +659,81 @@ components:
             '
           items:
             $ref: '#/components/schemas/FlowChildNode'
-    org:
+    AsyncResponse:
       type: object
+      description: 'This object represents the response of an asynchronous operation. The response can be a dictionary or an array of dictionaries. The format of the response depends on the operation that was executed.
+
+        '
       properties:
-        id:
+        request_id:
           type: integer
-        name:
+          description: 'The unique ID of the request that was executed. This ID can be used to track the status of the request.
+
+            '
+        status:
           type: string
-        email_domain:
+          enum:
+          - pending
+          - running
+          - completed
+          - failed
+          - cancelled
+        request_started_at:
           type: string
-        email:
-          type: 'null'
-        client_identifier:
-          type: 'null'
+          format: date-time
+          description: 'The date and time when the request was started.
+
+            '
+        progress:
+          type: integer
+          description: 'The progress of the request (value from 0 to 100). This value is a percentage of the total progress of the request. Applicable only to certain types of async operations.
+
+            '
+        result:
+          type: object
+          description: 'The result of the async operation. Format depends on the task type.
+
+            '
+          additionalProperties: true
+        request_stopped_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was stopped. This field is only present if the request has been stopped (due to cancellation or error).
+
+            '
+        request_completed_at:
+          type: string
+          format: date-time
+          description: 'The date and time when the request was completed. This field is only present if the request has been completed successfully.
+
+            '
     FlowNodes:
       type: array
       items:
         $ref: '#/components/schemas/FlowOriginNode'
-    FlowChildNode:
+    owner:
       type: object
       properties:
         id:
           type: integer
-        parent_node_id:
-          type: integer
-          description: 'The flow id of the flow node this node is a direct descendant of.
-
-            '
-        origin_node_id:
-          type: integer
-          description: "The flow id of the flow node at the root of this flow chain.      \n"
-        data_source_id:
-          type: integer
-          format: nullable
-          description: 'The ID of the data source this flow node is linked to if this is a flow node for a data source.
-
-            '
-        data_set_id:
-          type: integer
-          format: nullable
-          description: "The ID of the Nexset this flow node is linked to if this is flow node for a Nexset. \n"
-        data_sink_id:
-          type: integer
-          format: nullable
-          description: "The ID of the data sink this flow node is linked to if this is a flow node for a data sink.         \n"
-        children:
-          type: array
-          description: 'Each element is a flow node that is directly linked to this node.
-
-            '
+        full_name:
+          type: string
+        email:
+          type: string
+          format: email
+    flow_one_with_async:
+      oneOf:
+      - allOf:
+        - type: object
+          properties:
+            flows:
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                $ref: '#/components/schemas/FlowOriginNode'
+        - $ref: '#/components/schemas/FlowElements'
+      - $ref: '#/components/schemas/AsyncResponse'
     FlowElements:
       type: object
       properties:
@@ -908,180 +1037,51 @@ components:
                 type: string
               access_roles:
                 type: array
-    AsyncResponse:
-      type: object
-      description: 'This object represents the response of an asynchronous operation. The response can be a dictionary or an array of dictionaries. The format of the response depends on the operation that was executed.
-
-        '
-      properties:
-        request_id:
-          type: integer
-          description: 'The unique ID of the request that was executed. This ID can be used to track the status of the request.
-
-            '
-        status:
-          type: string
-          enum:
-          - pending
-          - running
-          - completed
-          - failed
-          - cancelled
-        request_started_at:
-          type: string
-          format: date-time
-          description: 'The date and time when the request was started.
-
-            '
-        progress:
-          type: integer
-          description: 'The progress of the request (value from 0 to 100). This value is a percentage of the total progress of the request. Applicable only to certain types of async operations.
-
-            '
-        result:
-          type: object
-          description: 'The result of the async operation. Format depends on the task type.
-
-            '
-          additionalProperties: true
-        request_stopped_at:
-          type: string
-          format: date-time
-          description: 'The date and time when the request was stopped. This field is only present if the request has been stopped (due to cancellation or error).
-
-            '
-        request_completed_at:
-          type: string
-          format: date-time
-          description: 'The date and time when the request was completed. This field is only present if the request has been completed successfully.
-
-            '
-    owner:
+    org:
       type: object
       properties:
         id:
           type: integer
-        full_name:
+        name:
+          type: string
+        email_domain:
           type: string
         email:
-          type: string
-          format: email
-  parameters:
-    accept:
-      name: Accept
-      in: header
-      schema:
-        type: string
-        enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+          type: 'null'
+        client_identifier:
+          type: 'null'
+    FlowChildNode:
+      type: object
+      properties:
+        id:
+          type: integer
+        parent_node_id:
+          type: integer
+          description: 'The flow id of the flow node this node is a direct descendant of.
 
-          '
-    page:
-      name: page
-      in: query
-      schema:
-        type: integer
-        description: 'Add this parameter to a resource fetch request to fetch a specific page of data.
+            '
+        origin_node_id:
+          type: integer
+          description: "The flow id of the flow node at the root of this flow chain.      \n"
+        data_source_id:
+          type: integer
+          format: nullable
+          description: 'The ID of the data source this flow node is linked to if this is a flow node for a data source.
 
-          '
-    access_roles:
-      name: access_role
-      in: query
-      schema:
-        type: string
-        enum:
-        - collaborator
-        - operator
-        - admin
-        - owner
-        description: "Add this query parameter to a request to view resources for which the authenticated user has permission. \n\n1. `collaborator`: Resources to which the user has access via the collaborator or higher permissions.\n2. `operator`: Resources to which the user has access via the operator or higher permissions.\n3. `admin`: Resources to which the user has access via the administrator or owner permissions.\n4. `owner`: Resources created by the user.\nNote that the absence of this property in the request is treated as `owner`, so you do not need to set `access_role=owner` in the query.\n"
-        externalDocs:
-          description: Nexla API access roles
-          url: https://developers.nexla.com/docs/access-modes
-    per_page:
-      name: per_page
-      in: query
-      schema:
-        type: integer
-        description: 'Add this parameter to a resource fetch request to set the number of items that should be returned in each request.
+            '
+        data_set_id:
+          type: integer
+          format: nullable
+          description: "The ID of the Nexset this flow node is linked to if this is flow node for a Nexset. \n"
+        data_sink_id:
+          type: integer
+          format: nullable
+          description: "The ID of the data sink this flow node is linked to if this is a flow node for a data sink.         \n"
+        children:
+          type: array
+          description: 'Each element is a flow node that is directly linked to this node.
 
-          '
-  responses:
-    genai_recommendation_response:
-      description: Either success or failure
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            properties:
-              status:
-                type: string
-                description: Should be 200 or "ok" for normal response. If GenAI service is not available, you will get another status code.
-                example: ok
-              output:
-                type: object
-                properties:
-                  response:
-                    type: string
-                    description: The response message from GenAI service. Contains Markdown text.  If there is an error, this field will not be present.
-                  statusCode:
-                    type: integer
-                    description: The status code from external GenAI service.
-                    example: 200
-                  errorMessage:
-                    type: string
-                    description: If there is an error, this field will contain the error message, and 'response' field will not be present.
-                    example: GenAI Integration has not been enabled for your Nexla organization. Please contact your organization admin or Nexla support for enabling the integration.
-    FlowsOne:
-      description: Success
-      content:
-        application/json:
-          schema:
-            allOf:
-            - type: object
-              properties:
-                flows:
-                  type: array
-                  minItems: 1
-                  maxItems: 1
-                  items:
-                    $ref: '#/components/schemas/FlowOriginNode'
-            - $ref: '#/components/schemas/FlowElements'
-    FlowsManyWithMetric:
-      description: Success
-      content:
-        application/json:
-          schema:
-            allOf:
-            - type: object
-              properties:
-                flows:
-                  $ref: '#/components/schemas/FlowNodes'
-            - $ref: '#/components/schemas/FlowElements'
-            - type: object
-              properties:
-                metrics:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      origin_node_id:
-                        type: integer
-                      records:
-                        type: integer
-                      size:
-                        type: integer
-                      errors:
-                        type: integer
-                      reporting_date:
-                        type: string
-                        format: date-time
-                      run_id:
-                        type: integer
+            '
   securitySchemes:
     NexlaSessionToken:
       type: http

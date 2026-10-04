@@ -321,58 +321,131 @@ paths:
         '403':
           description: Forbidden
 components:
-  responses:
-    Transform:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/Transform'
-    AttributeTransform:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/AttributeTransform'
-    code_containers_one_Transform:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Transform'
-    CodeContainer:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CodeContainer'
-    code_containers_one_AttributeTransform:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AttributeTransform'
-  parameters:
-    accept:
-      name: Accept
-      in: header
-      schema:
+  schemas:
+    AccessRoles:
+      type: array
+      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
+      items:
         type: string
         enum:
-        - application/vnd.nexla.api.v1+json
-        - application/json
-        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
-
-          '
-  schemas:
+        - owner
+        - collaborator
+        - operator
+        - admin
     OutputType:
       type: string
       enum:
       - record
+    TransformMutable:
+      type: object
+      required:
+      - name
+      - output_type
+      - reusable
+      - code
+      - code_type
+      - code_encoding
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        output_type:
+          type: string
+          enum:
+          - record
+          description: 'Type of code container. This must be set to `record` to signify that this code container is to be used to convert an input record of a Nexset into an output record for that Nexset.
+
+            '
+        reusable:
+          type: boolean
+          description: "Whether or not this transform can be referenced by multiple Nexsets. This should always be `true` for reusable record transforms.     \n"
+        code_type:
+          type: string
+          enum:
+          - jolt_custom
+          - jolt_standard
+          description: Type of code in the `code` block. Use `jolt_custom` if the code in the code block is a `python`, `python3` or `javascript` transform code block wrapped inside a Jolt operation block.
+        code_encoding:
+          type: string
+          enum:
+          - none
+          description: 'Whether or not the code in the `code` block is encoded. Set this to `none` for reusable record transforms.
+
+            '
+        code:
+          description: "Code to be executed for transforming records. \nIf you wish to execute a Python or Javascript code snippet during transformation, you'll need to `base64`-encode that code snippet and wrap it inside the following Jolt operation object.\n\nFor example, if you want to execute this Python code as a reusable record transform \n```python\ndef transform(input, metadata, args):\n  # Sample python transform to pass all attributes through\nreturn input\n```\nthe corresponding `code` object would be\n```json\n[\n  {\n    \"operation\": \"nexla.custom\",\n    \"spec\": {\n      \"language\": \"python\",\n      \"encoding\": \"base64\",\n      \"script\": \"ZGVmIHRyYW5zZm9ybShpbnB1dCwgbWV0YWRhdGEsIGFyZ3MpOgogICMgU2FtcGxlIHB5dGhvbiB0cmFuc2Zvcm0gdG8gcGFzcyBhbGwgYXR0cmlidXRlcyB0aHJvdWdoCiAgcmV0dXJuIGlucHV0\"\n    }\n  }\n]\n```  \n"
+          oneOf:
+          - type: array
+            items:
+              type: object
+              properties:
+                operation:
+                  type: string
+                  enum:
+                  - nexla.custom
+                  description: 'Jolt operation for this code block. For `python`, `python3` and `javascript`, it must be `nexla.custom`.
+
+                    '
+                spec:
+                  type: object
+                  description: 'Jolt specification for this block. See the Python example above for sample specs.
+
+                    '
+                  properties:
+                    language:
+                      type: string
+                      enum:
+                      - python
+                      - python3
+                      - javascript
+                      description: 'Code language of the encoded script.
+
+                        '
+                    encoding:
+                      type: string
+                      enum:
+                      - base64
+                      description: 'Python or Javascript code snippets must always be Base64-encoded.
+
+                        '
+                    script:
+                      type: string
+                      description: 'Base64-encoded Python or Javascript code snippet that must be executed for transforming records.
+
+                        '
+          - type: array
+            items:
+              type: object
+              additionalProperties:
+                type: object
+                x-additionalPropertiesName: Jolt operation block
+                description: "Standard Jolt operation blocks to be executed for transforming records.                  \n"
+        custom_config:
+          type: object
+          description: "Configuration block useful for converting code into Nexla UI's Nexset Designer Rule blocks. \n\nThis should not be sent in the payload unless the transform is being created using the Nexla UI's Nexset Designer screen.\n"
+        tags:
+          type: array
+          items:
+            type: string
+    code_containers_ResourceType:
+      type: string
+      enum:
+      - transform
+      - ai_function
+      - source
+      - sink
+      - error
+      - validator
+      description: "The type of resource that this code container is to be used for. \n- `transform`: For user defined code that is used in a Nexset transform.\n- `ai_function`: For user defined code that is used in an AI function. See `ai_function_type` for the scenarios where this is used.\n- `source`: For user defined code in a source.\n- `sink`: For user defined code in a sink.\n- `error`: For user defined code that acts as an error handler.\n- `validator`: For user defined code that acts as a validator.\n"
+    code_containers_CodeType:
+      type: string
+      enum:
+      - jolt_standard
+      - jolt_custom
+      - python
+      - python3
+      - javascript
     CodeType:
       type: string
       enum:
@@ -390,6 +463,11 @@ components:
         email_verified_at:
           type: string
           format: date-time
+    attribute_transforms_CodeType:
+      type: string
+      enum:
+      - python
+      - javascript
     OrgSimplified:
       type: object
       properties:
@@ -405,6 +483,21 @@ components:
           type: string
         org_webhook_host:
           type: string
+    DataCredentialBrief:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
     Transform:
       type: object
       properties:
@@ -471,6 +564,26 @@ components:
           type: array
           items:
             type: string
+    ResourceType:
+      type: string
+      enum:
+      - transform
+    code_containers_OutputType:
+      type: string
+      enum:
+      - record
+      - attribute
+      - custom
+      description: 'The type of output that this code container produces.
+
+
+        - `record`: Produces a full Nexset record. Used only when the code container is used to modify a Nexset, i.e output_type: `transform`
+
+        - `attribute`: Produces value for an attribute inside a Nexset record. Used only when the code container is used to modify a value inside a Nexset, i.e output_type: `transform`
+
+        - `custom`: Produces custom output. Used as a catch-all output format when a code container is used in any context other than for Nexset modification.
+
+        '
     AttributeTransformMutable:
       type: object
       required:
@@ -623,6 +736,74 @@ components:
           type: array
           items:
             type: string
+    attribute_transforms_OutputType:
+      type: string
+      enum:
+      - attribute
+    AttributeTransform:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        name:
+          type: string
+          example: test
+        resource_type:
+          $ref: '#/components/schemas/ResourceType'
+        reusable:
+          type: boolean
+        owner:
+          $ref: '#/components/schemas/UserSimplified'
+        org:
+          $ref: '#/components/schemas/OrgSimplified'
+        access_roles:
+          $ref: '#/components/schemas/AccessRoles'
+        data_credentials:
+          allOf:
+          - $ref: '#/components/schemas/DataCredentialBrief'
+          - format: nullable
+        runtime_data_credentials:
+          allOf:
+          - $ref: '#/components/schemas/DataCredentialBrief'
+          - format: nullable
+        description:
+          type: string
+          example: test
+        code_type:
+          $ref: '#/components/schemas/attribute_transforms_CodeType'
+        output_type:
+          $ref: '#/components/schemas/attribute_transforms_OutputType'
+        code_config:
+          type: object
+        custom_config:
+          type: object
+          format: nullable
+        code_encoding:
+          type: string
+          example: none
+        code:
+          type: string
+        managed:
+          type: boolean
+        data_sets:
+          type: array
+          items:
+            type: integer
+        copied_from_id:
+          type: integer
+          format: nullable
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            type: string
     CodeContainerMutable:
       type: object
       required:
@@ -704,234 +885,53 @@ components:
             type: string
         custom_config:
           type: object
-    code_containers_CodeType:
-      type: string
-      enum:
-      - jolt_standard
-      - jolt_custom
-      - python
-      - python3
-      - javascript
-    attribute_transforms_CodeType:
-      type: string
-      enum:
-      - python
-      - javascript
-    code_containers_ResourceType:
-      type: string
-      enum:
-      - transform
-      - ai_function
-      - source
-      - sink
-      - error
-      - validator
-      description: "The type of resource that this code container is to be used for. \n- `transform`: For user defined code that is used in a Nexset transform.\n- `ai_function`: For user defined code that is used in an AI function. See `ai_function_type` for the scenarios where this is used.\n- `source`: For user defined code in a source.\n- `sink`: For user defined code in a sink.\n- `error`: For user defined code that acts as an error handler.\n- `validator`: For user defined code that acts as a validator.\n"
-    TransformMutable:
-      type: object
-      required:
-      - name
-      - output_type
-      - reusable
-      - code
-      - code_type
-      - code_encoding
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        output_type:
-          type: string
-          enum:
-          - record
-          description: 'Type of code container. This must be set to `record` to signify that this code container is to be used to convert an input record of a Nexset into an output record for that Nexset.
-
-            '
-        reusable:
-          type: boolean
-          description: "Whether or not this transform can be referenced by multiple Nexsets. This should always be `true` for reusable record transforms.     \n"
-        code_type:
-          type: string
-          enum:
-          - jolt_custom
-          - jolt_standard
-          description: Type of code in the `code` block. Use `jolt_custom` if the code in the code block is a `python`, `python3` or `javascript` transform code block wrapped inside a Jolt operation block.
-        code_encoding:
-          type: string
-          enum:
-          - none
-          description: 'Whether or not the code in the `code` block is encoded. Set this to `none` for reusable record transforms.
-
-            '
-        code:
-          description: "Code to be executed for transforming records. \nIf you wish to execute a Python or Javascript code snippet during transformation, you'll need to `base64`-encode that code snippet and wrap it inside the following Jolt operation object.\n\nFor example, if you want to execute this Python code as a reusable record transform \n```python\ndef transform(input, metadata, args):\n  # Sample python transform to pass all attributes through\nreturn input\n```\nthe corresponding `code` object would be\n```json\n[\n  {\n    \"operation\": \"nexla.custom\",\n    \"spec\": {\n      \"language\": \"python\",\n      \"encoding\": \"base64\",\n      \"script\": \"ZGVmIHRyYW5zZm9ybShpbnB1dCwgbWV0YWRhdGEsIGFyZ3MpOgogICMgU2FtcGxlIHB5dGhvbiB0cmFuc2Zvcm0gdG8gcGFzcyBhbGwgYXR0cmlidXRlcyB0aHJvdWdoCiAgcmV0dXJuIGlucHV0\"\n    }\n  }\n]\n```  \n"
-          oneOf:
-          - type: array
-            items:
-              type: object
-              properties:
-                operation:
-                  type: string
-                  enum:
-                  - nexla.custom
-                  description: 'Jolt operation for this code block. For `python`, `python3` and `javascript`, it must be `nexla.custom`.
-
-                    '
-                spec:
-                  type: object
-                  description: 'Jolt specification for this block. See the Python example above for sample specs.
-
-                    '
-                  properties:
-                    language:
-                      type: string
-                      enum:
-                      - python
-                      - python3
-                      - javascript
-                      description: 'Code language of the encoded script.
-
-                        '
-                    encoding:
-                      type: string
-                      enum:
-                      - base64
-                      description: 'Python or Javascript code snippets must always be Base64-encoded.
-
-                        '
-                    script:
-                      type: string
-                      description: 'Base64-encoded Python or Javascript code snippet that must be executed for transforming records.
-
-                        '
-          - type: array
-            items:
-              type: object
-              additionalProperties:
-                type: object
-                x-additionalPropertiesName: Jolt operation block
-                description: "Standard Jolt operation blocks to be executed for transforming records.                  \n"
-        custom_config:
-          type: object
-          description: "Configuration block useful for converting code into Nexla UI's Nexset Designer Rule blocks. \n\nThis should not be sent in the payload unless the transform is being created using the Nexla UI's Nexset Designer screen.\n"
-        tags:
-          type: array
-          items:
-            type: string
-    AccessRoles:
-      type: array
-      description: "This property reflects all the permissions the user/team/organization has to this resource. \n\n1. `collaborator`: The user/team/organization can view the resource but not make any modifications to it.\n2. `operator`: The user/team/organization can view the resource and can activate/pause it, but not make any other modifications to it.\n3. `administrator`: The user/team/organization has complete administrative rights to this resource.\n4. `owner`: This user created the resource and so has complete administrative rights to it. \n"
-      items:
+  parameters:
+    accept:
+      name: Accept
+      in: header
+      schema:
         type: string
         enum:
-        - owner
-        - collaborator
-        - operator
-        - admin
-    DataCredentialBrief:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-        updated_at:
-          type: string
-          format: date-time
-        created_at:
-          type: string
-          format: date-time
-    ResourceType:
-      type: string
-      enum:
-      - transform
-    attribute_transforms_OutputType:
-      type: string
-      enum:
-      - attribute
+        - application/vnd.nexla.api.v1+json
+        - application/json
+        description: 'Setting to `application/vnd.nexla.api.v1+json` is recommended.
+
+          '
+  responses:
+    Transform:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Transform'
+    CodeContainer:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CodeContainer'
+    code_containers_one_Transform:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Transform'
+    code_containers_one_AttributeTransform:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AttributeTransform'
     AttributeTransform:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-          example: 1
-        name:
-          type: string
-          example: test
-        resource_type:
-          $ref: '#/components/schemas/ResourceType'
-        reusable:
-          type: boolean
-        owner:
-          $ref: '#/components/schemas/UserSimplified'
-        org:
-          $ref: '#/components/schemas/OrgSimplified'
-        access_roles:
-          $ref: '#/components/schemas/AccessRoles'
-        data_credentials:
-          allOf:
-          - $ref: '#/components/schemas/DataCredentialBrief'
-          - format: nullable
-        runtime_data_credentials:
-          allOf:
-          - $ref: '#/components/schemas/DataCredentialBrief'
-          - format: nullable
-        description:
-          type: string
-          example: test
-        code_type:
-          $ref: '#/components/schemas/attribute_transforms_CodeType'
-        output_type:
-          $ref: '#/components/schemas/attribute_transforms_OutputType'
-        code_config:
-          type: object
-        custom_config:
-          type: object
-          format: nullable
-        code_encoding:
-          type: string
-          example: none
-        code:
-          type: string
-        managed:
-          type: boolean
-        data_sets:
-          type: array
-          items:
-            type: integer
-        copied_from_id:
-          type: integer
-          format: nullable
-        updated_at:
-          type: string
-          format: date-time
-        created_at:
-          type: string
-          format: date-time
-        tags:
-          type: array
-          items:
-            type: string
-    code_containers_OutputType:
-      type: string
-      enum:
-      - record
-      - attribute
-      - custom
-      description: 'The type of output that this code container produces.
-
-
-        - `record`: Produces a full Nexset record. Used only when the code container is used to modify a Nexset, i.e output_type: `transform`
-
-        - `attribute`: Produces value for an attribute inside a Nexset record. Used only when the code container is used to modify a value inside a Nexset, i.e output_type: `transform`
-
-        - `custom`: Produces custom output. Used as a catch-all output format when a code container is used in any context other than for Nexset modification.
-
-        '
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AttributeTransform'
   securitySchemes:
     NexlaSessionToken:
       type: http
