@@ -107,3 +107,45 @@
   relationship: distribution-channel
   status: not-a-workflow
   arazzo: null
+- slug: nexla-agent-skills-own-github-org
+  label: Agent Skills (own GitHub org)
+  partner_name: Agent Skills (own GitHub org)
+  category: Agent Skills package
+  type: register
+  channel: provider-built
+  evidence: https://github.com/nexla-opensource/nexla-sdk-python
+  source: edge
+  relationship: compatible
+  contract_reference:
+    register: 'provider''s own GitHub org (GitHub REST API: repo + git tree holds SKILL.md)'
+    spec_file: null
+    standard: Agent Skills (agentskills.io)
+    role: agent-skills-repo
+    matched_org: nexla-opensource
+    matched_by: org-name
+    detected_by: sweep-agent-skills.py
+    detected: '2026-10-20'
+  status: not-a-workflow
+  arazzo: null
+- slug: nexla-claude-plugins-dev
+  label: claude-plugins.dev
+  partner_name: claude-plugins.dev
+  category: Agent Skills register
+  type: register
+  channel: standard-directory
+  evidence: https://claude-plugins.dev/skills/@nexla-opensource/nexla-sdk
+  source: edge
+  relationship: compatible
+  contract_reference:
+    register: claude-plugins.dev (public sitemap / list)
+    spec_file: null
+    standard: Agent Skills (agentskills.io)
+    role: agent-skills-listing
+    matched_org: nexla-opensource
+    matched_by: org-name
+    sample_skills:
+    - nexla
+    detected_by: sweep-agent-skills.py
+    detected: '2026-10-20'
+  status: not-a-workflow
+  arazzo: null
